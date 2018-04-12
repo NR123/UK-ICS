@@ -9,7 +9,7 @@
 
     <xsl:template match="page[$selectorID = 'cases']">
         <xsl:element name="{name()}">
-            <xsl:attribute name="text" select="./@text"/>
+            <xsl:attribute name="text" select="normalize-space(./@text)"/>
             <xsl:attribute name="reporter" select="./@reporter"/>
             <xsl:attribute name="count" select="./@count"/>
             <xsl:apply-templates/>

@@ -18,6 +18,13 @@
             <xsl:when test="self::blockquote[ancestor::case:appendix]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
                 <xsl:apply-templates/>
             </xsl:when>
+            
+            <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node() except(table)"/>
+                </xsl:element>
+                <xsl:apply-templates select="table"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>

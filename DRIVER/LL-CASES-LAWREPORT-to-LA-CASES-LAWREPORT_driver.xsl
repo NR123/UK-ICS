@@ -19,37 +19,57 @@
     exclude-result-prefixes="xs" version="2.0">
 
 
-    <xsl:param name="selectorID" select="'dictionary'"/>
+    <xsl:param name="selectorID" select="'cases'"/>
 	
 	<xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
 
-    <!--<xsl:output encoding="UTF-8" doctype-public="-//LEXISNEXIS//DTD GLP Casedoc v005//EN"
-        doctype-system="dictionarydoc-norm.dtd" indent="no"/>-->
-    
-    <xsl:output encoding="UTF-8" indent="no"/>
+    <xsl:output encoding="utf-8" indent="no"/>
+
+    <xsl:strip-space elements="*"/>
 
     <!-- START OF CONTENT SPECIFIC XSLS -->
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/Dictionary_introduction.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_cases_introduction.xsl"/>
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/dict.body-ChOf-dictionarydoc.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.body_ChOf_casedoc.xsl"/>
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/dict.term-entry_ChOf_dict.body.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.headnote_ChOf_case.body.xsl"/>
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/defterm-ChOf-dict.term-entry.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.info_ChOf_case.headnote.xsl"/>
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/dict.definition-ChOf-dict.term-entry.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.courtinfo_ChOf_case.info-and-case.judgement.xsl"/>
 
-    <xsl:include href="../STREAM_SPECIFIC/dictionary/dict.subtopic-dict.topicname-ChOf-dict.definition.xsl"/>
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_catchwordgrp_ChOf_case.headnote.xsl"/>
 
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.factsummary_ChOf_case.headnote.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.decisionsummary_ChOf_case.headnote.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.decisionsummary_glp.note_to_note.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.decisionsummary_case.consideredcases-to-case.references.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.priorhist_ChOf_case.headnote.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.content_ChOf_case.body.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.judgements_ChOf_case.content.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.constituents_case.constituent-to-case.constituent.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.judgement_ChOf_case.judgements.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.appendix_ChOf_case.content.xsl"/>
+
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.author_ChOf_case.content.xsl"/>
     <!-- END OF CONTENT SPECIFIC XSLS -->
 
     <!-- START OF GENERIC XSLS -->
-    
+
     <xsl:include href="../COMMON/withnamespace/docinfo-child-elements.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/default.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/ErrorMessage.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/heading.xsl"/>
@@ -57,6 +77,8 @@
     <xsl:include href="../COMMON/nonamespace/title.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
+
+    <xsl:include href="../COMMON/nonamespace/pgrp.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/p.xsl"/>
 
@@ -83,10 +105,14 @@
     <xsl:include href="../COMMON/nonamespace/url.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/inlineobject.xsl"/>
-    
-    <xsl:include href="../COMMON/nonamespace/footnotegrp.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/nl.xsl"/>
+
+    <xsl:include href="../COMMON/nonamespace/page.xsl"/>
+
+    <xsl:include href="../COMMON/nonamespace/footnotegrp.xsl"/>
+
+    <xsl:include href="../COMMON/nonamespace/person.xsl"/>
 
     <!-- END OF GENERIC XSLS -->
 </xsl:stylesheet>

@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-04-11T17:59:39.935+05:30-->
+Compiled:  2018-04-11T18:15:08.775+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -32,52 +32,361 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
                 exclude-result-prefixes="xs xd">
-   <xsl:param name="selectorID" select="'dictionary'"/>
+   <xsl:param name="selectorID" select="'cases'"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
-   <!--<xsl:output encoding="UTF-8" doctype-public="-//LEXISNEXIS//DTD GLP Casedoc v005//EN"
-        doctype-system="dictionarydoc-norm.dtd" indent="no"/>-->
-   <xsl:output encoding="UTF-8" indent="no"/>
+   <xsl:output encoding="utf-8" indent="no"/>
+   <xsl:strip-space elements="*"/>
    <!-- START OF CONTENT SPECIFIC XSLS -->
    <!-- Please uncomment the below xsl:include while unit-testing -->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="DICTIONARYDOC">
+   <xsl:template match="CASEDOC">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
             <xsl:namespace name="{substring-after(substring-before(., '='), ':')}"
                            select="substring-after(translate(., '&#34;', ''), '=')"/>
          </xsl:for-each>
-         <xsl:apply-templates select="@* | node()"/>
+         <xsl:attribute name="type" select="'fulltext'"/>
+         <xsl:apply-templates select="node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:body">
+   <xsl:template match="case:body[parent::CASEDOC]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:term-entry">
+   <xsl:template match="case:headnote[parent::case:body]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node() except (glp:note,case:priorhist)"/>
+         <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
+         <xsl:apply-templates select="case:decisionsummary/case:consideredcases" mode="references"/>
+         <xsl:apply-templates select="case:priorhist"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:info[parent::case:headnote] | case:parallelcite[parent::case:info/ancestor::case:headnote] | case:casename[ancestor::case:headnote] | case:reportercite[ancestor::case:headnote]">
+      <xsl:element name="{name()}">
+         <xsl:choose>
+            <xsl:when test="self::case:casename[ancestor::case:headnote] and $docinfo.selector='PracticeDirection'">
+               <xsl:variable name="casename" select="."/>
+               <xsl:value-of select="translate($casename, ';', '')"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:courtinfo[parent::case:info or parent::case:judgment]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="defterm[parent::dict:term-entry]">
+   <xsl:template match="case:courtname[parent::case:courtinfo] | case:courtcode[parent::case:courtinfo] | case:judges[parent::case:courtinfo] | case:judge[parent::case:judges/parent::case:courtinfo] | case:dates[parent::case:courtinfo] | case:hearingdates[parent::case:dates/parent::case:courtinfo] | case:decisiondate[parent::case:dates/parent::case:courtinfo]">
+      <xsl:element name="{name()}">
+         <xsl:choose>
+            <xsl:when test="self::case:courtcode and $docinfo.selector='PracticeDirection'">
+               <xsl:variable name="courtcode" select="."/>
+               <xsl:value-of select="translate($courtcode, 'temp', '')"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:juris[parent::case:courtinfo[parent::case:info | parent::judgment]]"/>
+
+   <xsl:template match="catchwordgrp[parent::case:headnote]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:definition">
+   <xsl:template match="catchwords[parent::catchwordgrp/parent::case:headnote]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:subtopic | dict:topicname">
+   <xsl:template match="catchphrase[ancestor::catchwordgrp/parent::case:headnote]">
+      <xsl:variable name="text_to_process">
+         <xsl:choose>
+            <xsl:when test="child::ci:cite">
+               <xsl:value-of select="self::catchphrase/text()[1]"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="."/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:call-template name="catchphrase_split">
+         <xsl:with-param name="text" select="$text_to_process"/>
+      </xsl:call-template>
+      <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
+   </xsl:template>
+
+   <xsl:template name="catchphrase_split">
+      <xsl:param name="text" select="."/>
+      <xsl:param name="delimiter">–</xsl:param>
+      <!-- To check whether the end of catchphrase has been reached. As the end content is not ended with &#x2013;, we need to handle it. -->
+      <xsl:variable name="test_for_last_value">
+         <xsl:choose>
+            <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)">
+               <xsl:value-of select="'no'"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="'yes'"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
+         <xsl:choose><!-- When more delimiter is present, process the text before the delimiter -->
+            <xsl:when test="$test_for_last_value = 'no'">
+               <catchphrase>
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text"
+                                     select="normalize-space(substring-before($text, $delimiter))"/>
+                  </xsl:call-template>
+               </catchphrase>
+            </xsl:when>
+            <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
+            <xsl:when test="$test_for_last_value = 'yes'">
+               <catchphrase>
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text"
+                                     select="normalize-space(substring-before($text, $delimiter))"/>
+                  </xsl:call-template>
+               </catchphrase>
+               <catchphrase>
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text"
+                                     select="normalize-space(substring-after($text, $delimiter))"/>
+                  </xsl:call-template>
+               </catchphrase>
+            </xsl:when>
+         </xsl:choose>
+      </xsl:if>
+      <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
+         <xsl:call-template name="catchphrase_split">
+            <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
+         </xsl:call-template>
+      </xsl:if>
+   </xsl:template>
+
+   <xsl:template match="ci:cite[parent::catchphrase/ancestor::catchwordgrp/parent::case:headnote]"/>
+
+   <xsl:template match="ci:cite[parent::catchphrase]" mode="catchphrase">
+      <catchphrase>
+         <xsl:value-of select="normalize-space(concat(self::ci:cite//ci:content//text(), translate(following-sibling::node()[1][./name() = ''], '–', '')))"/>
+      </catchphrase>
+   </xsl:template>
+
+   <xsl:template match="case:factsummary">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:decisionsummary[parent::case:headnote]">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="summarytype" select="'held'"/>
+         <!-- If there is glp:note within case:headnote and as preceeding sibling of decisionsummary, then we have to move this into decisionsummary and suppress the tag glp:note and retain its child elements -->
+         <xsl:apply-templates select="self::case:decisionsummary/preceding-sibling::glp:note"/>
+         <xsl:for-each select="*">
+            <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
+               <xsl:apply-templates select="."/>
+            </xsl:if>
+         </xsl:for-each>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
+
+   <xsl:template match="glp:note[parent::case:headnote and following-sibling::case:decisionsummary]">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::case:decisionsummary/parent::case:headnote]"
+                 mode="glp.note">
+      <xsl:choose>
+         <xsl:when test="self::glp:note/not(preceding-sibling::glp:note)">
+            <xsl:element name="note">
+               <xsl:attribute name="notetype" select="'commentary'"/>
+               <xsl:apply-templates/>
+               <xsl:apply-templates select="following-sibling::glp:note|following-sibling::node()[preceding-sibling::glp:note][not(preceding-sibling::case:consideredcases)]"
+                                    mode="grp_glp.note"/>
+            </xsl:element>
+         </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="node()[name()!='glp:note'][preceding-sibling::glp:note][not(preceding-sibling::case:consideredcases)]"
+                 mode="grp_glp.note">
+      <xsl:apply-templates select="."/>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::case:decisionsummary/parent::case:headnote]"
+                 mode="grp_glp.note">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="case:consideredcases[parent::case:decisionsummary/parent::case:headnote]"
+                 mode="references">
+      <xsl:choose>
+         <xsl:when test="self::case:consideredcases/not(preceding-sibling::case:consideredcases)">
+            <case:references referencetype="cases">
+               <xsl:apply-templates/>
+               <xsl:apply-templates select="following-sibling::case:consideredcases|following-sibling::node()[name()!=('p')][preceding-sibling::case:consideredcases]"
+                                    mode="grp_case.references"/>
+            </case:references>
+         </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="node()[name()!=('p')][name()!=('case:consideredcases')][preceding-sibling::case:consideredcases]"
+                 mode="grp_case.references">
+      <xsl:apply-templates select="."/>
+   </xsl:template>
+
+   <xsl:template match="case:consideredcases[parent::case:decisionsummary/parent::case:headnote]"
+                 mode="grp_case.references">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="case:priorhist[ancestor::case:headnote]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:content">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::case:content]">
+      <xsl:choose>
+         <xsl:when test="self::glp:note/following-sibling::*[1][name()='case:appendix']">
+            <case:appendix>
+               <xsl:apply-templates/>
+            </case:appendix>
+         </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="case:judgments[parent::case:content]">
+      <xsl:choose>
+         <xsl:when test="self::case:judgments/not(preceding-sibling::case:judgments)">
+            <xsl:element name="{name()}">
+               <xsl:if test="parent::case:content/preceding-sibling::case:headnote//case:decisionsummary/p">
+                  <prelim>
+                     <xsl:apply-templates select="parent::case:content/preceding-sibling::case:headnote//case:decisionsummary/p"
+                                          mode="prelim"/>
+                  </prelim>
+               </xsl:if>
+               <xsl:apply-templates select="@* | node()"/>
+               <xsl:apply-templates select="following-sibling::case:judgments" mode="grp_case.judgements"/>
+            </xsl:element>
+         </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="case:judgments" mode="grp_case.judgements">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::case:judgments]">
+      <prelim><!-- This mode is defined in the file "case.judgements_ChOf_case.content.xsl" -->
+         <xsl:apply-templates mode="prelim"/>
+      </prelim>
+   </xsl:template>
+
+   <xsl:template match="*" mode="prelim">
+      <xsl:choose>
+         <xsl:when test="self::page">
+            <xsl:apply-templates select="."/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:choose>
+                  <xsl:when test="self::text">
+                     <xsl:attribute name="align" select="'right'"/>
+                     <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="self::p">
+                     <xsl:apply-templates mode="prelim"/>
+                  </xsl:when>
+                  <xsl:when test="self::emph"/>
+                  <xsl:otherwise>
+                     <xsl:apply-templates/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="case:dates[parent::case:judgments] | case:disposition[parent::case:judgments]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:decisiondate[parent::case:dates/parent::case:judgments]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="date[parent::case:decisiondate/parent::case:dates/parent::case:judgments]">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="case:constituents">
+      <xsl:choose>
+         <xsl:when test="self::case:constituents/not(preceding-sibling::case:constituents)">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates/>
+               <xsl:apply-templates select="following-sibling::case:constituents"
+                                    mode="grp_case.constituents"/>
+            </xsl:element>
+         </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="case:constituents[preceding-sibling::case:constituents]"
+                 mode="grp_case.constituents">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="case:constituent[parent::case:constituents]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:judgment[parent::case:judgments] | case:judgmentbody[parent::case:judgment/parent::case:judgments]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:appendix[parent::case:content]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:author[parent::case:content]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
@@ -85,7 +394,17 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->
    <xsl:template match="docinfo">
       <xsl:element name="{name()}">
-         <docinfo:dpsi id-string="000D"/>
+         <xsl:choose>
+            <xsl:when test="$selectorID='dictionary'">
+               <docinfo:dpsi id-string="0KMN"/>
+            </xsl:when>
+            <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+               <docinfo:dpsi id-string="000D"/>
+            </xsl:when>
+            <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
+               <docinfo:dpsi id-string="02ED"/>
+            </xsl:when>
+         </xsl:choose>
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
@@ -240,7 +559,7 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
                <xsl:otherwise><!--<xsl:copy-of select="." copy-namespaces="no"/>-->
                   <xsl:element name="{name()}">
                      <xsl:copy-of select="@name" copy-namespaces="no"/>
-                     <xsl:value-of select="replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;')"/>
+                     <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
                   </xsl:element>
                </xsl:otherwise>
             </xsl:choose>
@@ -432,6 +751,10 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
             <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
          </xsl:matching-substring>
       </xsl:analyze-string>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+   <xsl:template match="pgrp[$selectorID='cases']">
+      <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
 
    <xsl:template match="p"><!--<xsl:message select="$docinfo.selector"></xsl:message>-->
@@ -1065,6 +1388,21 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
    <!--<xsl:template match="inlineobject/@filename">
         <xsl:attribute name="filename" select="'TBD'"/>
     </xsl:template>-->
+   <xsl:template match="nl">
+      <xsl:apply-templates select="@* | node()"/>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+   <xsl:template match="page[$selectorID = 'cases']">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="text" select="normalize-space(./@text)"/>
+         <xsl:attribute name="reporter" select="./@reporter"/>
+         <xsl:attribute name="count" select="./@count"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="page/@*"/>
+
    <xsl:template match="footnotegrp">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
@@ -1122,8 +1460,38 @@ Compiled:  2018-04-11T17:59:39.935+05:30-->
          <xsl:apply-templates select="node() except (sup, page)"/>
       </xsl:element>
    </xsl:template>
-
-   <xsl:template match="nl">
-      <xsl:apply-templates select="@* | node()"/>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+   <xsl:template match="person[$selectorID = 'cases']">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
    </xsl:template>
-   <!-- END OF GENERIC XSLS --></xsl:stylesheet>
+
+   <xsl:template match="name.text[parent::person][$selectorID = 'cases']">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+   <!--<xsl:template match="name.text[parent::person][$selectorID = 'cases']">
+        <xsl:element name="{name()}">
+            <xsl:choose>
+                <xsl:when test="emph[parent::name.text][$selectorID = 'cases']">
+                    <xsl:analyze-string select="." regex="\s*(([A-Z]\w*\-*\.*\s*'*)+)">
+                        <xsl:matching-substring>
+                            <emph typestyle="it">
+                                <xsl:value-of select="regex-group(1)"/>
+                            </emph>
+                        </xsl:matching-substring>
+                        <xsl:non-matching-substring>
+                            <xsl:value-of select="."/>
+                        </xsl:non-matching-substring>
+                    </xsl:analyze-string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:element name="{name()}">
+                        <xsl:apply-templates select="@* | node()"/>
+                    </xsl:element>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
+    </xsl:template>-->   <!-- END OF GENERIC XSLS --></xsl:stylesheet>

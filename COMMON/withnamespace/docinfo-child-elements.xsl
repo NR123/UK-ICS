@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+    xmlns:case="http://www.lexis-nexis.com/glp/case"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
     <xsl:template match="docinfo">
         <xsl:element name="{name()}">
-            <docinfo:dpsi id-string="000D"/>
+            <xsl:choose>
+                <xsl:when test="$selectorID='dictionary'">
+                    <docinfo:dpsi id-string="0KMN"/> 
+                </xsl:when>
+                <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+                    <docinfo:dpsi id-string="000D"/>
+                </xsl:when>
+                <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
+                    <docinfo:dpsi id-string="02ED"/>
+                </xsl:when>
+            </xsl:choose>
+            
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
@@ -15,10 +27,91 @@
     <xsl:template
         match="docinfo:doc-heading | docinfo:bookseqnum[$selectorID = 'cases'] | docinfo:doc-lang | docinfo:doc-country | docinfo:hier | docinfo:hierlev | heading[parent::docinfo:hierlev] | title[ancestor::docinfo:hierlev] | docinfo:lbu-meta | docinfo:metaitem | docinfo:selector | docinfo:alt-renditions | docinfo:alt-rendition | link[parent::docinfo:alt-rendition]">
         <xsl:element name="{name()}">
-            <xsl:apply-templates select="@* | node()"/>
+            <xsl:choose>                
+                <xsl:when test="self::docinfo:doc-heading and $selectorID = 'cases' and $docinfo.selector = 'Transcript'">
+                    <xsl:variable name="docheadval" select="."/>
+                    <xsl:analyze-string select="$docheadval" regex="([\w\W]*?)\s*\-\s*$">
+                        <xsl:matching-substring>
+                            <xsl:value-of select="regex-group(1)"/>
+                        </xsl:matching-substring>
+                        <xsl:non-matching-substring>
+                            <xsl:value-of select="$docheadval"/>
+                        </xsl:non-matching-substring>
+                    </xsl:analyze-string>
+                </xsl:when>
+                <xsl:when
+                    test="self::docinfo:doc-heading and $docinfo.selector = 'PracticeDirection'">
+                    <xsl:variable name="docinfo_dochead" select="//docinfo:doc-heading"/>
+                    <xsl:choose>
+                        <xsl:when test="starts-with($docinfo_dochead, 'Practice Direction;')">
+                            <xsl:value-of
+                                select="replace($docinfo_dochead, 'Practice Direction;', 'Practice Direction')"
+                            />
+                        </xsl:when>
+                        <xsl:when test="starts-with($docinfo_dochead, 'Note;')">
+                            <xsl:value-of select="replace($docinfo_dochead, 'Note;', 'Note')"/>
+                        </xsl:when>
+                        <xsl:when test="starts-with($docinfo_dochead, 'Practice Note;')">
+                            <xsl:value-of
+                                select="replace($docinfo_dochead, 'Practice Note;', 'Practice Note')"
+                            />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when
+                    test="self::title[ancestor::docinfo:hierlev] and $docinfo.selector = 'PracticeDirection'">
+                    <xsl:variable name="docinfo_hierlev_title" select="."/>
+                    <xsl:choose>
+                        <xsl:when test="starts-with($docinfo_hierlev_title, 'Practice Direction;')">
+                            <xsl:value-of
+                                select="replace($docinfo_hierlev_title, 'Practice Direction;', 'Practice Direction')"
+                            />
+                        </xsl:when>
+                        <xsl:when test="starts-with($docinfo_hierlev_title, 'Note;')">
+                            <xsl:value-of select="replace($docinfo_hierlev_title, 'Note;', 'Note')"
+                            />
+                        </xsl:when>
+                        <xsl:when test="starts-with($docinfo_hierlev_title, 'Practice Note;')">
+                            <xsl:value-of
+                                select="replace($docinfo_hierlev_title, 'Practice Note;', 'Practice Note')"
+                            />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+
+                </xsl:when>
+                <xsl:when test="self::docinfo:selector and $docinfo.selector = 'PracticeDirection'">
+                    <xsl:variable name="docinfo_selector" select="//docinfo:selector"/>
+                    <xsl:value-of select="concat('Case', $docinfo_selector)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:choose>
+                        <xsl:when test="self::docinfo:lbu-meta and $selectorID = 'cases' and $docinfo.selector = 'Transcript'">
+                            <xsl:apply-templates select="@* | node()"/>
+                            <xsl:if test="//case:headnote/case:info[1]/child::case:parallelcite[1]">
+                            <xsl:element name="docinfo:metaitem">
+                                <xsl:attribute name="name" select="'lexiscite'"/>                                
+                                <xsl:attribute name="value" select="//case:headnote/case:info[1]/child::case:parallelcite[1]//text()"/>
+                            </xsl:element>                            
+                            <docinfo:metaitem name="includeInOneCase" value="true" />
+                            </xsl:if>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="@* | node()"/>                            
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
         </xsl:element>
     </xsl:template>
-    
+
+
+
     <xsl:template match="docinfo:alt-rendition/link/@*">
         <xsl:copy/>
     </xsl:template>
@@ -34,30 +127,26 @@
     </xsl:template>
 
     <xsl:template
-        match="docinfo:custom-metafields[$selectorID='dictionary'] | docinfo:custom-metafields/child::*[$selectorID='dictionary'] | docinfo:assoc-links | docinfo:normcite"/>
-    
-    <xsl:template match="docinfo:custom-metafields[$selectorID='cases']">
+        match="docinfo:custom-metafields[$selectorID = 'dictionary'] | docinfo:custom-metafields/child::*[$selectorID = 'dictionary'] | docinfo:assoc-links | docinfo:normcite"/>
+
+    <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
-            <xsl:copy-of select="child::docinfo:custom-metafield[@name='date']" copy-namespaces="no"/>
+            <xsl:copy-of select="child::docinfo:custom-metafield[@name = 'date']"
+                copy-namespaces="no"/>
         </xsl:element>
     </xsl:template>
-    
-    <xsl:template match="docinfo:custom-metafield[$selectorID='cases']">
+
+    <xsl:template match="docinfo:custom-metafield[$selectorID = 'cases']">
         <xsl:choose>
-            <xsl:when test="@name='courtcode'"><xsl:copy-of select="." copy-namespaces="no"/></xsl:when>
-            <xsl:when test="@name='jurisdiction'">
+            <xsl:when test="@name = 'courtcode'">
                 <xsl:choose>
-                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype='JURIS-CLASSIFY']/not(child::node())">
+                    <xsl:when test="@name = 'courtcode' and $docinfo.selector = 'PracticeDirection'">
                         <xsl:element name="{name()}">
                             <xsl:copy-of select="@name" copy-namespaces="no"/>
-                            <xsl:value-of select="'EnglandWalesScotlandandNorthernIreland'"/>
-                        </xsl:element>
-                    </xsl:when>
-                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype='JURIS-CLASSIFY']/child::node()">
-                        <xsl:element name="{name()}">
-                            <xsl:copy-of select="@name" copy-namespaces="no"/>
-                            <xsl:value-of select="translate(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype='JURIS-CLASSIFY'],', ','')"/>
+                            <xsl:value-of
+                                select="replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@name = 'courtcode'], 'temp', '')"
+                            />
                         </xsl:element>
                     </xsl:when>
                     <xsl:otherwise>
@@ -65,36 +154,102 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
-            <xsl:when test="@searchtype='COURT-CLASSIFY'">
+            <xsl:when test="@name = 'jurisdiction'">
+                <xsl:choose>
+                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']/not(child::node()) and $selectorID='dictionary'">
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                            <xsl:value-of select="'EnglandWalesScotlandandNorthernIreland'"/>
+                        </xsl:element>
+                    </xsl:when>
+                    
+                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']/not(child::node()) and $selectorID='cases' and $docinfo.selector=('PracticeDirection','LawReport')">
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                            <xsl:value-of select="'EnglandWalesScotlandandNorthernIreland'"/>
+                        </xsl:element>
+                    </xsl:when>
+                    
+                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']/not(child::node()) and $selectorID='cases' and $docinfo.selector=('Transcript')">
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                            <xsl:value-of select="'England&amp;Wales'"/>
+                        </xsl:element>
+                    </xsl:when>
+                    
+                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']/child::node() and $selectorID='dictionary'">
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                            <xsl:value-of
+                                select="translate(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ', ', '')"
+                            />
+                        </xsl:element>
+                    </xsl:when>
+                    
+                    <xsl:when test="self::docinfo:custom-metafield/not(child::node()) and parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']/child::node() and $selectorID='cases' and $docinfo.selector=('PracticeDirection','LawReport')">
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                            <xsl:value-of
+                                select="translate(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ', ', '')"
+                            />
+                        </xsl:element>
+                    </xsl:when>                    
+                    <xsl:otherwise>
+                        <!--<xsl:copy-of select="." copy-namespaces="no"/>-->
+                        <xsl:element name="{name()}">
+                            <xsl:copy-of select="@name" copy-namespaces="no"/>
+                        <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
+                        </xsl:element>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:when test="@searchtype = 'COURT-CLASSIFY'">
                 <xsl:element name="{name()}">
                     <xsl:attribute name="name" select="./@searchtype"/>
-                        <xsl:choose>
-                            <xsl:when test="self::docinfo:custom-metafield/not(node())">
-                                <xsl:value-of select="'Supreme Court'"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:apply-templates select="node()"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="self::docinfo:custom-metafield/not(node())">
+                            <xsl:choose>
+                                <xsl:when test="$docinfo.selector=('PracticeDirection','Transcript')">
+                                    <xsl:value-of select="//case:courtname"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="'Supreme Court'"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:otherwise>                                                                              
+                            <xsl:apply-templates select="node()"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:element>
             </xsl:when>
-            <xsl:when test="@searchtype='JURIS-CLASSIFY'">
+            <xsl:when test="@searchtype = 'JURIS-CLASSIFY'">
                 <xsl:element name="{name()}">
                     <xsl:attribute name="name" select="./@searchtype"/>
-                        <xsl:choose>
-                            <xsl:when test="self::docinfo:custom-metafield/not(node())">
-                                <xsl:value-of select="'England, Wales, Scotland and Northern Ireland'"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:apply-templates select="node()"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="self::docinfo:custom-metafield/not(node())">
+                            <xsl:choose>
+                                <xsl:when test="$docinfo.selector=('PracticeDirection','Transcript')">
+                                    <xsl:value-of select="'England &amp; Wales'"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="'England, Wales, Scotland and Northern Ireland'"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:otherwise>                     
+                                <xsl:value-of select="replace(.,' and ',' &amp; ')"/>
+                            <!--<xsl:apply-templates select="node()"/>-->
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:element>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    
-    <xsl:template match="docinfo:custom-metafield[$selectorID='cases'][./@name=('court','juris','date','sh-version','rx-version','sg-version','ng-version','filterType','resultType')]" priority="20"/>
+
+    <xsl:template
+        match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
+        priority="20"/>
 
 
 </xsl:stylesheet>

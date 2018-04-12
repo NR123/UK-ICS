@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:glp="http://www.lexis-nexis.com/glp"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:case="http://www.lexis-nexis.com/glp/case"
     exclude-result-prefixes="xs" version="2.0">
     
@@ -10,28 +10,23 @@
     <!-- End: For unit-testing -->
 
     <xsl:template match="ci:*">
+        
         <xsl:choose>
-            <xsl:when test="self::ci:cite[matches(child::ci:content,'^&#x2013;[0-9]+')][$selectorID='dictionary']">
+            <xsl:when test="self::ci:cite[matches(child::ci:content,'^&#x2013;[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
                   <xsl:value-of select="self::ci:cite//child::ci:content/node()"/>             
             </xsl:when>
+            <xsl:when test="self::ci:case[ancestor::case:parallelcite][$selectorID='cases' and $docinfo.selector='Transcript']"/>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@*"/>
                     <xsl:if
                         test="self::ci:cite[@searchtype = 'LEG-REF' or @searchtype = 'EU-REF']">
+                        <xsl:variable name="normcite" as="xs:string*">
+                            <xsl:apply-templates select="ci:sesslaw" mode="normcite"/>
+                        </xsl:variable>
+                        
                         <xsl:attribute name="normcite">
-
-                            <xsl:variable name="sesslawnum">
-                                <xsl:analyze-string select="self::ci:cite//ci:sesslawnum/@num"
-                                    regex="([0-9]+_[0-9]+)">
-                                    <xsl:matching-substring>
-                                        <xsl:value-of select="regex-group(1)"/>
-                                    </xsl:matching-substring>
-                                </xsl:analyze-string>
-                            </xsl:variable>
-                            <xsl:value-of
-                                select=" normalize-space(upper-case(concat(self::ci:cite//ci:standardname/@normpubcode, ' ', translate($sesslawnum, '_', ' '), ' ', concat(self::ci:cite//ci:hierpinpoint[1]/ci:hierlev[1]/@label, ' ', self::ci:cite//ci:hierpinpoint[1]/ci:hierlev[1]/@num))))"/>
-
+                            <xsl:value-of select="$normcite"/>
                         </xsl:attribute>
                     </xsl:if>
                     <xsl:apply-templates select="node()"/>
@@ -40,30 +35,90 @@
         </xsl:choose>
 
     </xsl:template>
+    
+    <xsl:template match="ci:sesslaw" mode="normcite">
+        <xsl:variable name="ci_section_content">
+            <xsl:choose>
+                <xsl:when test="self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]">
+                    <xsl:value-of select="concat(upper-case(substring(self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label,1,4)),' ',self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
+                </xsl:when>
+                <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1],'^[\s]*s')">
+                    <xsl:analyze-string select="ancestor::ci:cite/following-sibling::text()[1]" regex="^[\s]*s[\W]{{1}}([0-9]+)">
+                        <xsl:matching-substring>
+                            <xsl:value-of select="concat('SECT ',regex-group(1))"/>
+                        </xsl:matching-substring>
+                    </xsl:analyze-string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="''"/>
+                </xsl:otherwise>
+            </xsl:choose>
+           
+        </xsl:variable>
+        <xsl:apply-templates select="ci:sesslawref" mode="#current"/>
+        <xsl:apply-templates select="ci:sesslawinfo" mode="#current"/>
+        <xsl:value-of select="$ci_section_content"/>
+    </xsl:template>
+    
+    <xsl:template match="ci:sesslawref" mode="normcite">
+        <xsl:value-of select="child::ci:standardname/@normpubcode" separator=" "/>
+    </xsl:template>
+    
+    <xsl:template match="ci:sesslawinfo" mode="normcite">
+        <xsl:apply-templates select="ci:sesslawnum" mode="#current"/>
+        <xsl:apply-templates select="ci:hierpinpoint" mode="#current"/>
+    </xsl:template>
+    
+    <xsl:template match="ci:sesslawnum" mode="normcite">
+        <xsl:variable name="strip-space" select="translate(@num, ' ', '')"/>
+        <xsl:variable name="regex" select="'(\d{4})_(\d+).(_(title))?'"></xsl:variable>
+        <xsl:variable name="ci_section_content">
+            <xsl:choose>   
+                <xsl:when test="ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]">
+                    <xsl:value-of select="concat(upper-case(substring(ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label,1,4)),' ',ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
+                </xsl:when>
+                <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1],'^[\s]*s')">
+                    <xsl:analyze-string select="ancestor::ci:cite/following-sibling::text()[1]" regex="^[\s]*s[\W]{{1}}([0-9]+)">
+                        <xsl:matching-substring>
+                            <xsl:value-of select="concat('SECT ',regex-group(1))"/>
+                        </xsl:matching-substring>
+                    </xsl:analyze-string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="''"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="test">
+            <xsl:analyze-string select="$strip-space" regex="{$regex}" flags="i">
+                <xsl:matching-substring>
+                    <xsl:choose>
+                        <xsl:when test="$ci_section_content!=''">
+                            <xsl:value-of select="(regex-group(1),regex-group(2))" separator=" "/> 
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="(regex-group(1),regex-group(2), (if (regex-group(4)) then regex-group(4) else ()))" separator=" "/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <!--<xsl:value-of select="(regex-group(1),regex-group(2), (if (regex-group(4)) then regex-group(4) else ()))" separator=" "/>-->
+                    <!--<xsl:value-of select="(regex-group(1),regex-group(2))" separator=" "/>-->
+                </xsl:matching-substring>
+            </xsl:analyze-string></xsl:variable>
+        <xsl:value-of select="$test"/>
+    </xsl:template>
 
     <xsl:template
         match="ci:sesslaw[parent::ci:cite/@searchtype = 'LEG-REF' or parent::ci:cite/@searchtype = 'EU-REF']"/>
-
-    <xsl:template name="fn_normcite">
-        <xsl:param name="normcite"/>
-        <xsl:variable name="sesslawnum">
-            <xsl:analyze-string select="$normcite" regex="([0-9]+_[0-9]+)">
-                <xsl:matching-substring>
-                    <xsl:value-of select="regex-group(1)"/>
-                </xsl:matching-substring>
-            </xsl:analyze-string>
-        </xsl:variable>
-        <xsl:value-of
-            select="concat(child::ci:standardname/@normpubcode, ' ', translate($sesslawnum, '_', ' '), ' ', concat(child::ci:hierlev[1]/@label, ' ', child::ci:hierlev[1]/@num))"/>
-
-    </xsl:template>
 
     <xsl:template match="ci:*/@*">
         <xsl:choose>
             <xsl:when test="parent::ci:cite/@searchtype = 'EU-REF'">
                 <xsl:attribute name="searchtype" select="'LEG-REF'"/>
             </xsl:when>
-            <xsl:when test="parent::ci:cite/parent::case:parallelcite">
+            <xsl:when test="parent::ci:cite/parent::case:parallelcite and $selectorID='dictionary'"> 
+                <xsl:attribute name="searchtype" select="'CASE-REF'"/>
+            </xsl:when>
+            <xsl:when test="parent::ci:cite/parent::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')"> 
                 <xsl:attribute name="searchtype" select="'CASE-REF'"/>
             </xsl:when>
             <xsl:otherwise>
@@ -76,7 +131,10 @@
     
     <xsl:template match="citefragment">
         <xsl:choose>
-            <xsl:when test="ancestor::case:parallelcite">
+            <xsl:when test="ancestor::case:parallelcite and $selectorID='dictionary'">                
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:when test="ancestor::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">                
                 <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>
