@@ -16,6 +16,20 @@
                   <xsl:value-of select="self::ci:cite//child::ci:content/node()"/>             
             </xsl:when>
             <xsl:when test="self::ci:case[ancestor::case:parallelcite][$selectorID='cases' and $docinfo.selector='Transcript']"/>
+            
+            <xsl:when test="self::ci:content and matches(self::ci:content,'(\[[0-9]{4}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)') and $selectorID='index'">
+                <xsl:analyze-string select="self::ci:content" regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
+                    <xsl:matching-substring>
+                        <ci:content>
+                            <xsl:value-of select="regex-group(1)"/>
+                            <emph typestyle="bf">
+                                <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
+                            </emph>
+                            <xsl:value-of select="regex-group(4)"/>
+                        </ci:content>
+                    </xsl:matching-substring>
+                </xsl:analyze-string>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@*"/>

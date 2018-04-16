@@ -16,6 +16,11 @@
                 <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                     <docinfo:dpsi id-string="02ED"/>
                 </xsl:when>
+                
+                <xsl:when test="$selectorID='index'">
+                    <docinfo:dpsi id-string="003B"/> 
+                </xsl:when>
+                
             </xsl:choose>
             
             <xsl:apply-templates select="@* | node()"/>
@@ -127,7 +132,7 @@
     </xsl:template>
 
     <xsl:template
-        match="docinfo:custom-metafields[$selectorID = 'dictionary'] | docinfo:custom-metafields/child::*[$selectorID = 'dictionary'] | docinfo:assoc-links | docinfo:normcite"/>
+        match="docinfo:custom-metafields[$selectorID = ('dictionary','index')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index')] | docinfo:assoc-links | docinfo:normcite"/>
 
     <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
         <xsl:element name="{name()}">

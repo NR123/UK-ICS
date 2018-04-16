@@ -28,6 +28,27 @@
         <xsl:apply-templates/>
     </xsl:template>
     
+    <xsl:template match="emph[@typestyle='bf'][$selectorID='index']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="emph[@typestyle='smcaps'][$selectorID='index']">
+        <emph typestyle="smcaps">            
+                <remotelink service="DOC-ID" remotekey1="REFPTID">
+                    <xsl:attribute name="refpt">
+                     <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
+                        <xsl:variable name="remtext" select="self::emph/text()"/>                        
+                        <xsl:value-of
+                            select="concat($prepend,translate(upper-case($remtext),' ','_'))"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
+                    <xsl:attribute name="dpsi" select="'003B'"/>
+                    <xsl:attribute name="status" select="'valid'"/>
+               <xsl:apply-templates/>                
+                </remotelink>           
+        </emph>
+    </xsl:template>
+    
    <!-- <xsl:template match="emph[self::emph/following-sibling::ci:cite][ancestor::case:priorhist | ancestor::case:consideredcases] [$selectorID='cases']">
         <xsl:apply-templates/>
     </xsl:template>

@@ -15,6 +15,7 @@
             <RosettaNamespace>xmlns:ci="http://www.lexis-nexis.com/ci"</RosettaNamespace>
             <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
             <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
+            <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
         </RosettaNamepaces>
     </xsl:variable>
     
@@ -77,18 +78,19 @@
         </xsl:choose>
     </xsl:template>
 
-
-    <!-- The below templates should be uncommented while unit-testing -->
-    <!-- Start: For unit-testing -->
-    <!--<xsl:template match="node()">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:element>
+    <xsl:template name="Normalize_id_string">
+        <xsl:param name="string"/>
+        <xsl:variable name="Remove_non_breaking_space">
+            <xsl:value-of select="translate($string,'&#160;','')"/>
+        </xsl:variable>
+        <xsl:variable name="apos">'</xsl:variable>
+        <xsl:variable name="Remove_apos">
+            <xsl:value-of select="replace($Remove_non_breaking_space,$apos,'_')"/>
+        </xsl:variable>
+       
+        <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &quot;,£&amp;-.!#$%()*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '_')"/>
+        
     </xsl:template>
-    
-    <xsl:template match="@*">
-        <xsl:copy/>
-    </xsl:template>-->
-    <!-- End: For unit-testing -->
+  
     
 </xsl:stylesheet>
