@@ -265,9 +265,14 @@
                     <xsl:variable name="after_sqbracket">
                         <xsl:value-of select="substring-after(self::in:entry-text/node()[1], '[')"/>
                     </xsl:variable>
-                    <xsl:call-template name="replace">
-                        <xsl:with-param name="text" select="concat('[',$after_sqbracket)"/>
-                    </xsl:call-template>
+                    <xsl:choose>
+                        <xsl:when test="$after_sqbracket!=''">
+                            <xsl:call-template name="replace">
+                                <xsl:with-param name="text" select="concat('[',$after_sqbracket)"/>
+                            </xsl:call-template>
+                        </xsl:when>
+                    </xsl:choose>
+                    
                     <!-- The child elements are run in the in-entry mode -->
                     <xsl:apply-templates select="." mode="in-entry"/>
                 </in:index-ref>
