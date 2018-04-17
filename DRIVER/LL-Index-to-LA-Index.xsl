@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-04-16T20:32:10.014+05:30-->
+Compiled:  2018-04-17T11:41:53.804+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -251,9 +251,13 @@ Compiled:  2018-04-16T20:32:10.014+05:30-->
                <xsl:variable name="after_sqbracket">
                   <xsl:value-of select="substring-after(self::in:entry-text/node()[1], '[')"/>
                </xsl:variable>
-               <xsl:call-template name="replace">
-                  <xsl:with-param name="text" select="concat('[',$after_sqbracket)"/>
-               </xsl:call-template>
+               <xsl:choose>
+                  <xsl:when test="$after_sqbracket!=''">
+                     <xsl:call-template name="replace">
+                        <xsl:with-param name="text" select="concat('[',$after_sqbracket)"/>
+                     </xsl:call-template>
+                  </xsl:when>
+               </xsl:choose>
                <!-- The child elements are run in the in-entry mode -->
                <xsl:apply-templates select="." mode="in-entry"/>
             </in:index-ref>
@@ -568,10 +572,14 @@ Compiled:  2018-04-16T20:32:10.014+05:30-->
          <xsl:value-of select="translate($string,' ','')"/>
       </xsl:variable>
       <xsl:variable name="apos">'</xsl:variable>
+      <!--<xsl:variable name="Remove_apos">
+            <xsl:value-of select="replace($Remove_non_breaking_space,$apos,'_')"/>
+        </xsl:variable>-->
+      <!-- The '(',')',',' should be ignored while creating refpt/@id. Rest of the special characters and space should be converted to '_' -->
       <xsl:variable name="Remove_apos">
-         <xsl:value-of select="replace($Remove_non_breaking_space,$apos,'_')"/>
+         <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>
       </xsl:variable>
-      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;,£&amp;-.!#$%()*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '_')"/>
+      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;-.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '______________________')"/>
    </xsl:template>
    <xsl:variable name="document-uri" select="document-uri(.)"/>
    <xsl:variable name="filename"
@@ -820,11 +828,11 @@ Compiled:  2018-04-16T20:32:10.014+05:30-->
                                 regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
                <xsl:matching-substring>
                   <ci:content>
-                     <xsl:value-of select="regex-group(1)"/>
+                     <xsl:value-of select="concat(regex-group(1),' ')"/>
                      <emph typestyle="bf">
                         <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
                      </emph>
-                     <xsl:value-of select="regex-group(4)"/>
+                     <xsl:value-of select="concat(' ',regex-group(4))"/>
                   </ci:content>
                </xsl:matching-substring>
             </xsl:analyze-string>
