@@ -21,11 +21,11 @@
                 <xsl:analyze-string select="self::ci:content" regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
                     <xsl:matching-substring>
                         <ci:content>
-                            <xsl:value-of select="regex-group(1)"/>
+                            <xsl:value-of select="concat(regex-group(1),' ')"/>
                             <emph typestyle="bf">
                                 <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
                             </emph>
-                            <xsl:value-of select="regex-group(4)"/>
+                            <xsl:value-of select="concat(' ',regex-group(4))"/>
                         </ci:content>
                     </xsl:matching-substring>
                 </xsl:analyze-string>
