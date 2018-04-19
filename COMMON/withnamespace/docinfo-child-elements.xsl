@@ -21,6 +21,10 @@
                     <docinfo:dpsi id-string="003B"/> 
                 </xsl:when>
                 
+                <xsl:when test="$selectorID='journal'">
+                    <docinfo:dpsi id-string="042E"/> 
+                </xsl:when>
+                
             </xsl:choose>
             
             <xsl:apply-templates select="@* | node()"/>
@@ -90,10 +94,37 @@
                     </xsl:choose>
 
                 </xsl:when>
+                
+                            
+                <xsl:when test="self::title[parent::heading[1]/parent::docinfo:hierlev[1]] and $selectorID = 'journal'">
+                    <xsl:variable name="docinfo_hierlev_title" select="."/>
+                    <xsl:choose>                        
+                        <xsl:when test="matches($docinfo_hierlev_title,'[0-9]{4}\s[A-Za-z]+\s[0-9]+\s*$')">
+                            <xsl:analyze-string select="$docinfo_hierlev_title" regex="([0-9]{{4}})\s*([A-Za-z]+)\s*([0-9]+)\s*$">
+                                <xsl:matching-substring> 
+                                    <xsl:value-of select="concat(regex-group(1),' - ',regex-group(2),' ',regex-group(3))"/>
+                                </xsl:matching-substring>
+                                <xsl:non-matching-substring>
+                                    <xsl:value-of select="."/>
+                                </xsl:non-matching-substring>
+                            </xsl:analyze-string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>                    
+                </xsl:when>
+                               
+                
                 <xsl:when test="self::docinfo:selector and $docinfo.selector = 'PracticeDirection'">
                     <xsl:variable name="docinfo_selector" select="//docinfo:selector"/>
                     <xsl:value-of select="concat('Case', $docinfo_selector)"/>
                 </xsl:when>
+                
+                <xsl:when test="self::docinfo:selector and $selectorID = 'journal'">
+                    <xsl:value-of select="'Article'"/>
+                </xsl:when>                
+                
                 <xsl:otherwise>
                     <xsl:choose>
                         <xsl:when test="self::docinfo:lbu-meta and $selectorID = 'cases' and $docinfo.selector = 'Transcript'">
@@ -132,7 +163,7 @@
     </xsl:template>
 
     <xsl:template
-        match="docinfo:custom-metafields[$selectorID = ('dictionary','index')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index')] | docinfo:assoc-links | docinfo:normcite"/>
+        match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal')] | docinfo:assoc-links | docinfo:normcite"/>
 
     <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
         <xsl:element name="{name()}">

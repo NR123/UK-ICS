@@ -30,9 +30,25 @@
                     </xsl:matching-substring>
                 </xsl:analyze-string>
             </xsl:when>
+            
+            <xsl:when test="self::ci:cite[@type='cite4thisdoc'][$selectorID='journal']">
+                <xsl:element name="{name()}">
+                    <xsl:attribute name="type">
+                        <xsl:value-of select="'cite4thisdoc'"/>
+                    </xsl:attribute>                
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:when>
+            
             <xsl:otherwise>
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates select="@*"/>
+                    <xsl:choose>
+                        <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="@*"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                   <!-- <xsl:apply-templates select="@*"/>-->
                     <xsl:if
                         test="self::ci:cite[@searchtype = 'LEG-REF' or @searchtype = 'EU-REF']">
                         <xsl:variable name="normcite" as="xs:string*">
@@ -125,7 +141,9 @@
         match="ci:sesslaw[parent::ci:cite/@searchtype = 'LEG-REF' or parent::ci:cite/@searchtype = 'EU-REF']"/>
 
     <xsl:template match="ci:*/@*">
+
         <xsl:choose>
+
             <xsl:when test="parent::ci:cite/@searchtype = 'EU-REF'">
                 <xsl:attribute name="searchtype" select="'LEG-REF'"/>
             </xsl:when>
