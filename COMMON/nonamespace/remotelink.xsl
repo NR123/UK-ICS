@@ -18,7 +18,31 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="remotelink/@*[name()!='refpt']">
+    <xsl:template match="remotelink[$selectorID='journal']">
+             <xsl:element name="{name()}">
+                 <xsl:attribute name="href">
+                     <xsl:value-of select="self::remotelink//text()"/>
+                 </xsl:attribute>
+                 <xsl:apply-templates select="@* except(@href)"/>
+                 <xsl:choose>
+                     <xsl:when test="self::remotelink/node()[1]/name()!='emph'">
+                         <emph typestyle="un">
+                             <xsl:apply-templates select="node()"/>
+                         </emph>   
+                     </xsl:when>
+                     <xsl:otherwise>
+                         <xsl:apply-templates select="node()"/>
+                     </xsl:otherwise>
+                 </xsl:choose>        
+             </xsl:element>         
+       
+    </xsl:template>
+    
+    <xsl:template match="remotelink/@*[$selectorID='journal']">
+        <xsl:copy/>
+    </xsl:template>
+    
+    <xsl:template match="remotelink/@*[name()!='refpt'][$selectorID='index']">
         <xsl:copy/>
     </xsl:template>
     

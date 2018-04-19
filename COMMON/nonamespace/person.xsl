@@ -7,13 +7,13 @@
     <!--<xsl:include href="../nonamespace/emph.xsl"/>-->
     <!-- End: For unit-testing -->
 
-    <xsl:template match="person[$selectorID = 'cases']">
+    <xsl:template match="person[$selectorID = ('cases','journal')]">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="name.text[parent::person][$selectorID = 'cases']">
+    <xsl:template match="name.text[parent::person][$selectorID = ('cases','journal')]">
         <xsl:element name="{name()}">
             <xsl:apply-templates/>
         </xsl:element>

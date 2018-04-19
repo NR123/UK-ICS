@@ -12,4 +12,8 @@
     <xsl:template match="pgrp[$selectorID='cases']">
             <xsl:apply-templates select="@* | node()"/>        
     </xsl:template>
+        
+        <xsl:template match="pgrp[$selectorID='journal']">
+                <xsl:apply-templates/>        
+        </xsl:template>
 </xsl:stylesheet>

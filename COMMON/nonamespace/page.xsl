@@ -15,6 +15,16 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="page[$selectorID = 'journal']">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="text" select="./@count"/>
+            <xsl:attribute name="count" select="./@count"/>
+            <xsl:attribute name="reporter" select="./@reporter"/>            
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
 
     <xsl:template match="page/@*"/>
 

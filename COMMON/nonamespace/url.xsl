@@ -9,7 +9,16 @@
       <!--<xsl:include href="../nonamespace/remotelink.xsl"/>
         <xsl:include href="../nonamespace/emph.xsl"/>-->
     
-    <xsl:template match="url">       
-            <xsl:apply-templates select="@* | node()"/>        
+    <xsl:template match="url">
+        <xsl:choose>
+            <xsl:when test="$selectorID='journal'">
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="@* | node()"/>        
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

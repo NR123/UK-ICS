@@ -9,4 +9,6 @@
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="heading/@*[$selectorID='journal']"/>
 </xsl:stylesheet>

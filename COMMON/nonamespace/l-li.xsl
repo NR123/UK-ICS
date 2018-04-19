@@ -42,6 +42,25 @@
         </xsl:choose>
     </xsl:template>
     
+    <xsl:template match="l[$selectorID='journal']">
+        <xsl:choose>
+            <xsl:when test="self::l/preceding-sibling::l"/>
+            <xsl:otherwise>
+                <note>
+                <xsl:element name="{name()}">
+                <xsl:apply-templates/>
+                <xsl:for-each select="following-sibling::l">
+                    <xsl:apply-templates select="." mode="grp_l"/>
+                </xsl:for-each>
+                </xsl:element>
+                </note>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="l" mode="grp_l">
+        <xsl:apply-templates/>
+    </xsl:template>
     <!--<xsl:template match="li[not(child::*[not(name()=('l')) and not(name()=('lilabel'))])]"/>
     
     <xsl:template match="li" mode="child-li">          

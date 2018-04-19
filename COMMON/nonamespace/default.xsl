@@ -16,6 +16,7 @@
             <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
             <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
             <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
+            <RosettaNamesoace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamesoace>
         </RosettaNamepaces>
     </xsl:variable>
     
@@ -53,7 +54,7 @@
                 </xsl:call-template>
             </xsl:when>
       
-            <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite)">               
+            <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">               
                 <xsl:analyze-string select="$text" regex="([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
                     <xsl:matching-substring>
                         <ci:cite searchtype='CASE-REF'>

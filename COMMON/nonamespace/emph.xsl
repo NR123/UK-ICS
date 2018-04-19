@@ -5,6 +5,7 @@
     xmlns:glp="http://www.lexis-nexis.com/glp"
     xmlns:case="http://www.lexis-nexis.com/glp/case"
     xmlns:ci="http://www.lexis-nexis.com/ci"
+    xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
     exclude-result-prefixes="xs"
     version="2.0">
         
@@ -32,6 +33,11 @@
         <xsl:apply-templates/>
     </xsl:template>
     
+    <xsl:template match="emph[parent::jrnl:articletitle][$selectorID='journal'] | emph[parent::name.text][$selectorID='journal'] | emph[parent::title][$selectorID='journal'] | emph[ancestor::abstract][$selectorID='journal']">
+        <xsl:apply-templates/>
+    </xsl:template>    
+
+    
     <xsl:template match="emph[@typestyle='smcaps'][$selectorID='index']">
         <emph typestyle="smcaps">            
                 <remotelink service="DOC-ID" remotekey1="REFPTID">
@@ -58,6 +64,9 @@
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>
+    
     
     <xsl:template match="emph/@*">
         <xsl:copy/>

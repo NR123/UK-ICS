@@ -33,15 +33,31 @@
                     <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
                 </xsl:call-template>
             </xsl:attribute>
-            <xsl:attribute name="fnrtoken">
-                <xsl:call-template name="fnrtoken">
-                    <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
-                </xsl:call-template>
-            </xsl:attribute>
-
-            <xsl:if test="self::p/text/*[1][name() = 'sup']">
+            <xsl:choose>
+                <xsl:when test="$selectorID='journal'">
+                    <xsl:variable name="fnrval">
+                        <xsl:call-template name="fnrtoken">
+                            <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
+                        </xsl:call-template>
+                    </xsl:variable>
+                    
+                    <xsl:if test="$fnrval!=''">
+                        <xsl:attribute name="fnrtokens" select="$fnrval"/>
+                    </xsl:if>
+                    
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="fnrtoken">
+                        <xsl:call-template name="fnrtoken">
+                            <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
+                        </xsl:call-template>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            
+            <xsl:if test="self::p/text/*[1][name() = 'sup']">                
                 <fnlabel>
-                    <xsl:apply-templates select="self::p/text/sup/node()"/>
+                    <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                 </fnlabel>
             </xsl:if>
             <fnbody>
@@ -50,11 +66,15 @@
                 </p>
             </fnbody>
         </footnote>
+    </xsl:template>  
+    
+    <xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
+        <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="text[parent::p/parent::fnbody]">
         <xsl:element name="{name()}">
-            <xsl:apply-templates select="node() except (sup, page)"/>
+            <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
     </xsl:template>
 </xsl:stylesheet>

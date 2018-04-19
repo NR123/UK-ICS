@@ -29,4 +29,16 @@
         </xsl:element>
     </xsl:template>    
     
+    <xsl:template match="title[parent::heading/parent::level][$selectorID='journal']">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>                       
+        </xsl:element>
+    </xsl:template>  
+    
+    <xsl:template match="title">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>                       
+        </xsl:element>
+    </xsl:template>
+    
 </xsl:stylesheet>
