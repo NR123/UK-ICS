@@ -1,0 +1,3 @@
+## XSpec
+
+For Junit files
