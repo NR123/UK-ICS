@@ -5,7 +5,7 @@ SET CP=C:\saxon\saxon9sa.jar
 SET XSPEC=%1
 
 REM ==========================================
-REM Check if a parameter was passed
+REM Check if a parameter was passed !
 REM ==========================================
 IF %XSPEC%x == x GOTO notfound
 
