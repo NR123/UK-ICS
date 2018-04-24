@@ -195,8 +195,13 @@ if [ -n "$2" ]; then
         usage "Error: Extra option: $2"
         exit 1
     fi
-    echo "Long-form option 'coverage' deprecated, use '-c' instead."
-    COVERAGE=1
+
+	echo "Long-form option 'coverage' deprecated, use '-c' instead."
+	if [[ ${SAXON_CP} != *"saxon9pe"* && ${SAXON_CP} != *"saxon9ee"* ]]; then
+		echo "Code coverage requires Saxon extension functions which are available only under Saxon9EE or Saxon9PE."
+		exit 1
+	fi
+	COVERAGE=1
     if [ -n "$3" ]; then
         usage "Error: Extra option: $3"
         exit 1
@@ -206,6 +211,7 @@ fi
 ##
 ## files and dirs ############################################################
 ##
+
 
 TEST_DIR=$(dirname "$XSPEC")/xspec
 TARGET_FILE_NAME=$(basename "$XSPEC" | sed 's:\...*$::')
@@ -219,6 +225,7 @@ COVERAGE_XML=$TEST_DIR/$TARGET_FILE_NAME-coverage.xml
 COVERAGE_HTML=$TEST_DIR/$TARGET_FILE_NAME-coverage.html
 RESULT=$TEST_DIR/$TARGET_FILE_NAME-result.xml
 HTML=$TEST_DIR/$TARGET_FILE_NAME-result.html
+JUNIT_RESULT=$TEST_DIR/$TARGET_FILE_NAME-junit.xml
 COVERAGE_CLASS=com.jenitennison.xslt.tests.XSLTCoverageTraceListener
 
 if [ ! -d "$TEST_DIR" ]; then
@@ -293,9 +300,11 @@ if test -n "$COVERAGE"; then
         || die "Error formating the coverage report"
     echo "Report available at $COVERAGE_HTML"
     #$OPEN "$COVERAGE_HTML"
-else
-    echo "Report available at $HTML"
-    #$OPEN "$HTML"
-fi
+elif test -n "$JUNIT"; then
+	xslt -o:"$JUNIT_RESULT" \
+		-s:"$RESULT" \
+		-xsl:"$XSPEC_HOME/src/reporter/junit-report.xsl" \
+		|| die "Error formating the JUnit report"
+	echo "Report available at $JUNIT_RESULT"
 
 echo "Done."
