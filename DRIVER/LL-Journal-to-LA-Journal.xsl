@@ -32,7 +32,7 @@ Compiled:  2018-04-19T10:57:19.954+05:30-->
                 xmlns:xhtml="http://www.w3c.org/1999/xhtml"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
-                exclude-result-prefixes="xs xd">
+                exclude-result-prefixes="#all">
    <xsl:param name="selectorID" select="'journal'"/>
    <xsl:output encoding="utf-8" indent="no"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
