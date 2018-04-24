@@ -2,7 +2,7 @@
 <!-- ===================================================================== -->
 <!--  File:       generate-common-tests.xsl                                -->
 <!--  Author:     Jeni Tennsion                                            -->
-<!--  URL:        http://github.com/xspec/xspec                            -->
+<!--  URI:        http://xspec.googlecode.com/                             -->
 <!--  Tags:                                                                -->
 <!--    Copyright (c) 2008, 2010 Jeni Tennsion (see end of file.)          -->
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

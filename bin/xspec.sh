@@ -156,10 +156,6 @@ while echo "$1" | grep -- ^- >/dev/null 2>&1; do
                 usage "-t and -q are mutually exclusive"
                 exit 1
             fi
-            if test -n "$SCHEMATRON"; then
-                usage "-s and -t are mutually exclusive"
-                exit 1
-            fi
             XSLT=1;;
         # XQuery
         -q)
@@ -217,11 +213,8 @@ fi
 ##
 
 
-if [ -z "$TEST_DIR" ]
-then
-    TEST_DIR=$(dirname "$XSPEC")/xspec
-fi
-TARGET_FILE_NAME=$(basename "$XSPEC" | sed 's:\.[^.]*$::')
+TEST_DIR=$(dirname "$XSPEC")/xspec
+TARGET_FILE_NAME=$(basename "$XSPEC" | sed 's:\...*$::')
 
 if test -n "$XSLT"; then
     COMPILED=$TEST_DIR/$TARGET_FILE_NAME.xsl
@@ -232,9 +225,7 @@ COVERAGE_XML=$TEST_DIR/$TARGET_FILE_NAME-coverage.xml
 COVERAGE_HTML=$TEST_DIR/$TARGET_FILE_NAME-coverage.html
 RESULT=$TEST_DIR/$TARGET_FILE_NAME-result.xml
 HTML=$TEST_DIR/$TARGET_FILE_NAME-result.html
-
 JUNIT_RESULT=$TEST_DIR/$TARGET_FILE_NAME-junit.xml
-
 COVERAGE_CLASS=com.jenitennison.xslt.tests.XSLTCoverageTraceListener
 
 if [ ! -d "$TEST_DIR" ]; then
@@ -246,48 +237,6 @@ fi
 ##
 ## compile the suite #########################################################
 ##
-
-if test -n "$SCHEMATRON"; then
-    echo "Setting up Schematron..."
-    
-    if test -z "$SCHEMATRON_XSLT_INCLUDE"; then
-        SCHEMATRON_XSLT_INCLUDE="$XSPEC_HOME/src/schematron/iso-schematron/iso_dsdl_include.xsl";
-    fi
-    if test -z "$SCHEMATRON_XSLT_EXPAND"; then
-        SCHEMATRON_XSLT_EXPAND="$XSPEC_HOME/src/schematron/iso-schematron/iso_abstract_expand.xsl";
-    fi
-    if test -z "$SCHEMATRON_XSLT_COMPILE"; then
-        SCHEMATRON_XSLT_COMPILE="$XSPEC_HOME/src/schematron/iso-schematron/iso_svrl_for_xslt2.xsl";
-    fi
-    
-    # get URI to Schematron file and phase/parameters from the XSpec file
-    # Need to escape for sh in XQuery: dollar sign as \$
-    xquery -qs:"declare namespace output = 'http://www.w3.org/2010/xslt-xquery-serialization'; declare option output:method 'text'; iri-to-uri(concat(replace(document-uri(/), '(.*)/.*\$', '\$1'), '/', /*[local-name() = 'description']/@schematron))" -s:"$XSPEC" >"$TEST_DIR/$TARGET_FILE_NAME-var.txt" || die "Error getting Schematron location"
-    SCH=`cat "$TEST_DIR/$TARGET_FILE_NAME-var.txt"`
-    
-    xquery -qs:"declare namespace output = 'http://www.w3.org/2010/xslt-xquery-serialization'; declare option output:method 'text'; declare function local:escape(\$v) { let \$w := if (matches(\$v,codepoints-to-string((91,92,115,93)))) then codepoints-to-string(34) else '' return concat(\$w, replace(\$v,codepoints-to-string((40,91,36,92,92,96,93,41)),codepoints-to-string((92,92,36,49))), \$w)}; string-join(for \$p in /*/*[local-name() = 'param'] return if (\$p/@select) then concat('?',\$p/@name,'=',local:escape(\$p/@select)) else concat(\$p/@name,'=',local:escape(\$p/string())),' ')" -s:"$XSPEC" >"$TEST_DIR/$TARGET_FILE_NAME-var.txt" || die "Error getting Schematron phase and parameters"
-    SCH_PARAMS=`cat "$TEST_DIR/$TARGET_FILE_NAME-var.txt"`
-    echo Parameters: $SCH_PARAMS
-    SCHUT=$XSPEC-compiled.xspec
-    SCH_COMPILED=$(echo "$SCH" | sed 's:^file\:::')-compiled.xsl
-    
-    echo
-    echo "Compiling the Schematron..."
-    xslt -o:"$TEST_DIR/$TARGET_FILE_NAME-sch-temp1.xml" -s:"$SCH" -xsl:"$SCHEMATRON_XSLT_INCLUDE" -versionmsg:off || die "Error compiling the Schematron on step 1"
-    xslt -o:"$TEST_DIR/$TARGET_FILE_NAME-sch-temp2.xml" -s:"$TEST_DIR/$TARGET_FILE_NAME-sch-temp1.xml" -xsl:"$SCHEMATRON_XSLT_EXPAND" -versionmsg:off || die "Error compiling the Schematron on step 2"
-    xslt -o:"$SCH_COMPILED" -s:"$TEST_DIR/$TARGET_FILE_NAME-sch-temp2.xml" -xsl:"$SCHEMATRON_XSLT_COMPILE" -versionmsg:off $SCH_PARAMS || die "Error compiling the Schematron on step 3"
-    
-    # use XQuery to get full URI to compiled Schematron
-    # xquery -qs:"declare namespace output = 'http://www.w3.org/2010/xslt-xquery-serialization'; declare option output:method 'text'; replace(iri-to-uri(document-uri(/)), concat(codepoints-to-string(94), 'file:/'), '')" -s:"$SCH_COMPILED" >"$TEST_DIR/$TARGET_FILE_NAME-var.txt" || die "Error getting compiled Schematron location"
-    # SCH_COMPILED=`cat "$TEST_DIR/$TARGET_FILE_NAME-var.txt"`
-    
-    echo 
-    echo "Compiling the Schematron tests..."
-    xslt -o:"$SCHUT" -s:"$XSPEC" -xsl:"$XSPEC_HOME/src/schematron/schut-to-xspec.xsl" stylesheet="$SCH_COMPILED" || die "Error compiling the Schematron tests"
-    XSPEC=$SCHUT
-    
-    echo 
-fi
 
 if test -n "$XSLT"; then
     COMPILE_SHEET=generate-xspec-tests.xsl
@@ -340,9 +289,6 @@ echo "Formatting Report..."
 xslt -o:"$HTML" \
     -s:"$RESULT" \
     -xsl:"$XSPEC_HOME/src/reporter/format-xspec-report.xsl" \
-
-    inline-css=true \
-
     || die "Error formating the report"
 if test -n "$COVERAGE"; then
     xslt -l:on \
@@ -354,25 +300,11 @@ if test -n "$COVERAGE"; then
         || die "Error formating the coverage report"
     echo "Report available at $COVERAGE_HTML"
     #$OPEN "$COVERAGE_HTML"
-
 elif test -n "$JUNIT"; then
 	xslt -o:"$JUNIT_RESULT" \
 		-s:"$RESULT" \
 		-xsl:"$XSPEC_HOME/src/reporter/junit-report.xsl" \
 		|| die "Error formating the JUnit report"
 	echo "Report available at $JUNIT_RESULT"
-
-
-##
-## cleanup
-##
-if test -n "$SCHEMATRON"; then
-    rm -f "$SCHUT"
-    rm -f "$TEST_DIR"/context-*.xml
-    rm -f "$TEST_DIR/$TARGET_FILE_NAME-var.txt"
-    rm -f "$TEST_DIR/$TARGET_FILE_NAME-sch-temp1.xml"
-    rm -f "$TEST_DIR/$TARGET_FILE_NAME-sch-temp2.xml"
-    rm -f "$SCH_COMPILED"
-fi
 
 echo "Done."

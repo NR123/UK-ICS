@@ -18,7 +18,7 @@
                stylesheet="xspec-tested.xsl">
 
    <!--
-       Test @focus and pending toghether (both @pending and t:pending).
+       Test pending features (x:pending and @pending).
    -->
 
    <!--
@@ -34,12 +34,12 @@
          <t:expect label="the result" assert="$x:result eq 9"/>
       </t:scenario>
 
-      <t:scenario label="pending call (element) + focus" focus="focus">
+      <t:scenario label="pending must fail (element)">
          <t:call function="my:square">
-            <t:param select="3"/>
+            <t:param select="2"/>
          </t:call>
-         <t:expect label="the result" test="$x:result eq 9"/>
-         <t:expect label="the result" assert="$x:result eq 9"/>
+         <t:expect label="the type" test="$x:result instance of xs:string"/>
+         <t:expect label="the type" assert="$x:result instance of xs:string"/>
       </t:scenario>
 
    </t:pending>
@@ -55,19 +55,18 @@
       <t:expect label="the result" assert="$x:result eq 9"/>
    </t:scenario>
 
-   <t:scenario label="call + focus" focus="focus">
+   <t:scenario label="must fail">
       <t:call function="my:square">
-         <t:param select="3"/>
+         <t:param select="2"/>
       </t:call>
-      <t:expect label="the result" test="$x:result eq 9"/>
-      <t:expect label="the result" assert="$x:result eq 9"/>
+      <t:expect label="the type" test="$x:result instance of xs:string"/>
+      <t:expect label="the type" assert="$x:result instance of xs:string"/>
    </t:scenario>
 
    <!--
        Test @pending.
    -->
-   <t:scenario label="pending call (attribute)"
-               pending="testing pending attribute">
+   <t:scenario label="pending call (attribute)" pending="testing pending attribute">
       <t:call function="my:square">
          <t:param select="3"/>
       </t:call>
@@ -75,15 +74,12 @@
       <t:expect label="the result" assert="$x:result eq 9"/>
    </t:scenario>
 
-   <!-- does not make sense, really, but to see how the implem reacts -->
-   <t:scenario label="pending call (attribute) + focus"
-               pending="testing pending attribute"
-               focus="focus">
+   <t:scenario label="pending must fail (attribute)" pending="testing pending attribute">
       <t:call function="my:square">
-         <t:param select="3"/>
+         <t:param select="2"/>
       </t:call>
-      <t:expect label="the result" test="$x:result eq 9"/>
-      <t:expect label="the result" assert="$x:result eq 9"/>
+      <t:expect label="the type" test="$x:result instance of xs:string"/>
+      <t:expect label="the type" assert="$x:result instance of xs:string"/>
    </t:scenario>
 
 </t:description>
