@@ -36,14 +36,12 @@ usage() {
         echo "$1"
         echo;
     fi
-    echo "Usage: xspec [-t|-q|-s|-c|-j|-h] filename [coverage]"
+    echo "Usage: xspec [-t|-q|-c|-h] filename [coverage]"
     echo
     echo "  filename   the XSpec document"
     echo "  -t         test an XSLT stylesheet (the default)"
-    echo "  -q         test an XQuery module (mutually exclusive with -t and -s)"
-    echo "  -s         test a Schematron schema (mutually exclusive with -t and -q)"
+    echo "  -q         test an XQuery module (mutually exclusive with -t)"
     echo "  -c         output test coverage report"
-    echo "  -j         output JUnit report"
     echo "  -h         display this help message"
     echo "  coverage   deprecated, use -c instead"
 }
@@ -59,8 +57,9 @@ die() {
 # script for Saxon [1].  If it is present, that means the user already
 # configured it, so there is no point to duplicate the logic here.
 # Just use it.
+# [1]http://code.google.com/p/expath-pkg/source/browse/trunk/saxon/pkg-saxon/src/shell/saxon
 
-if which saxon > /dev/null 2>&1 && saxon --help | grep "EXPath Packaging" > /dev/null 2>&1; then
+if which saxon > /dev/null 2>&1; then
     echo Saxon script found, use it.
     echo
     xslt() {
@@ -133,8 +132,6 @@ if test -z "$SAXON_CP"; then
 	SAXON_CP="${SAXON_HOME}/saxon9sa.jar";
     elif test -f "${SAXON_HOME}/saxon9.jar"; then
 	SAXON_CP="${SAXON_HOME}/saxon9.jar";
-    elif test -f "${SAXON_HOME}/saxonb9-1-0-8.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxonb9-1-0-8.jar";
     elif test -f "${SAXON_HOME}/saxon8sa.jar"; then
 	SAXON_CP="${SAXON_HOME}/saxon8sa.jar";
     elif test -f "${SAXON_HOME}/saxon8.jar"; then
@@ -170,36 +167,10 @@ while echo "$1" | grep -- ^- >/dev/null 2>&1; do
                 usage "-t and -q are mutually exclusive"
                 exit 1
             fi
-            if test -n "$SCHEMATRON"; then
-                usage "-s and -q are mutually exclusive"
-                exit 1
-            fi
             XQUERY=1;;
-        # Schematron
-        -s)
-            if test -n "$XQUERY"; then
-                usage "-s and -q are mutually exclusive"
-                exit 1
-            fi
-            if test -n "$XSLT"; then
-                usage "-s and -t are mutually exclusive"
-                exit 1
-            fi
-            SCHEMATRON=1;;
         # Coverage
         -c)
-			if [[ ${SAXON_CP} != *"saxon9pe"* && ${SAXON_CP} != *"saxon9ee"* ]]; then
-				echo "Code coverage requires Saxon extension functions which are available only under Saxon9EE or Saxon9PE."
-			    exit 1
-			fi
             COVERAGE=1;;
-        # JUnit report
-        -j)
-			if [[ ${SAXON_CP} == *"saxon8"* || ${SAXON_CP} == *"saxon8sa"* ]]; then
-				echo "Saxon8 detected. JUnit report requires Saxon9."
-			    exit 1
-			fi
-            JUNIT=1;;
         # Help!
         -h)
             usage
@@ -228,6 +199,7 @@ if [ -n "$2" ]; then
         usage "Error: Extra option: $2"
         exit 1
     fi
+
 	echo "Long-form option 'coverage' deprecated, use '-c' instead."
 	if [[ ${SAXON_CP} != *"saxon9pe"* && ${SAXON_CP} != *"saxon9ee"* ]]; then
 		echo "Code coverage requires Saxon extension functions which are available only under Saxon9EE or Saxon9PE."
@@ -244,6 +216,7 @@ fi
 ## files and dirs ############################################################
 ##
 
+
 if [ -z "$TEST_DIR" ]
 then
     TEST_DIR=$(dirname "$XSPEC")/xspec
@@ -259,7 +232,9 @@ COVERAGE_XML=$TEST_DIR/$TARGET_FILE_NAME-coverage.xml
 COVERAGE_HTML=$TEST_DIR/$TARGET_FILE_NAME-coverage.html
 RESULT=$TEST_DIR/$TARGET_FILE_NAME-result.xml
 HTML=$TEST_DIR/$TARGET_FILE_NAME-result.html
+
 JUNIT_RESULT=$TEST_DIR/$TARGET_FILE_NAME-junit.xml
+
 COVERAGE_CLASS=com.jenitennison.xslt.tests.XSLTCoverageTraceListener
 
 if [ ! -d "$TEST_DIR" ]; then
@@ -365,7 +340,9 @@ echo "Formatting Report..."
 xslt -o:"$HTML" \
     -s:"$RESULT" \
     -xsl:"$XSPEC_HOME/src/reporter/format-xspec-report.xsl" \
+
     inline-css=true \
+
     || die "Error formating the report"
 if test -n "$COVERAGE"; then
     xslt -l:on \
@@ -377,16 +354,14 @@ if test -n "$COVERAGE"; then
         || die "Error formating the coverage report"
     echo "Report available at $COVERAGE_HTML"
     #$OPEN "$COVERAGE_HTML"
+
 elif test -n "$JUNIT"; then
 	xslt -o:"$JUNIT_RESULT" \
 		-s:"$RESULT" \
 		-xsl:"$XSPEC_HOME/src/reporter/junit-report.xsl" \
 		|| die "Error formating the JUnit report"
 	echo "Report available at $JUNIT_RESULT"
-else
-    echo "Report available at $HTML"
-    #$OPEN "$HTML"
-fi
+
 
 ##
 ## cleanup
