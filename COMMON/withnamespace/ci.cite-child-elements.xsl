@@ -45,7 +45,7 @@
                     <xsl:choose>
                         <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
                         <xsl:otherwise>
-                            <xsl:apply-templates select="@*"/>
+                            <xsl:apply-templates select="@*|node()"/>
                         </xsl:otherwise>
                     </xsl:choose>
                    <!-- <xsl:apply-templates select="@*"/>-->
