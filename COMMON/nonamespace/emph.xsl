@@ -14,9 +14,12 @@
    <!-- <xsl:param name="selectorID" select="'dictionary'"/>
     <xsl:include href="../nonamespace/default.xsl"/>-->
     <!-- End: For unit-testing -->
-    
-    <xsl:template match="emph[ancestor::defterm] | emph[parent::h] | emph[parent::dict:topicname] | emph[parent::remotelink/parent::url] [$selectorID='dictionary']" priority="20">
-        <xsl:apply-templates select="node()"/>
+    <!-- dayanand singh 2018-04-30 edited -->
+        <xsl:template match="emph[ancestor::defterm] | emph[parent::h] | emph[parent::dict:topicname] | emph[parent::remotelink/parent::url] [$selectorID='dictionary']" priority="20">
+       <emph>        
+           <xsl:apply-templates select="@* | node()"/>
+       </emph>
+        
     </xsl:template>
     
     <xsl:template match="emph[child::remotelink][$selectorID='dictionary']" priority="20">
@@ -35,7 +38,8 @@
     
     <xsl:template match="emph[parent::jrnl:articletitle][$selectorID='journal'] | emph[parent::name.text][$selectorID='journal'] | emph[parent::title][$selectorID='journal'] | emph[ancestor::abstract][$selectorID='journal']">
         <xsl:apply-templates/>
-    </xsl:template>    
+    </xsl:template>
+    
 
     
     <xsl:template match="emph[@typestyle='smcaps'][$selectorID='index']">
@@ -62,6 +66,8 @@
     <xsl:template match="emph">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
+          
+   
         </xsl:element>
     </xsl:template>
     
