@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-04-11T18:15:08.775+05:30-->
+Compiled:  2018-05-03T13:20:36.251+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -29,6 +29,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
                 xmlns:in="http://www.lexis-nexis.com/glp/in"
                 xmlns:leg="http://www.lexis-nexis.com/glp/leg"
                 xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
                 exclude-result-prefixes="xs xd">
@@ -56,6 +57,12 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
    <xsl:template match="case:body[parent::CASEDOC]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+   <!-- Dayanand singh 2018-05-02, updated case:embeddedcase -->
+   <xsl:template match="case:headnote[parent::case:embeddedcase]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
       </xsl:element>
    </xsl:template>
 
@@ -237,6 +244,12 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
                  mode="grp_glp.note">
       <xsl:apply-templates/>
    </xsl:template>
+   <!--Dayanand Singh 2018-4-30 ceated new template match-->
+   <xsl:template match="glp:note[parent::case:constituents/parent::case:judgment]">
+      <xsl:element name="glp:note">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
 
    <xsl:template match="case:consideredcases[parent::case:decisionsummary/parent::case:headnote]"
                  mode="references">
@@ -265,6 +278,10 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
+   </xsl:template>
+   <!-- Arun: 02May2018 - Added below template to handle attributes of the element case:priorhist -->
+   <xsl:template match="case:priorhist/@*">
+      <xsl:copy/>
    </xsl:template>
 
    <xsl:template match="case:content">
@@ -343,7 +360,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
 
    <xsl:template match="case:decisiondate[parent::case:dates/parent::case:judgments]">
       <xsl:element name="{name()}">
-         <xsl:apply-templates/>
+         <xsl:apply-templates select="@*|node()"/>
       </xsl:element>
    </xsl:template>
 
@@ -379,10 +396,22 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
+   <!-- Dayanand singh 2018-05-01 ceated new element case:embeddedcase child element of case:judgmentbody-->
+   <xsl:template match="case:embeddedcase">
+      <xsl:element name="case:embeddedcase">
+         <xsl:apply-templates select="@*|node()"/>
+      </xsl:element>
+   </xsl:template>
 
    <xsl:template match="case:appendix[parent::case:content]">
       <xsl:element name="{name()}">
          <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+   <!--Dayanand singh 2018-04-30 -->
+   <xsl:template match="case:appendix">
+      <xsl:element name="case:appendix">
+         <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
@@ -403,6 +432,12 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
             </xsl:when>
             <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                <docinfo:dpsi id-string="02ED"/>
+            </xsl:when>
+            <xsl:when test="$selectorID='index'">
+               <docinfo:dpsi id-string="003B"/>
+            </xsl:when>
+            <xsl:when test="$selectorID='journal'">
+               <docinfo:dpsi id-string="042E"/>
             </xsl:when>
          </xsl:choose>
          <xsl:apply-templates select="@* | node()"/>
@@ -459,9 +494,31 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:when>
+            <xsl:when test="self::title[parent::heading[1]/parent::docinfo:hierlev[1]] and $selectorID = 'journal'">
+               <xsl:variable name="docinfo_hierlev_title" select="."/>
+               <xsl:choose>
+                  <xsl:when test="matches($docinfo_hierlev_title,'[0-9]{4}\s[A-Za-z]+\s[0-9]+\s*$')">
+                     <xsl:analyze-string select="$docinfo_hierlev_title"
+                                         regex="([0-9]{{4}})\s*([A-Za-z]+)\s*([0-9]+)\s*$">
+                        <xsl:matching-substring>
+                           <xsl:value-of select="concat(regex-group(1),' - ',regex-group(2),' ',regex-group(3))"/>
+                        </xsl:matching-substring>
+                        <xsl:non-matching-substring>
+                           <xsl:value-of select="."/>
+                        </xsl:non-matching-substring>
+                     </xsl:analyze-string>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:value-of select="."/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
             <xsl:when test="self::docinfo:selector and $docinfo.selector = 'PracticeDirection'">
                <xsl:variable name="docinfo_selector" select="//docinfo:selector"/>
                <xsl:value-of select="concat('Case', $docinfo_selector)"/>
+            </xsl:when>
+            <xsl:when test="self::docinfo:selector and $selectorID = 'journal'">
+               <xsl:value-of select="'Article'"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:choose>
@@ -499,7 +556,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       <xsl:copy/>
    </xsl:template>
 
-   <xsl:template match="docinfo:custom-metafields[$selectorID = 'dictionary'] | docinfo:custom-metafields/child::*[$selectorID = 'dictionary'] | docinfo:assoc-links | docinfo:normcite"/>
+   <xsl:template match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal')] | docinfo:assoc-links | docinfo:normcite"/>
 
    <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
       <xsl:element name="{name()}">
@@ -623,6 +680,8 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <RosettaNamespace>xmlns:ci="http://www.lexis-nexis.com/ci"</RosettaNamespace>
          <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
          <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
+         <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
+         <RosettaNamesoace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamesoace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -654,7 +713,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
                                select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
             </xsl:call-template>
          </xsl:when>
-         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite)">
+         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
             <xsl:analyze-string select="$text"
                                 regex="([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
                <xsl:matching-substring>
@@ -682,15 +741,23 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- The below templates should be uncommented while unit-testing -->   <!-- Start: For unit-testing -->   <!--<xsl:template match="node()">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:element>
-    </xsl:template>
-    
-    <xsl:template match="@*">
-        <xsl:copy/>
-    </xsl:template>-->   <!-- End: For unit-testing -->   <xsl:variable name="document-uri" select="document-uri(.)"/>
+
+   <xsl:template name="Normalize_id_string">
+      <xsl:param name="string"/>
+      <xsl:variable name="Remove_non_breaking_space">
+         <xsl:value-of select="translate($string,' ','')"/>
+      </xsl:variable>
+      <xsl:variable name="apos">'</xsl:variable>
+      <!--<xsl:variable name="Remove_apos">
+            <xsl:value-of select="replace($Remove_non_breaking_space,$apos,'_')"/>
+        </xsl:variable>-->
+      <!-- The '(',')',',' should be ignored while creating refpt/@id. Rest of the special characters and space should be converted to '_' -->
+      <xsl:variable name="Remove_apos">
+         <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>
+      </xsl:variable>
+      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;-.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '______________________')"/>
+   </xsl:template>
+   <xsl:variable name="document-uri" select="document-uri(.)"/>
    <xsl:variable name="filename"
                  select="substring-before(tokenize($document-uri, '/')[last()], '.')"/>
    <xsl:template name="outputErrorMessage">
@@ -714,6 +781,8 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
+
+   <xsl:template match="heading/@*[$selectorID='journal']"/>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:param name="selectorID" select="'dictionary'"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="title[parent::heading/parent::dict:body][not(child::*[name()!='emph'])][$selectorID='dictionary']">
       <xsl:element name="desig">
@@ -725,8 +794,26 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          </xsl:element>
       </xsl:element>
    </xsl:template>
+
+   <xsl:template match="title[parent::heading/parent::in:body][$selectorID='index']">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="//in:body/heading/title//text()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="title[parent::heading/parent::level][$selectorID='journal']">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="title">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:param name="selectorID" select="'dictionary'"/>-->   <!-- End: For unit-testing -->
-   <xsl:template match="refpt">
+   <xsl:template match="refpt[$selectorID='dictionary']">
       <xsl:element name="{name()}">
          <xsl:attribute name="type" select="./@type"/>
          <xsl:choose>
@@ -744,22 +831,65 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       </xsl:element>
    </xsl:template>
 
+   <xsl:template match="refpt[$selectorID='index']">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="id">
+            <xsl:call-template name="fn_refpt">
+               <xsl:with-param name="id" select="./@id"/>
+            </xsl:call-template>
+         </xsl:attribute>
+      </xsl:element>
+   </xsl:template>
+
    <xsl:template name="fn_refpt">
       <xsl:param name="id"/>
-      <xsl:analyze-string select="$id" regex="(0KMN_[0-9]+_[A-Z]+_)([\w_]+)(:HTDICT-TERM)">
-         <xsl:matching-substring>
-            <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
-         </xsl:matching-substring>
-      </xsl:analyze-string>
+      <xsl:choose>
+         <xsl:when test="self::refpt[$selectorID='dictionary']">
+            <xsl:analyze-string select="$id" regex="(0KMN_[0-9]+_[A-Z]+_)([\w_]+)(:HTDICT-TERM)">
+               <xsl:matching-substring>
+                  <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:when>
+         <xsl:when test="self::refpt[$selectorID='index']">
+            <xsl:analyze-string select="$id"
+                                regex="([\w]{{4}}_[0-9]+_[A-Z]+_)([\w_]+)(:HTCOMM-INDEXID)">
+               <xsl:matching-substring>
+                  <xsl:value-of select="concat('acronym:HALS-INDEX::term:', regex-group(2))"/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:when>
+      </xsl:choose>
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="pgrp[$selectorID='cases']">
       <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
 
+   <xsl:template match="pgrp[$selectorID='journal']">
+      <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="p"><!--<xsl:message select="$docinfo.selector"></xsl:message>-->
       <xsl:choose>
-         <xsl:when test="self::p/child::text/not(child::node())[$selectorID='cases' and $docinfo.selector='PracticeDirection' ]"/>
+         <xsl:when test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
+         <xsl:when test="self::p/not(child::node())[$selectorID = 'journal']"/>
+         <xsl:when test="self::p[child::text[@align = 'center']] and $selectorID = 'journal'">
+            <xsl:variable name="starcheck" select="."/>
+            <xsl:choose>
+               <xsl:when test="matches($starcheck, '\*\s*\*\s*\*')">
+                  <xsl:apply-templates select="self::p" mode="p_suppress"/>
+               </xsl:when>
+            </xsl:choose>
+         </xsl:when>
+         <xsl:when test="child::text/node()[1][name() = 'emph'] and matches(child::text/node()[1], '^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)')">
+            <xsl:element name="{name()}">
+               <pnum>
+                  <xsl:apply-templates select="child::text/node()[1]/node()"/>
+               </pnum>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -767,6 +897,8 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
+
+   <xsl:template match="//p" mode="p_suppress"/>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="default.xsl"/>
     <xsl:param name="selectorID" select="'dictionary'"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="text" name="text">
@@ -821,7 +953,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
     <xsl:include href="../nonamespace/default.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="emph[ancestor::defterm] | emph[parent::h] | emph[parent::dict:topicname] | emph[parent::remotelink/parent::url] [$selectorID='dictionary']"
                  priority="20">
-      <xsl:apply-templates select="node()"/>
+      <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
 
    <xsl:template match="emph[child::remotelink][$selectorID='dictionary']" priority="20">
@@ -834,6 +966,30 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
    <xsl:template match="emph[ancestor::heading/parent::dict:body][$selectorID='dictionary']">
       <xsl:apply-templates/>
    </xsl:template>
+
+   <xsl:template match="emph[@typestyle='bf'][$selectorID='index']">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="emph[parent::jrnl:articletitle][$selectorID='journal'] | emph[parent::name.text][$selectorID='journal'] | emph[parent::title][$selectorID='journal'] | emph[ancestor::abstract][$selectorID='journal']">
+      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="emph[@typestyle='smcaps'][$selectorID='index']">
+      <emph typestyle="smcaps">
+         <remotelink service="DOC-ID" remotekey1="REFPTID">
+            <xsl:attribute name="refpt">
+               <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
+               <xsl:variable name="remtext" select="self::emph/text()"/>
+               <xsl:value-of select="concat($prepend,translate(upper-case($remtext),' ','_'))"/>
+            </xsl:attribute>
+            <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
+            <xsl:attribute name="dpsi" select="'003B'"/>
+            <xsl:attribute name="status" select="'valid'"/>
+            <xsl:apply-templates/>
+         </remotelink>
+      </emph>
+   </xsl:template>
    <!-- <xsl:template match="emph[self::emph/following-sibling::ci:cite][ancestor::case:priorhist | ancestor::case:consideredcases] [$selectorID='cases']">
         <xsl:apply-templates/>
     </xsl:template>
@@ -843,6 +999,8 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
+
+   <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)')]"/>
 
    <xsl:template match="emph/@*">
       <xsl:copy/>
@@ -857,7 +1015,30 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="remotelink/@*[name()!='refpt']">
+   <xsl:template match="remotelink[$selectorID='journal']">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="href">
+            <xsl:value-of select="self::remotelink//text()"/>
+         </xsl:attribute>
+         <xsl:apply-templates select="@* except(@href)"/>
+         <xsl:choose>
+            <xsl:when test="self::remotelink/node()[1]/name()!='emph'">
+               <emph typestyle="un">
+                  <xsl:apply-templates select="node()"/>
+               </emph>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="remotelink/@*[$selectorID='journal']">
+      <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="remotelink/@*[name()!='refpt'][$selectorID='index']">
       <xsl:copy/>
    </xsl:template>
 
@@ -884,9 +1065,37 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
             <xsl:value-of select="self::ci:cite//child::ci:content/node()"/>
          </xsl:when>
          <xsl:when test="self::ci:case[ancestor::case:parallelcite][$selectorID='cases' and $docinfo.selector='Transcript']"/>
+         <xsl:when test="self::ci:content and matches(self::ci:content,'(\[[0-9]{4}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)') and $selectorID='index'">
+            <xsl:analyze-string select="self::ci:content"
+                                regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
+               <xsl:matching-substring>
+                  <ci:content>
+                     <xsl:value-of select="concat(regex-group(1),' ')"/>
+                     <emph typestyle="bf">
+                        <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
+                     </emph>
+                     <xsl:value-of select="concat(' ',regex-group(4))"/>
+                  </ci:content>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:when>
+         <xsl:when test="self::ci:cite[@type='cite4thisdoc'][$selectorID='journal']">
+            <xsl:element name="{name()}">
+               <xsl:attribute name="type">
+                  <xsl:value-of select="'cite4thisdoc'"/>
+               </xsl:attribute>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
-               <xsl:apply-templates select="@*"/>
+               <xsl:choose>
+                  <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
+                  <xsl:otherwise><!-- <xsl:apply-templates select="@*|node()"/>--><!-- Arun: 02May2018 - Commented the above applu-templates as it is causing text repetition. Added the below code to handle it. -->
+                     <xsl:apply-templates select="@*"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+               <!-- <xsl:apply-templates select="@*"/>-->
                <xsl:if test="self::ci:cite[@searchtype = 'LEG-REF' or @searchtype = 'EU-REF']">
                   <xsl:variable name="normcite" as="xs:string*">
                      <xsl:apply-templates select="ci:sesslaw" mode="normcite"/>
@@ -1024,7 +1233,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
+               <xsl:apply-templates select="node()"/>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
@@ -1059,6 +1268,26 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="l[$selectorID='journal']">
+      <xsl:choose>
+         <xsl:when test="self::l/preceding-sibling::l"/>
+         <xsl:otherwise>
+            <note>
+               <xsl:element name="{name()}">
+                  <xsl:apply-templates/>
+                  <xsl:for-each select="following-sibling::l">
+                     <xsl:apply-templates select="." mode="grp_l"/>
+                  </xsl:for-each>
+               </xsl:element>
+            </note>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="l" mode="grp_l">
+      <xsl:apply-templates/>
    </xsl:template>
    <!--<xsl:template match="li[not(child::*[not(name()=('l')) and not(name()=('lilabel'))])]"/>
     
@@ -1103,7 +1332,8 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
-         <xsl:when test="self::blockquote[ancestor::case:appendix]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
+         <!--Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -->
+         <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
@@ -1130,7 +1360,7 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       <xsl:value-of select="generate-id()"/>
    </xsl:template>
 
-   <xsl:template match="sup[not(ancestor::fnbody)][$selectorID='cases']"><!-- Please include 'common/nonamespace/footnotegrp.xsl' in driver file as the named template fntoken and fnrtoken are fetched from there. -->
+   <xsl:template match="sup[not(ancestor::fnbody)][$selectorID=('cases')]"><!-- Please include 'common/nonamespace/footnotegrp.xsl' in driver file as the named template fntoken and fnrtoken are fetched from there. -->
       <xsl:variable name="fntoken">
          <xsl:call-template name="fntoken">
             <xsl:with-param name="fnlabel_footnote" select="self::sup"/>
@@ -1144,6 +1374,31 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       <xsl:choose>
          <xsl:when test="$fntoken!='' and $fnrtoken!=''">
             <fnr fntoken="{$fntoken}" fnrtoken="{$fnrtoken}">
+               <xsl:apply-templates/>
+            </fnr>
+         </xsl:when>
+         <xsl:otherwise>
+            <sup>
+               <xsl:apply-templates/>
+            </sup>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="sup[not(ancestor::fnbody)][$selectorID=('journal')]"><!-- Please include 'common/nonamespace/footnotegrp.xsl' in driver file as the named template fntoken and fnrtoken are fetched from there. -->
+      <xsl:variable name="fntoken">
+         <xsl:call-template name="fntoken">
+            <xsl:with-param name="fnlabel_footnote" select="self::sup"/>
+         </xsl:call-template>
+      </xsl:variable>
+      <xsl:variable name="fnrtoken">
+         <xsl:call-template name="fnrtoken">
+            <xsl:with-param name="fnlabel_footnote" select="self::sup"/>
+         </xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+         <xsl:when test="$fntoken!='' and $fnrtoken!=''">
+            <fnr fnrtoken="{$fnrtoken}" fntoken="{$fntoken}">
                <xsl:apply-templates/>
             </fnr>
          </xsl:when>
@@ -1373,7 +1628,16 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/remotelink.xsl"/>
         <xsl:include href="../nonamespace/emph.xsl"/>-->
    <xsl:template match="url">
-      <xsl:apply-templates select="@* | node()"/>
+      <xsl:choose>
+         <xsl:when test="$selectorID='journal'">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:apply-templates select="@* | node()"/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="inlineobject">
@@ -1390,6 +1654,10 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
     </xsl:template>-->
    <xsl:template match="nl">
       <xsl:apply-templates select="@* | node()"/>
+      <!-- Added by Dayanand -->
+      <xsl:if test="contains(.,'')">
+         <xsl:element name="nl"/>
+      </xsl:if>
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="page[$selectorID = 'cases']">
@@ -1398,6 +1666,21 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
          <xsl:attribute name="reporter" select="./@reporter"/>
          <xsl:attribute name="count" select="./@count"/>
          <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="page[$selectorID = 'journal']">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="text" select="./@count"/>
+         <xsl:attribute name="count" select="./@count"/>
+         <xsl:attribute name="reporter" select="./@reporter"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="page[parent::catchphrase]">
+      <xsl:element name="page">
+         <xsl:apply-templates select="@*"/>
       </xsl:element>
    </xsl:template>
 
@@ -1437,14 +1720,28 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
                <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
             </xsl:call-template>
          </xsl:attribute>
-         <xsl:attribute name="fnrtoken">
-            <xsl:call-template name="fnrtoken">
-               <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
-            </xsl:call-template>
-         </xsl:attribute>
+         <xsl:choose>
+            <xsl:when test="$selectorID='journal'">
+               <xsl:variable name="fnrval">
+                  <xsl:call-template name="fnrtoken">
+                     <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
+                  </xsl:call-template>
+               </xsl:variable>
+               <xsl:if test="$fnrval!=''">
+                  <xsl:attribute name="fnrtokens" select="$fnrval"/>
+               </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:attribute name="fnrtoken">
+                  <xsl:call-template name="fnrtoken">
+                     <xsl:with-param name="fnlabel_footnote" select="self::p/text/sup/text()"/>
+                  </xsl:call-template>
+               </xsl:attribute>
+            </xsl:otherwise>
+         </xsl:choose>
          <xsl:if test="self::p/text/*[1][name() = 'sup']">
             <fnlabel>
-               <xsl:apply-templates select="self::p/text/sup/node()"/>
+               <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
             </fnlabel>
          </xsl:if>
          <fnbody>
@@ -1455,19 +1752,23 @@ Compiled:  2018-04-11T18:15:08.775+05:30-->
       </footnote>
    </xsl:template>
 
+   <xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
+      <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="text[parent::p/parent::fnbody]">
       <xsl:element name="{name()}">
-         <xsl:apply-templates select="node() except (sup, page)"/>
+         <xsl:apply-templates select="node() except (sup[1], page)"/>
       </xsl:element>
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
-   <xsl:template match="person[$selectorID = 'cases']">
+   <xsl:template match="person[$selectorID = ('cases','journal')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="name.text[parent::person][$selectorID = 'cases']">
+   <xsl:template match="name.text[parent::person][$selectorID = ('cases','journal')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates/>
       </xsl:element>
