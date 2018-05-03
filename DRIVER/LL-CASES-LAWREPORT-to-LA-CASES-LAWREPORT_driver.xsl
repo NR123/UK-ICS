@@ -23,7 +23,7 @@
 	
 	<xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
 
-    <xsl:output encoding="utf-8" indent="no"/>
+    <xsl:output encoding="utf-8" indent="yes"/>
 
     <xsl:strip-space elements="*"/>
 
@@ -113,6 +113,14 @@
     <xsl:include href="../COMMON/nonamespace/footnotegrp.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/person.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/glpnote.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/date.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/link.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/strike.xsl"/>
 
     <!-- END OF GENERIC XSLS -->
 </xsl:stylesheet>
