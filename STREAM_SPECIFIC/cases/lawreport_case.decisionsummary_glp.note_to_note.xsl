@@ -20,9 +20,6 @@
         <xsl:apply-templates select="."/>
     </xsl:template>
     
-    <!--/CASEDOC/case:body/case:content/case:judgments/glp:note/l
-    -->
-    
     <xsl:template match="glp:note[parent::case:decisionsummary/parent::case:headnote]" mode="grp_glp.note">
         <xsl:apply-templates/>
     </xsl:template>
@@ -30,9 +27,7 @@
     <!--Dayanand Singh 2018-4-30 ceated new template match-->
     <xsl:template match="glp:note[parent::case:constituents/parent::case:judgment]">
         <xsl:element name="glp:note">
-            <xsl:apply-templates/> 
+            <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-    
-    
 </xsl:stylesheet>

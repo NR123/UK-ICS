@@ -23,7 +23,6 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="."/>
-                    
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -97,8 +96,5 @@
             />
         </catchphrase>
     </xsl:template>
-    
-    
-
 
 </xsl:stylesheet>

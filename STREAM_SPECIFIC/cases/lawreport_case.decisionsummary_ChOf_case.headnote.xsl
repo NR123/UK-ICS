@@ -15,8 +15,8 @@
                 <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
                     <xsl:apply-templates select="."/>
                 </xsl:if>
-            </xsl:for-each>
-         </xsl:element>
+            </xsl:for-each>      
+        </xsl:element>
     </xsl:template>
     
     <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>

@@ -7,13 +7,12 @@
     version="2.0">
     
     <!-- Dayanand singh 2018-05-02, updated case:embeddedcase -->
-    
     <xsl:template match="case:headnote[parent::case:embeddedcase]">
         <xsl:element name="{name()}">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-        
+    
     <xsl:template match="case:headnote[parent::case:body]">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node() except (glp:note,case:priorhist)"/>

@@ -23,13 +23,6 @@
             </xsl:choose>
         </xsl:element>
     </xsl:template>
-    
-    <!--Dayanand 2018-05-01-->
-<!--    <xsl:template match="case:courtnum[parent::case:courtinfo]">
-        <xsl:element name="case:courtnum">
-            <xsl:apply-templates/>
-        </xsl:element>
-    </xsl:template>
 
--->    <xsl:template match="case:juris[parent::case:courtinfo[parent::case:info | parent::judgment]]"/>
+    <xsl:template match="case:juris[parent::case:courtinfo[parent::case:info | parent::judgment]]"/>
 </xsl:stylesheet>
