@@ -5,12 +5,10 @@
     version="2.0">
     
     <xsl:template match="nl">
-        
-            <xsl:apply-templates select="@* | node()"/>
-        
-        <xsl:if test="contains(.,'')">
-            <xsl:element name="nl"/>
-        </xsl:if>
-        
+            <xsl:apply-templates select="@* | node()"/>       
+            <!-- Added by Dayanand -->
+            <xsl:if test="contains(.,'')">
+                    <xsl:element name="nl"/>
+            </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

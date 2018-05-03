@@ -27,10 +27,9 @@
     
     <xsl:template match="page[parent::catchphrase]">
         <xsl:element name="page">
-            <xsl:apply-templates select="@*"></xsl:apply-templates>
+            <xsl:apply-templates select="@*"/>
         </xsl:element>
     </xsl:template>
-    
 
     <xsl:template match="page/@*"/>
 

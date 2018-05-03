@@ -19,7 +19,6 @@
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="node()"/>
-
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
