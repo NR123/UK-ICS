@@ -45,7 +45,9 @@
                     <xsl:choose>
                         <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
                         <xsl:otherwise>
-                            <xsl:apply-templates select="@*|node()"/>
+                           <!-- <xsl:apply-templates select="@*|node()"/>-->
+                            <!-- Arun: 02May2018 - Commented the above applu-templates as it is causing text repetition. Added the below code to handle it. -->
+                            <xsl:apply-templates select="@*"/>
                         </xsl:otherwise>
                     </xsl:choose>
                    <!-- <xsl:apply-templates select="@*"/>-->
