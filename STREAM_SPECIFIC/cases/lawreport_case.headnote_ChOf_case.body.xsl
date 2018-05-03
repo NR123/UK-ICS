@@ -9,6 +9,14 @@
     <!-- Dayanand singh 2018-05-02, updated case:embeddedcase -->
     <xsl:template match="case:headnote[parent::case:embeddedcase]">
         <xsl:element name="{name()}">
+            <xsl:apply-templates/>            
+        </xsl:element>
+    </xsl:template>
+    
+    <!-- Arun: 03May2018 - Added below template to handle case:disposition element -->
+    
+    <xsl:template match="case:disposition">
+        <xsl:element name="{name()}">            
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
