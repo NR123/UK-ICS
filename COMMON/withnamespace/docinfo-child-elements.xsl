@@ -275,7 +275,6 @@
                         </xsl:when>
                         <xsl:otherwise>                     
                                 <xsl:value-of select="replace(.,' and ',' &amp; ')"/>
-                            <!--<xsl:apply-templates select="node()"/>-->
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:element>
