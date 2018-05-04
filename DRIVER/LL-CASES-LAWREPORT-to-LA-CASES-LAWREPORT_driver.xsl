@@ -23,7 +23,7 @@
 	
 	<xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
 
-    <xsl:output encoding="utf-8" indent="no"/>
+    <xsl:output encoding="utf-8" indent="yes"/>
 
     <xsl:strip-space elements="*"/>
 
