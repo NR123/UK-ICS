@@ -30,6 +30,7 @@
             <xsl:with-param name="text" select="$text_to_process"/>
         </xsl:call-template>
         <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
+        <xsl:apply-templates select="self::catchphrase/page" mode="catchphrase"/>
     </xsl:template>
 
     <xsl:template name="catchphrase_split">
