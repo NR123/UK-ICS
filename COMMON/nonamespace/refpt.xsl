@@ -3,10 +3,7 @@
     xmlns:in="http://www.lexis-nexis.com/glp/in"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
-    <!-- Uncomment the below xsl:param while unit testing -->
-    <!-- Start: For unit-testing -->
-    <!--<xsl:param name="selectorID" select="'dictionary'"/>-->
-    <!-- End: For unit-testing -->
+
     
     <xsl:template match="refpt[$selectorID='dictionary']">
         <xsl:element name="{name()}">

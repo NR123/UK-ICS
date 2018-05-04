@@ -14,7 +14,4 @@
         <xsl:copy/>
     </xsl:template>
     
-    <!--<xsl:template match="inlineobject/@filename">
-        <xsl:attribute name="filename" select="'TBD'"/>
-    </xsl:template>-->
 </xsl:stylesheet>

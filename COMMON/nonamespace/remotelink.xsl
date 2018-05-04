@@ -3,12 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     exclude-result-prefixes="xs"
     version="2.0">
-    
-    <!-- Uncomment the below xsl:param while unit testing -->
-    <!-- Start: For unit-testing -->
-   <!-- <xsl:include href="../nonamespace/refpt.xsl"/>
-    <xsl:param name="selectorID" select="'dictionary'"/>-->
-    <!-- End: For unit-testing -->
+
     
     <xsl:template match="remotelink">
         <xsl:element name="{name()}">
