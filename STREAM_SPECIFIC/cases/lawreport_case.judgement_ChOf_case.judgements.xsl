@@ -11,11 +11,4 @@
         </xsl:element>
     </xsl:template>
     
-    <!-- Dayanand singh 2018-05-01 ceated new element case:embeddedcase child element of case:judgmentbody-->
-    <xsl:template match="case:embeddedcase">
-        <xsl:element name="case:embeddedcase">
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:element>
-    </xsl:template>
-    
 </xsl:stylesheet>

@@ -10,7 +10,7 @@
     </xsl:template>
 
     <xsl:template
-        match="case:courtname[parent::case:courtinfo] | case:courtcode[parent::case:courtinfo] | case:judges[parent::case:courtinfo] | case:judge[parent::case:judges/parent::case:courtinfo] | case:dates[parent::case:courtinfo] | case:hearingdates[parent::case:dates/parent::case:courtinfo] | case:decisiondate[parent::case:dates/parent::case:courtinfo]">
+        match="case:courtnum[parent::case:courtinfo] | case:courtname[parent::case:courtinfo] | case:courtcode[parent::case:courtinfo] | case:judges[parent::case:courtinfo] | case:judge[parent::case:judges/parent::case:courtinfo] | case:dates[parent::case:courtinfo] | case:hearingdates[parent::case:dates/parent::case:courtinfo] | case:decisiondate[parent::case:dates/parent::case:courtinfo]">
         <xsl:element name="{name()}">        
             <xsl:choose>
                 <xsl:when test="self::case:courtcode and $docinfo.selector='PracticeDirection'">
