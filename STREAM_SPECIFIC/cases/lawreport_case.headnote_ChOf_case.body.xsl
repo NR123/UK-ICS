@@ -15,7 +15,8 @@
         <xsl:choose>
             <xsl:when test="parent::case:body | parent::case:embeddedcase">
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>
+                    <!--<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-->
+                    <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
                     <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
                     <xsl:apply-templates select="case:decisionsummary/case:consideredcases"
                         mode="references"/>
