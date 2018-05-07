@@ -2,11 +2,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
-    <!-- Uncomment the below xsl:param while unit testing -->
-    <!-- Start: For unit-testing -->
-    <!--<xsl:include href="../nonamespace/emph.xsl"/>-->
-    <!-- End: For unit-testing -->
-
     <xsl:template match="page[$selectorID = 'cases']">
         <xsl:element name="{name()}">
             <xsl:attribute name="text" select="normalize-space(./@text)"/>
@@ -25,6 +20,11 @@
         </xsl:element>
     </xsl:template>
     
+    <xsl:template match="page[parent::catchphrase]">
+        <xsl:element name="page">
+            <xsl:apply-templates select="@*"/>
+        </xsl:element>
+    </xsl:template>
 
     <xsl:template match="page/@*"/>
 

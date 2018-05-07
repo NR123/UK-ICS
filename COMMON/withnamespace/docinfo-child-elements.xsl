@@ -234,7 +234,15 @@
                         <!--<xsl:copy-of select="." copy-namespaces="no"/>-->
                         <xsl:element name="{name()}">
                             <xsl:copy-of select="@name" copy-namespaces="no"/>
-                        <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
+                            <!-- Arun: 07May2018 - Updated below condition to handle <docinfo:custom-metafield name="jurisdiction"> when it is not empty -->
+                            <xsl:choose>
+                                <xsl:when test="parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']!=''">
+                                    <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="translate(replace(self::docinfo:custom-metafield, ' and ','&amp;'),' ','')"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:element>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -275,7 +283,6 @@
                         </xsl:when>
                         <xsl:otherwise>                     
                                 <xsl:value-of select="replace(.,' and ',' &amp; ')"/>
-                            <!--<xsl:apply-templates select="node()"/>-->
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:element>

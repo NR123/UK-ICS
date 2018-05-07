@@ -7,10 +7,6 @@
     exclude-result-prefixes="xs"
     version="2.0">
     
-    <!-- Uncomment the below xsl:param while unit testing -->
-    <!-- Start: For unit-testing -->
-    <!--<xsl:param name="selectorID" select="'dictionary'"/>-->
-    <!-- End: For unit-testing -->
     
     <xsl:template match="title[parent::heading/parent::dict:body][not(child::*[name()!='emph'])][$selectorID='dictionary']">
         <xsl:element name="desig">

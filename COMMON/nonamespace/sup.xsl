@@ -42,6 +42,10 @@
         </xsl:choose>
     </xsl:template>
     
+    <xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
     
     <xsl:template match="sup[not(ancestor::fnbody)][$selectorID=('journal')]">
         

@@ -85,9 +85,7 @@
             <xsl:value-of select="translate($string,'&#160;','')"/>
         </xsl:variable>
         <xsl:variable name="apos">'</xsl:variable>
-        <!--<xsl:variable name="Remove_apos">
-            <xsl:value-of select="replace($Remove_non_breaking_space,$apos,'_')"/>
-        </xsl:variable>-->
+
         <!-- The '(',')',',' should be ignored while creating refpt/@id. Rest of the special characters and space should be converted to '_' -->
         <xsl:variable name="Remove_apos">
             <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>

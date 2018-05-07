@@ -2,12 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:glp="http://www.lexis-nexis.com/glp"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:case="http://www.lexis-nexis.com/glp/case"
     exclude-result-prefixes="xs" version="2.0">
-    
-    <!-- Uncomment the below xsl:param while unit testing -->
-    <!-- Start: For unit-testing -->
-    <!-- <xsl:include href="../nonamespace/refpt.xsl"/>
-    <xsl:param name="selectorID" select="'dictionary'"/>-->
-    <!-- End: For unit-testing -->
+
 
     <xsl:template match="ci:*">
         
@@ -45,6 +40,8 @@
                     <xsl:choose>
                         <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
                         <xsl:otherwise>
+                           <!-- <xsl:apply-templates select="@*|node()"/>-->
+                            <!-- Arun: 02May2018 - Commented the above applu-templates as it is causing text repetition. Added the below code to handle it. -->
                             <xsl:apply-templates select="@*"/>
                         </xsl:otherwise>
                     </xsl:choose>
@@ -130,8 +127,7 @@
                             <xsl:value-of select="(regex-group(1),regex-group(2), (if (regex-group(4)) then regex-group(4) else ()))" separator=" "/>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <!--<xsl:value-of select="(regex-group(1),regex-group(2), (if (regex-group(4)) then regex-group(4) else ()))" separator=" "/>-->
-                    <!--<xsl:value-of select="(regex-group(1),regex-group(2))" separator=" "/>-->
+
                 </xsl:matching-substring>
             </xsl:analyze-string></xsl:variable>
         <xsl:value-of select="$test"/>

@@ -11,4 +11,11 @@
         </xsl:element>
     </xsl:template>
     
+    <!--Dayanand singh 2018-04-30 -->
+    <xsl:template match="case:appendix">
+        <xsl:element name="case:appendix">
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:element>
+    </xsl:template>
+    
 </xsl:stylesheet>

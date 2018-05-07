@@ -8,7 +8,8 @@
     
     <xsl:template match="case:judgments[parent::case:content]">
         <xsl:choose>
-            <xsl:when test="self::case:judgments/not(preceding-sibling::case:judgments)">
+            <!-- Revathi: 04May2018 - Added condition to check whether case:judgments id not an empty element -->
+            <xsl:when test="self::case:judgments/not(preceding-sibling::case:judgments) and self::case:judgments[child::node()]">
                 <xsl:element name="{name()}">
                     <xsl:if test="parent::case:content/preceding-sibling::case:headnote//case:decisionsummary/p">
                         <prelim>
@@ -67,12 +68,19 @@
     
     <xsl:template match="case:decisiondate[parent::case:dates/parent::case:judgments]">
         <xsl:element name="{name()}">
-        <xsl:apply-templates/>
+            <xsl:apply-templates select="@*|node()"/>
         </xsl:element>
     </xsl:template>
     
     <xsl:template match="date[parent::case:decisiondate/parent::case:dates/parent::case:judgments]">
         <xsl:apply-templates/>
+    </xsl:template>
+    
+    <!-- Dayanand singh 2018-05-01 ceated new element case:embeddedcase child element of case:judgmentbody-->
+    <xsl:template match="case:embeddedcase[parent::case:judgmentbody]">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
     </xsl:template>
     
 </xsl:stylesheet>

@@ -19,6 +19,12 @@
                     <xsl:apply-templates/>
                 </case:appendix>
             </xsl:when>
+            <!-- Arun: 07May2018 - Updated below condition to handle the child elements of glp:note-->
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     

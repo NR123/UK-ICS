@@ -10,4 +10,9 @@
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
+    
+    <!-- Arun: 02May2018 - Added below template to handle attributes of the element case:priorhist -->
+    <xsl:template match="case:priorhist/@*">
+        <xsl:copy/>
+    </xsl:template>
 </xsl:stylesheet>
