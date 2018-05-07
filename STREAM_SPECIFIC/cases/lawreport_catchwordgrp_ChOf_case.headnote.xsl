@@ -37,6 +37,10 @@
                     <xsl:when test="contains($text_to_process,'&#x2013;')">
                         <xsl:text>&#x2013;</xsl:text>
                     </xsl:when>
+                    <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
+                    <xsl:when test="contains($text_to_process,'-')">
+                        <xsl:text>-</xsl:text>
+                    </xsl:when>
                 </xsl:choose>
             </xsl:with-param>
         </xsl:call-template>
