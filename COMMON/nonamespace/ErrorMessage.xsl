@@ -9,7 +9,7 @@
     <xsl:template name="outputErrorMessage">
         <xsl:param name="messageText" as="xs:string*" select="'Error!'"/>
         <xsl:message>
-            <xsl:value-of select="$messageText"/>
+            <xsl:value-of select="concat($filename,':',$messageText)"/>
             <!--  just output the message text to the output  -->
         </xsl:message>
     </xsl:template>

@@ -12,6 +12,12 @@
             <xsl:apply-templates select="node()"/>            
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="remotelink/@href|remotelink/@hrefclass">
+        <xsl:attribute name="{name()}">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
 
     <xsl:template match="remotelink[$selectorID='journal']">
              <xsl:element name="{name()}">

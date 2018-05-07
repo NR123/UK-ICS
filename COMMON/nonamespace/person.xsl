@@ -20,4 +20,10 @@
         </xsl:element>
     </xsl:template>    
     
+    <xsl:template match="person/@searchtype">
+        <xsl:attribute name="{name()}">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
+    
 </xsl:stylesheet>

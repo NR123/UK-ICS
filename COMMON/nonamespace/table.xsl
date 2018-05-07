@@ -3,6 +3,22 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
     <xsl:template match="table | tbody">
+        <xsl:choose>
+            <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
+            <xsl:when test="self::table/parent::fnbody and self::table/preceding-sibling::*[1][name()='p']"/>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
+        <!-- Revathi: 07May2018 - Moved the below code as xsl:otherwise block -->
+        <!--<xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:element>-->
+    </xsl:template>
+    
+    <xsl:template match="table" mode="footnote-table">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>

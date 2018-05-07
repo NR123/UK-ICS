@@ -110,7 +110,9 @@
             </xsl:if>-->
             <fnbody>
                 <p>
-                    <xsl:apply-templates/>                    
+                    <xsl:apply-templates/>      
+                    <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
+                    <xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>
                 </p>
             </fnbody>
         </footnote>
