@@ -13,7 +13,7 @@
     <!-- Revathi: 04May2018 - Commented the above code and included it as a condition into generic case:headnote template -->
     <xsl:template match="case:headnote">
         <xsl:choose>
-            <xsl:when test="parent::case:body">
+            <xsl:when test="parent::case:body | parent::case:embeddedcase">
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>
                     <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>

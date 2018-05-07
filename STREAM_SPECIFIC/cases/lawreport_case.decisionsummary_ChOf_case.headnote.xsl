@@ -7,16 +7,20 @@
     version="2.0">
     
     <xsl:template match="case:decisionsummary[parent::case:headnote]">
-        <xsl:element name="{name()}">
-            <xsl:attribute name="summarytype" select="'held'"/>
-            <!-- If there is glp:note within case:headnote and as preceeding sibling of decisionsummary, then we have to move this into decisionsummary and suppress the tag glp:note and retain its child elements -->
-            <xsl:apply-templates select="self::case:decisionsummary/preceding-sibling::glp:note"/>
-            <xsl:for-each select="*">
-                <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
-                    <xsl:apply-templates select="."/>
-                </xsl:if>
-            </xsl:for-each>      
-        </xsl:element>
+        <xsl:choose><!-- Arun: 07May2018 Added the below condition check to suppress the creation of tag case:decisionsummary when there is no child element apart from glp:note and case:consideredcases -->
+            <xsl:when test="child::node()[name() != 'glp:note' and name() != 'case:consideredcases']">
+                <xsl:element name="{name()}">
+                    <xsl:attribute name="summarytype" select="'held'"/>
+                    <!-- If there is glp:note within case:headnote and as preceeding sibling of decisionsummary, then we have to move this into decisionsummary and suppress the tag glp:note and retain its child elements -->
+                    <xsl:apply-templates select="self::case:decisionsummary/preceding-sibling::glp:note"/>
+                    <xsl:for-each select="*">
+                        <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
+                            <xsl:apply-templates select="."/>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:element>
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
     
     <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>

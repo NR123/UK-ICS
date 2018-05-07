@@ -54,57 +54,70 @@
         <!-- Revathi: 04May2018 - Commented the above code and added below code as i have included the delimiter selection in the template call itself.  -->
         <xsl:param name="delimiter" select="."/>
 
-        <!-- To check whether the end of catchphrase has been reached. As the end content is not ended with the same delimiter, we need to handle it. -->
-        <xsl:variable name="test_for_last_value">
-            <xsl:choose>
-                <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)">
-                    <!-- It is not the last delimiter -->
-                    <xsl:value-of select="'no'"/>
-                </xsl:when>
-                
-                <xsl:otherwise>
-                    <!-- End of the delimiter series has been reached -->
-                    <xsl:value-of select="'yes'"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
-            
-                <xsl:choose>
-                    <!-- When more delimiter is present, process the text before the delimiter -->
-                    <xsl:when test="$test_for_last_value = 'no'">
-                        <catchphrase>
-                        <xsl:call-template name="replace">
-                            <xsl:with-param name="text"
-                                select="normalize-space(substring-before($text, $delimiter))"/>
-                        </xsl:call-template>
-                        </catchphrase>
-                    </xsl:when>
-                    <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
-                    <xsl:when test="$test_for_last_value = 'yes'">
-                        <catchphrase>
-                        <xsl:call-template name="replace">
-                            <xsl:with-param name="text"
-                                select="normalize-space(substring-before($text, $delimiter))"/>
-                        </xsl:call-template>
-                        </catchphrase>
-                        <catchphrase>
-                        <xsl:call-template name="replace">
-                            <xsl:with-param name="text"
-                                select="normalize-space(substring-after($text, $delimiter))"/>
-                        </xsl:call-template>
-                        </catchphrase>
-                    </xsl:when>
-                </xsl:choose>
-
-            
-        </xsl:if>
-        <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
-            <xsl:call-template name="catchphrase_split">
-                <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
-                <xsl:with-param name="delimiter" select="$delimiter"/>
-            </xsl:call-template>
-        </xsl:if>
+        <!-- Revathi - 07May2018 - Added the below check to identify if the delimiter is present in cathphrase. -->
+        <xsl:choose>
+            <xsl:when test="$delimiter!=''">
+                <!-- To check whether the end of catchphrase has been reached. As the end content is not ended with the same delimiter, we need to handle it. -->
+                <xsl:variable name="test_for_last_value">
+                    <xsl:choose>
+                        <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)">
+                            <!-- It is not the last delimiter -->
+                            <xsl:value-of select="'no'"/>
+                        </xsl:when>
+                        
+                        <xsl:otherwise>
+                            <!-- End of the delimiter series has been reached -->
+                            <xsl:value-of select="'yes'"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:variable>
+                <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
+                    
+                    <xsl:choose>
+                        <!-- When more delimiter is present, process the text before the delimiter -->
+                        <xsl:when test="$test_for_last_value = 'no'">
+                            <catchphrase>
+                                <xsl:call-template name="replace">
+                                    <xsl:with-param name="text"
+                                        select="normalize-space(substring-before($text, $delimiter))"/>
+                                </xsl:call-template>
+                            </catchphrase>
+                        </xsl:when>
+                        <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
+                        <xsl:when test="$test_for_last_value = 'yes'">
+                            <catchphrase>
+                                <xsl:call-template name="replace">
+                                    <xsl:with-param name="text"
+                                        select="normalize-space(substring-before($text, $delimiter))"/>
+                                </xsl:call-template>
+                            </catchphrase>
+                            <catchphrase>
+                                <xsl:call-template name="replace">
+                                    <xsl:with-param name="text"
+                                        select="normalize-space(substring-after($text, $delimiter))"/>
+                                </xsl:call-template>
+                            </catchphrase>
+                        </xsl:when>
+                    </xsl:choose>
+                    
+                    
+                </xsl:if>
+                <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
+                    <xsl:call-template name="catchphrase_split">
+                        <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
+                        <xsl:with-param name="delimiter" select="$delimiter"/>
+                    </xsl:call-template>
+                </xsl:if> 
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="replace">
+                    <xsl:with-param name="text"
+                        select="normalize-space(substring-after($text, $delimiter))"/>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+        
 
     </xsl:template>
 
