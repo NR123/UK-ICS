@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-04T18:40:54.097+05:30-->
+Compiled:  2018-05-07T18:15:43.366+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -67,7 +67,7 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
     </xsl:template>-->   <!-- Revathi: 04May2018 - Commented the above code and included it as a condition into generic case:headnote template -->
    <xsl:template match="case:headnote">
       <xsl:choose>
-         <xsl:when test="parent::case:body">
+         <xsl:when test="parent::case:body | parent::case:embeddedcase">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>
                <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
@@ -124,7 +124,7 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
          <xsl:choose>
             <xsl:when test="self::case:courtcode and $docinfo.selector='PracticeDirection'">
                <xsl:variable name="courtcode" select="."/>
-               <xsl:value-of select="translate($courtcode, 'temp', '')"/>
+               <xsl:value-of select="replace($courtcode, 'temp', '')"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:apply-templates select="@* | node()"/>
@@ -169,6 +169,10 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
                <xsl:when test="contains($text_to_process,'–')">
                   <xsl:text>–</xsl:text>
                </xsl:when>
+               <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
+               <xsl:when test="contains($text_to_process,'-')">
+                  <xsl:text>-</xsl:text>
+               </xsl:when>
             </xsl:choose>
          </xsl:with-param>
       </xsl:call-template>
@@ -181,50 +185,60 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
       <!--<xsl:param name="delimiter">&#x2014;</xsl:param>-->
       <!-- Revathi: 04May2018 - Commented the above code and added below code as i have included the delimiter selection in the template call itself.  -->
       <xsl:param name="delimiter" select="."/>
-      <!-- To check whether the end of catchphrase has been reached. As the end content is not ended with the same delimiter, we need to handle it. -->
-      <xsl:variable name="test_for_last_value">
-         <xsl:choose>
-            <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)"><!-- It is not the last delimiter -->
-               <xsl:value-of select="'no'"/>
-            </xsl:when>
-            <xsl:otherwise><!-- End of the delimiter series has been reached -->
-               <xsl:value-of select="'yes'"/>
-            </xsl:otherwise>
-         </xsl:choose>
-      </xsl:variable>
-      <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
-         <xsl:choose><!-- When more delimiter is present, process the text before the delimiter -->
-            <xsl:when test="$test_for_last_value = 'no'">
-               <catchphrase>
-                  <xsl:call-template name="replace">
-                     <xsl:with-param name="text"
-                                     select="normalize-space(substring-before($text, $delimiter))"/>
-                  </xsl:call-template>
-               </catchphrase>
-            </xsl:when>
-            <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
-            <xsl:when test="$test_for_last_value = 'yes'">
-               <catchphrase>
-                  <xsl:call-template name="replace">
-                     <xsl:with-param name="text"
-                                     select="normalize-space(substring-before($text, $delimiter))"/>
-                  </xsl:call-template>
-               </catchphrase>
-               <catchphrase>
-                  <xsl:call-template name="replace">
-                     <xsl:with-param name="text"
-                                     select="normalize-space(substring-after($text, $delimiter))"/>
-                  </xsl:call-template>
-               </catchphrase>
-            </xsl:when>
-         </xsl:choose>
-      </xsl:if>
-      <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
-         <xsl:call-template name="catchphrase_split">
-            <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
-            <xsl:with-param name="delimiter" select="$delimiter"/>
-         </xsl:call-template>
-      </xsl:if>
+      <!-- Revathi - 07May2018 - Added the below check to identify if the delimiter is present in cathphrase. -->
+      <xsl:choose>
+         <xsl:when test="$delimiter!=''"><!-- To check whether the end of catchphrase has been reached. As the end content is not ended with the same delimiter, we need to handle it. -->
+            <xsl:variable name="test_for_last_value">
+               <xsl:choose>
+                  <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)"><!-- It is not the last delimiter -->
+                     <xsl:value-of select="'no'"/>
+                  </xsl:when>
+                  <xsl:otherwise><!-- End of the delimiter series has been reached -->
+                     <xsl:value-of select="'yes'"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:variable>
+            <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
+               <xsl:choose><!-- When more delimiter is present, process the text before the delimiter -->
+                  <xsl:when test="$test_for_last_value = 'no'">
+                     <catchphrase>
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-before($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                  </xsl:when>
+                  <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
+                  <xsl:when test="$test_for_last_value = 'yes'">
+                     <catchphrase>
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-before($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                     <catchphrase>
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-after($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                  </xsl:when>
+               </xsl:choose>
+            </xsl:if>
+            <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
+               <xsl:call-template name="catchphrase_split">
+                  <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
+                  <xsl:with-param name="delimiter" select="$delimiter"/>
+               </xsl:call-template>
+            </xsl:if>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text"
+                               select="normalize-space(substring-after($text, $delimiter))"/>
+            </xsl:call-template>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="ci:cite[parent::catchphrase/ancestor::catchwordgrp/parent::case:headnote]"/>
@@ -242,16 +256,20 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
    </xsl:template>
 
    <xsl:template match="case:decisionsummary[parent::case:headnote]">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="summarytype" select="'held'"/>
-         <!-- If there is glp:note within case:headnote and as preceeding sibling of decisionsummary, then we have to move this into decisionsummary and suppress the tag glp:note and retain its child elements -->
-         <xsl:apply-templates select="self::case:decisionsummary/preceding-sibling::glp:note"/>
-         <xsl:for-each select="*">
-            <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
-               <xsl:apply-templates select="."/>
-            </xsl:if>
-         </xsl:for-each>
-      </xsl:element>
+      <xsl:choose><!-- Arun: 07May2018 Added the below condition check to suppress the creation of tag case:decisionsummary when there is no child element apart from glp:note and case:consideredcases -->
+         <xsl:when test="child::node()[name() != 'glp:note' and name() != 'case:consideredcases']">
+            <xsl:element name="{name()}">
+               <xsl:attribute name="summarytype" select="'held'"/>
+               <!-- If there is glp:note within case:headnote and as preceeding sibling of decisionsummary, then we have to move this into decisionsummary and suppress the tag glp:note and retain its child elements -->
+               <xsl:apply-templates select="self::case:decisionsummary/preceding-sibling::glp:note"/>
+               <xsl:for-each select="*">
+                  <xsl:if test="self::node()[not(preceding-sibling::glp:note) and not(preceding-sibling::case:consideredcases)]">
+                     <xsl:apply-templates select="."/>
+                  </xsl:if>
+               </xsl:for-each>
+            </xsl:element>
+         </xsl:when>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
@@ -336,6 +354,12 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
                <xsl:apply-templates/>
             </case:appendix>
          </xsl:when>
+         <!-- Arun: 07May2018 - Updated below condition to handle the child elements of glp:note-->
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
 
@@ -655,7 +679,15 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
                <xsl:otherwise><!--<xsl:copy-of select="." copy-namespaces="no"/>-->
                   <xsl:element name="{name()}">
                      <xsl:copy-of select="@name" copy-namespaces="no"/>
-                     <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
+                     <!-- Arun: 07May2018 - Updated below condition to handle <docinfo:custom-metafield name="jurisdiction"> when it is not empty -->
+                     <xsl:choose>
+                        <xsl:when test="parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY']!=''">
+                           <xsl:value-of select="translate(replace(parent::docinfo:custom-metafields/docinfo:custom-metafield[@searchtype = 'JURIS-CLASSIFY'], ' and ','&amp;'),' ','')"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:value-of select="translate(replace(self::docinfo:custom-metafield, ' and ','&amp;'),' ','')"/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:element>
                </xsl:otherwise>
             </xsl:choose>
@@ -798,7 +830,7 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
    <xsl:template name="outputErrorMessage">
       <xsl:param name="messageText" as="xs:string*" select="'Error!'"/>
       <xsl:message>
-         <xsl:value-of select="$messageText"/>
+         <xsl:value-of select="concat($filename,':',$messageText)"/>
          <!--  just output the message text to the output  -->
       </xsl:message>
    </xsl:template>
@@ -1028,6 +1060,12 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
       </xsl:element>
    </xsl:template>
 
+   <xsl:template match="text/@align">
+      <xsl:attribute name="{name()}">
+         <xsl:value-of select="."/>
+      </xsl:attribute>
+   </xsl:template>
+
    <xsl:template match="emph[ancestor::defterm] | emph[parent::dict:topicname] | emph[parent::remotelink/parent::url][$selectorID = 'dictionary']"
                  priority="20">
       <xsl:apply-templates select="@* | node()"/>
@@ -1105,6 +1143,12 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
          <xsl:attribute name="status" select="'valid'"/>
          <xsl:apply-templates select="node()"/>
       </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="remotelink/@href|remotelink/@hrefclass">
+      <xsl:attribute name="{name()}">
+         <xsl:value-of select="."/>
+      </xsl:attribute>
    </xsl:template>
 
    <xsl:template match="remotelink[$selectorID='journal']">
@@ -1496,6 +1540,21 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
    </xsl:template>
 
    <xsl:template match="table | tbody">
+      <xsl:choose><!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
+         <xsl:when test="self::table/parent::fnbody and self::table/preceding-sibling::*[1][name()='p']"/>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
+      <!-- Revathi: 07May2018 - Moved the below code as xsl:otherwise block -->
+      <!--<xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:element>-->
+   </xsl:template>
+
+   <xsl:template match="table" mode="footnote-table">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
@@ -1886,6 +1945,9 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
          <fnbody>
             <p>
                <xsl:apply-templates/>
+               <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
+               <xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']"
+                                    mode="footnote-table"/>
             </p>
          </fnbody>
       </footnote>
@@ -1907,6 +1969,12 @@ Compiled:  2018-05-04T18:40:54.097+05:30-->
       <xsl:element name="{name()}">
          <xsl:apply-templates/>
       </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="person/@searchtype">
+      <xsl:attribute name="{name()}">
+         <xsl:value-of select="."/>
+      </xsl:attribute>
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
    <xsl:template match="glp:note">
