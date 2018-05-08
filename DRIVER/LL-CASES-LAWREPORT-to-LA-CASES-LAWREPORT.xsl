@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-08T17:44:20.67+05:30-->
+Compiled:  2018-05-08T21:04:42.091+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -483,26 +483,38 @@ Compiled:  2018-05-08T17:44:20.67+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
-   <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->
+   <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
+                 select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:template match="docinfo">
       <xsl:element name="{name()}">
-         <xsl:choose>
-            <xsl:when test="$selectorID='dictionary'">
-               <docinfo:dpsi id-string="0KMN"/>
-            </xsl:when>
-            <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
-               <docinfo:dpsi id-string="0T2S"/>
-            </xsl:when>
-            <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
-               <docinfo:dpsi id-string="02ED"/>
-            </xsl:when>
-            <xsl:when test="$selectorID='index'">
-               <docinfo:dpsi id-string="003B"/>
-            </xsl:when>
-            <xsl:when test="$selectorID='journal'">
-               <docinfo:dpsi id-string="042E"/>
-            </xsl:when>
-         </xsl:choose>
+         <xsl:variable name="v_getDPSI">
+            <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
+               <xsl:matching-substring>
+                  <xsl:value-of select="regex-group(1)"/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:variable>
+         <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}"/>
+         <!--<xsl:choose>
+                <xsl:when test="$selectorID='dictionary'">
+                    <docinfo:dpsi id-string="0KMN"/> 
+                </xsl:when>
+                <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+                    <docinfo:dpsi id-string="0T2S"/>
+                </xsl:when>
+                <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
+                    <docinfo:dpsi id-string="02ED"/>
+                </xsl:when>
+                
+                <xsl:when test="$selectorID='index'">
+                    <docinfo:dpsi id-string="003B"/> 
+                </xsl:when>
+                
+                <xsl:when test="$selectorID='journal'">
+                    <docinfo:dpsi id-string="042E"/> 
+                </xsl:when>
+                
+            </xsl:choose>-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
@@ -785,7 +797,7 @@ Compiled:  2018-05-08T17:44:20.67+05:30-->
          </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
-                                regex="([\w\W]+)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+                                regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
                <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
                   <xsl:call-template name="replace">
                      <xsl:with-param name="text" select="regex-group(1)"/>

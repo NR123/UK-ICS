@@ -3,10 +3,22 @@
     xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
     xmlns:case="http://www.lexis-nexis.com/glp/case"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
-
-    <xsl:template match="docinfo">
+    
+    <xsl:variable name="path"
+        select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
+    
+    <xsl:template match="docinfo">       
         <xsl:element name="{name()}">
-            <xsl:choose>
+            <xsl:variable name="v_getDPSI">
+                <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
+                    <xsl:matching-substring>
+                        <xsl:value-of select="regex-group(1)"/>
+                    </xsl:matching-substring>
+                </xsl:analyze-string>
+            </xsl:variable>
+            
+            <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}"/> 
+            <!--<xsl:choose>
                 <xsl:when test="$selectorID='dictionary'">
                     <docinfo:dpsi id-string="0KMN"/> 
                 </xsl:when>
@@ -25,7 +37,7 @@
                     <docinfo:dpsi id-string="042E"/> 
                 </xsl:when>
                 
-            </xsl:choose>
+            </xsl:choose>-->
             
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>

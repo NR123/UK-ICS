@@ -56,7 +56,7 @@
       
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
-                <xsl:analyze-string select="$text" regex="([\w\W]+)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+                <xsl:analyze-string select="$text" regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
                     <xsl:matching-substring>
                         <!-- Revathi: Added the below call-template to handle the content present before citation like content -->
                         <xsl:call-template name="replace">
