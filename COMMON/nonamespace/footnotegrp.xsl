@@ -49,7 +49,7 @@
                             <xsl:value-of select="self::p/text/sup/text()"/>
                         </xsl:when>
                         <!-- Revathi: 04May2018 - Added the below code to handle variations of fnlabel content -->
-                        <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'[0-9]+[\s]?')">
+                        <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
                             <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
                         </xsl:when>
                     </xsl:choose>
@@ -74,7 +74,7 @@
                             <xsl:when test="self::p/text/sup/text()">
                                 <xsl:value-of select="self::p/text/sup/text()"/>
                             </xsl:when>
-                            <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'[0-9]+[\s]?')">
+                            <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
                                 <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
                             </xsl:when>
                         </xsl:choose>
@@ -96,7 +96,8 @@
                 </xsl:when>
                 <xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
                     <fnlabel>
-                        <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
+                        <!-- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -->
+                        <xsl:value-of select="replace(substring-before(self::p/text/node()[1],' '),'&#160;','')"/>
                     </fnlabel>
                 </xsl:when>
             </xsl:choose>
