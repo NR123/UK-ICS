@@ -2,7 +2,9 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
+
 Compiled:  2018-05-08T17:44:20.67+05:30-->
+
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -32,7 +34,7 @@ Compiled:  2018-05-08T17:44:20.67+05:30-->
                 xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
-                exclude-result-prefixes="xs xd">
+                exclude-result-prefixes="#all">
    <xsl:param name="selectorID" select="'cases'"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
    <xsl:output encoding="utf-8" indent="no"/>
@@ -491,7 +493,9 @@ Compiled:  2018-05-08T17:44:20.67+05:30-->
                <docinfo:dpsi id-string="0KMN"/>
             </xsl:when>
             <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+
                <docinfo:dpsi id-string="0T2S"/>
+
             </xsl:when>
             <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                <docinfo:dpsi id-string="02ED"/>
