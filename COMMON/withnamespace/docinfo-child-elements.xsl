@@ -24,6 +24,7 @@
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
                     <docinfo:dpsi id-string="0T2S"/>
+                    <!--<docinfo:dpsi id-string="0GNE"/>-->
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                     <docinfo:dpsi id-string="02ED"/>

@@ -2,7 +2,10 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
+
 Compiled:  2018-05-08T21:04:42.091+05:30-->
+
+
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -32,7 +35,7 @@ Compiled:  2018-05-08T21:04:42.091+05:30-->
                 xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
-                exclude-result-prefixes="xs xd">
+                exclude-result-prefixes="#all">
    <xsl:param name="selectorID" select="'cases'"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
    <xsl:output encoding="utf-8" indent="no"/>
@@ -487,6 +490,7 @@ Compiled:  2018-05-08T21:04:42.091+05:30-->
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:template match="docinfo">
       <xsl:element name="{name()}">
+
          <xsl:variable name="v_getDPSI">
             <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
                <xsl:matching-substring>
@@ -515,6 +519,7 @@ Compiled:  2018-05-08T21:04:42.091+05:30-->
                 </xsl:when>
                 
             </xsl:choose>-->
+
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
