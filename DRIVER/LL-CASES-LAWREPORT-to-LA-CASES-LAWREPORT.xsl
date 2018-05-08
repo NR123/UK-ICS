@@ -32,7 +32,7 @@ Compiled:  2018-05-08T10:21:07.246+05:30-->
                 xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
-                exclude-result-prefixes="xs xd">
+                exclude-result-prefixes="#all">
    <xsl:param name="selectorID" select="'cases'"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
    <xsl:output encoding="utf-8" indent="no"/>
