@@ -13,27 +13,28 @@
     <!-- Revathi: 04May2018 - Commented the above code and included it as a condition into generic case:headnote template -->
     <xsl:template match="case:headnote">
         <xsl:choose>
-            <xsl:when test="parent::case:body | parent::case:embeddedcase">
+            <!-- Revathi 07May2018 - Moved the below code inside the xsl:otherwise -->
+            <!--<xsl:when test="parent::case:body | parent::case:embeddedcase">
                 <xsl:element name="{name()}">
-                    <!--<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-->
+                    <!-\-<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-\->
                     <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
                     <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
                     <xsl:apply-templates select="case:decisionsummary/case:consideredcases"
                         mode="references"/>
                     <xsl:apply-templates select="case:priorhist"/>
                 </xsl:element>
-            </xsl:when>
+            </xsl:when>-->
             <xsl:when test="self::case:headnote/preceding-sibling::case:headnote"/>
-            <xsl:otherwise>
-                <xsl:choose>
-                    <xsl:when test="self::case:headnote/not(preceding-sibling::case:headnote)">
-                        <xsl:element name="{name()}">
-                            <xsl:apply-templates/>
-                            <xsl:apply-templates select="following-sibling::case:headnote"
-                                mode="grp_case.headnote"/>
-                        </xsl:element>
-                    </xsl:when>
-                </xsl:choose>
+            <xsl:otherwise>                
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
+                    <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
+                    <xsl:apply-templates select="case:decisionsummary/case:consideredcases"
+                        mode="references"/>
+                    <xsl:apply-templates select="case:priorhist"/>
+                    <xsl:apply-templates select="following-sibling::case:headnote"
+                        mode="grp_case.headnote"/>
+                </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
 
