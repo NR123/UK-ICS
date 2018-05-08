@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-07T18:34:03.896+05:30-->
+Compiled:  2018-05-08T17:44:20.67+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -66,25 +66,25 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
         </xsl:element>
     </xsl:template>-->   <!-- Revathi: 04May2018 - Commented the above code and included it as a condition into generic case:headnote template -->
    <xsl:template match="case:headnote">
-      <xsl:choose>
-         <xsl:when test="parent::case:body | parent::case:embeddedcase">
-            <xsl:element name="{name()}"><!--<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-->
+      <xsl:choose><!-- Revathi 07May2018 - Moved the below code inside the xsl:otherwise --><!--<xsl:when test="parent::case:body | parent::case:embeddedcase">
+                <xsl:element name="{name()}">
+                    <!-\-<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-\->
+                    <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
+                    <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
+                    <xsl:apply-templates select="case:decisionsummary/case:consideredcases"
+                        mode="references"/>
+                    <xsl:apply-templates select="case:priorhist"/>
+                </xsl:element>
+            </xsl:when>-->
+         <xsl:when test="self::case:headnote/preceding-sibling::case:headnote"/>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
                <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
                <xsl:apply-templates select="case:decisionsummary/case:consideredcases" mode="references"/>
                <xsl:apply-templates select="case:priorhist"/>
+               <xsl:apply-templates select="following-sibling::case:headnote" mode="grp_case.headnote"/>
             </xsl:element>
-         </xsl:when>
-         <xsl:when test="self::case:headnote/preceding-sibling::case:headnote"/>
-         <xsl:otherwise>
-            <xsl:choose>
-               <xsl:when test="self::case:headnote/not(preceding-sibling::case:headnote)">
-                  <xsl:element name="{name()}">
-                     <xsl:apply-templates/>
-                     <xsl:apply-templates select="following-sibling::case:headnote" mode="grp_case.headnote"/>
-                  </xsl:element>
-               </xsl:when>
-            </xsl:choose>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
@@ -491,7 +491,7 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                <docinfo:dpsi id-string="0KMN"/>
             </xsl:when>
             <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
-               <docinfo:dpsi id-string="000D"/>
+               <docinfo:dpsi id-string="0T2S"/>
             </xsl:when>
             <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                <docinfo:dpsi id-string="02ED"/>
@@ -783,26 +783,29 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                                select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
             </xsl:call-template>
          </xsl:when>
-         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
+         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
-                                regex="([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
-               <xsl:matching-substring>
+                                regex="([\w\W]+)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+               <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text" select="regex-group(1)"/>
+                  </xsl:call-template>
                   <ci:cite searchtype="CASE-REF">
                      <ci:case>
                         <ci:caseref>
-                           <ci:reporter value="{regex-group(3)}"/>
-                           <ci:volume num="{regex-group(2)}"/>
+                           <ci:reporter value="{regex-group(4)}"/>
+                           <ci:volume num="{regex-group(3)}"/>
                            <ci:edition>
-                              <ci:date year="{translate(regex-group(1),'()','')}"/>
+                              <ci:date year="{translate(regex-group(2),'()','')}"/>
                            </ci:edition>
-                           <ci:page num="{regex-group(4)}"/>
+                           <ci:page num="{regex-group(5)}"/>
                         </ci:caseref>
                      </ci:case>
                      <ci:content>
-                        <xsl:value-of select="concat(regex-group(1),' ',regex-group(2),' ',regex-group(3),' ',regex-group(4))"/>
+                        <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
                      </ci:content>
                   </ci:cite>
-                  <xsl:value-of select="regex-group(5)"/>
+                  <xsl:value-of select="regex-group(6)"/>
                </xsl:matching-substring>
             </xsl:analyze-string>
          </xsl:when>
@@ -994,14 +997,24 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                      </xsl:analyze-string>
                      <xsl:apply-templates select="node() except text()[1]"/>
                   </xsl:when>
-                  <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')">
-                     <xsl:analyze-string select="self::text/node()[3]" regex="(\)[\s| ]+)">
+                  <!-- Revathi: The below condition is to identify the lilabel content which is occuring in the pattern '(<emph typestyle="it">b</emph>)' inside li/p/text -->
+                  <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')"><!--<xsl:analyze-string select="self::text/node()[3]"
+                                regex="(\)[\s|&#160;]+)">
+                                <xsl:non-matching-substring>
+                                    <xsl:call-template name="replace">
+                                        <xsl:with-param name="text" select="."/>
+                                    </xsl:call-template>
+                                </xsl:non-matching-substring>
+                            </xsl:analyze-string>-->
+                     <xsl:analyze-string select="self::text/node()[3]" regex="(^\)[\s| ]+)">
                         <xsl:non-matching-substring>
                            <xsl:call-template name="replace">
                               <xsl:with-param name="text" select="."/>
                            </xsl:call-template>
                         </xsl:non-matching-substring>
                      </xsl:analyze-string>
+                     <!--Revathi: 08May2018 - To handle the remaining nodes except for the lilabel content -->
+                     <xsl:apply-templates select="node()[position()&gt;3]"/>
                   </xsl:when>
                   <xsl:when test="self::text/node()[1]/name() = ''">
                      <xsl:analyze-string select="self::text/text()[1]" regex="^(\([a-zA-Z0-9]+\)|●)([\t ]*)">
@@ -1020,9 +1033,9 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                </xsl:choose>
             </xsl:when>
             <xsl:when test="self::text[parent::p/parent::fnbody]">
-               <xsl:choose>
-                  <xsl:when test="name(self::text/node()[1]) = '' and matches(substring-before(self::text/node()[1], ' '), '^[0-9]+')">
-                     <xsl:analyze-string select="self::text/node()[1]" regex="(^[0-9]+)[\s]+([\w\W]+)">
+               <xsl:choose><!-- Revathi: 08May2018 - Added &#160;(non-breaking-space) to the regex match -->
+                  <xsl:when test="name(self::text/node()[1]) = '' and matches(substring-before(self::text/node()[1], ' '), '^[0-9]+\.?')">
+                     <xsl:analyze-string select="self::text/node()[1]" regex="(^[0-9]+\.?)[\s| ]+([\w\W]+)">
                         <xsl:matching-substring>
                            <xsl:choose>
                               <xsl:when test="regex-group(2) != ''">
@@ -1889,7 +1902,7 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                      <xsl:value-of select="self::p/text/sup/text()"/>
                   </xsl:when>
                   <!-- Revathi: 04May2018 - Added the below code to handle variations of fnlabel content -->
-                  <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'[0-9]+[\s]?')">
+                  <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
                      <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
                   </xsl:when>
                </xsl:choose>
@@ -1912,7 +1925,7 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                      <xsl:when test="self::p/text/sup/text()">
                         <xsl:value-of select="self::p/text/sup/text()"/>
                      </xsl:when>
-                     <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'[0-9]+[\s]?')">
+                     <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
                         <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
                      </xsl:when>
                   </xsl:choose>
@@ -1931,8 +1944,8 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
                </fnlabel>
             </xsl:when>
             <xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
-               <fnlabel>
-                  <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
+               <fnlabel><!-- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -->
+                  <xsl:value-of select="replace(substring-before(self::p/text/node()[1],' '),' ','')"/>
                </fnlabel>
             </xsl:when>
          </xsl:choose>
