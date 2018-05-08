@@ -11,7 +11,7 @@
                     <docinfo:dpsi id-string="0KMN"/> 
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
-                    <docinfo:dpsi id-string="000D"/>
+                    <docinfo:dpsi id-string="0GNE"/>
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                     <docinfo:dpsi id-string="02ED"/>
