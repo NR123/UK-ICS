@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="remotelink.xsl">
+    
+    <!-- Please uncomment the block 'For unit-testing' in emph.xsl while unit testing -->
+    
+    <x:scenario label="Scenario for testing remotelink">
+        <x:context>
+            <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0KMN_2_I_INEVITABLE_ACCIDENT:HTDICT-TERM" dpsi="0KMN">inevitable accident</remotelink>
+        </x:context>
+
+        <x:expect label="remotelink is retained as it is except for the @refpt which is converted.">
+            <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="acronym:WPLD::term:INEVITABLE_ACCIDENT" docidref="TBD" dpsi="0KMN" status="valid">inevitable accident</remotelink>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="Scenario for testing remotelink where parent is url">
+        <x:context>
+            <url>
+                <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0KMN_2_I_INEVITABLE_ACCIDENT:HTDICT-TERM" dpsi="0KMN">inevitable accident</remotelink>  
+            </url>           
+        </x:context>
+        
+        <x:expect label="remotelink is retained as it is except for the @refpt which is converted.">inevitable accident</x:expect>
+    </x:scenario>
+</x:description>

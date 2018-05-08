@@ -1,6 +1,0 @@
-target/
-.idea/
-*.iml
-test/result.log
-*-result.html
-*-report.html

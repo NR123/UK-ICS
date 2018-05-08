@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe" xmlns:lnv="http://www.lexis-nexis.com/lnv"
+    xmlns:lnvni="http://www.lexis-nexis.com/lnvni" xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+    xmlns:lncle="http://www.lexis-nexis.com/lncle" xmlns:lndel="http://www.lexis-nexis.com/lndel"
+    xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+    xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+    xmlns:lnlit="http://www.lexis-nexis.com/lnlit" xmlns:lnci="http://www.lexis-nexis.com/lnci"
+    xmlns:nitf="urn:nitf:iptc.org.20010418.NITF" xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+    xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:glp="http://www.lexis-nexis.com/glp"
+    xmlns:case="http://www.lexis-nexis.com/glp/case"
+    xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+    xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+    xmlns:dict="http://www.lexis-nexis.com/glp/dict" xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+    xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+    xmlns:frm="http://www.lexis-nexis.com/glp/frm" xmlns:in="http://www.lexis-nexis.com/glp/in"
+    xmlns:leg="http://www.lexis-nexis.com/glp/leg" xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+    stylesheet="default.xsl">
+
+    <!-- Please uncomment the templates marked as 'For unit-testing' in default.xsl -->
+
+    <x:scenario label="Scenario 1: for testing a text content">
+        <x:context>
+            <text>'Whatever be the distinction between the terms &#x201c;abandon&#x201d; and &#x201c;desert&#x201d; when applied to a parent in connection with his child, both words imply in ordinary language a disregard of parental duty, and carry with them the idea of moral blame.' <emph typestyle="it">Re O'Hara</emph></text>
+        </x:context>
+
+        <x:expect label="The apostropies in the input is transformed to smart quote in LA output">
+            <text>‘Whatever be the distinction between the terms “abandon” and “desert” when applied to a parent in connection with his child, both words imply in ordinary language a disregard of parental duty, and carry with them the idea of moral blame.’ <emph typestyle="it">Re O’Hara</emph></text>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="Scenario 2: for testing a text content">
+        <x:context>'The word &#x201c;abandoned&#x201d; is not given any definition in the Act [Wife's Protection Act, RSBC 1948, c 364 (repealed; see now RSBC 1960, c 407)] but the dictionary meaning of the word indicates that it has a connotation of finality. It means the relinquishment or extinguishment of a right, the giving up of something absolutely.' </x:context>
+        <x:expect label="The apostropies in the input is transformed to smart quote in LA output">‘The word “abandoned” is not given any definition in the Act [Wife’s Protection Act, RSBC 1948, c 364 (repealed; see now RSBC 1960, c 407)] but the dictionary meaning of the word indicates that it has a connotation of finality. It means the relinquishment or extinguishment of a right, the giving up of something absolutely.’ </x:expect>
+    </x:scenario>
+</x:description>
