@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-07T18:34:03.896+05:30-->
+Compiled:  2018-05-08T10:21:07.246+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -66,25 +66,25 @@ Compiled:  2018-05-07T18:34:03.896+05:30-->
         </xsl:element>
     </xsl:template>-->   <!-- Revathi: 04May2018 - Commented the above code and included it as a condition into generic case:headnote template -->
    <xsl:template match="case:headnote">
-      <xsl:choose>
-         <xsl:when test="parent::case:body | parent::case:embeddedcase">
-            <xsl:element name="{name()}"><!--<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-->
+      <xsl:choose><!-- Revathi 07May2018 - Moved the below code inside the xsl:otherwise --><!--<xsl:when test="parent::case:body | parent::case:embeddedcase">
+                <xsl:element name="{name()}">
+                    <!-\-<xsl:apply-templates select="@* | node() except (glp:note, case:priorhist)"/>-\->
+                    <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
+                    <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
+                    <xsl:apply-templates select="case:decisionsummary/case:consideredcases"
+                        mode="references"/>
+                    <xsl:apply-templates select="case:priorhist"/>
+                </xsl:element>
+            </xsl:when>-->
+         <xsl:when test="self::case:headnote/preceding-sibling::case:headnote"/>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except (case:priorhist)"/>
                <xsl:apply-templates select="case:decisionsummary/glp:note" mode="glp.note"/>
                <xsl:apply-templates select="case:decisionsummary/case:consideredcases" mode="references"/>
                <xsl:apply-templates select="case:priorhist"/>
+               <xsl:apply-templates select="following-sibling::case:headnote" mode="grp_case.headnote"/>
             </xsl:element>
-         </xsl:when>
-         <xsl:when test="self::case:headnote/preceding-sibling::case:headnote"/>
-         <xsl:otherwise>
-            <xsl:choose>
-               <xsl:when test="self::case:headnote/not(preceding-sibling::case:headnote)">
-                  <xsl:element name="{name()}">
-                     <xsl:apply-templates/>
-                     <xsl:apply-templates select="following-sibling::case:headnote" mode="grp_case.headnote"/>
-                  </xsl:element>
-               </xsl:when>
-            </xsl:choose>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
