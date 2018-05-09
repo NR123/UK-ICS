@@ -23,16 +23,27 @@
                             </xsl:analyze-string>
                             <xsl:apply-templates select="node() except text()[1]"/>
                         </xsl:when>
+                        <!-- Revathi: The below condition is to identify the lilabel content which is occuring in the pattern '(<emph typestyle="it">b</emph>)' inside li/p/text -->
                         <xsl:when
                             test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')">
-                            <xsl:analyze-string select="self::text/node()[3]"
+                            <!--<xsl:analyze-string select="self::text/node()[3]"
                                 regex="(\)[\s|&#160;]+)">
                                 <xsl:non-matching-substring>
                                     <xsl:call-template name="replace">
                                         <xsl:with-param name="text" select="."/>
                                     </xsl:call-template>
                                 </xsl:non-matching-substring>
+                            </xsl:analyze-string>-->
+                            <xsl:analyze-string select="self::text/node()[3]"
+                                regex="(^\)[\s|&#160;]+)">
+                                <xsl:non-matching-substring>
+                                    <xsl:call-template name="replace">
+                                        <xsl:with-param name="text" select="."/>
+                                    </xsl:call-template>
+                                </xsl:non-matching-substring>
                             </xsl:analyze-string>
+                            <!--Revathi: 08May2018 - To handle the remaining nodes except for the lilabel content -->
+                            <xsl:apply-templates select="node()[position()>3]"/>
                         </xsl:when>
                         <xsl:when test="self::text/node()[1]/name() = ''">
                             <xsl:analyze-string select="self::text/text()[1]"
@@ -54,10 +65,11 @@
                 </xsl:when>
                 <xsl:when test="self::text[parent::p/parent::fnbody]">
                     <xsl:choose>
+                        <!-- Revathi: 08May2018 - Added &#160;(non-breaking-space) to the regex match -->
                         <xsl:when
-                            test="name(self::text/node()[1]) = '' and matches(substring-before(self::text/node()[1], ' '), '^[0-9]+')">
+                            test="name(self::text/node()[1]) = '' and matches(substring-before(self::text/node()[1], ' '), '^[0-9]+\.?')">
                             <xsl:analyze-string select="self::text/node()[1]"
-                                regex="(^[0-9]+)[\s]+([\w\W]+)">
+                                regex="(^[0-9]+\.?)[\s|&#160;]+([\w\W]+)">
                                
                                 <xsl:matching-substring>
                                     <xsl:choose>
