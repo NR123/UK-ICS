@@ -304,18 +304,6 @@
         </xsl:choose>
     </xsl:template>
 
-<!--Dayanand Singh 08-05-2018 -->
-    <xsl:template match="docinfo:topiccodes">
-        <xsl:element name="docinfo:topiccodes">
-            <xsl:apply-templates select="node()|@*"/>
-        </xsl:element>
-    </xsl:template>
-    
-    <xsl:template match="docinfo:topiccode">
-        <xsl:element name="docinfo:topiccode">
-            <xsl:value-of select="."/>
-        </xsl:element>
-    </xsl:template>
 
 <!--Dayanand Singh 08-05-2018 -->
     <xsl:template match="docinfo:topiccodes">
