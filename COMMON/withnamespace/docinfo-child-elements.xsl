@@ -24,7 +24,7 @@
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
                     <docinfo:dpsi id-string="0T2S"/>
-                    <!--<docinfo:dpsi id-string="0GNE"/>-->
+                    <docinfo:dpsi id-string="0GNE"/>
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                     <docinfo:dpsi id-string="02ED"/>
@@ -315,6 +315,7 @@
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
+
 
     <xsl:template
         match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
