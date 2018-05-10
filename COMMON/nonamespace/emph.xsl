@@ -84,10 +84,17 @@
 
     <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->
     <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
-
-
+    
     <xsl:template match="emph/@*">
         <xsl:copy/>
+    </xsl:template>
+    
+    <!-- DAYANAND SINGH: 10May2018-->
+    
+    <xsl:template match="emph[parent::h]">
+        <xsl:element name="emph">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
     </xsl:template>
 
 </xsl:stylesheet>
