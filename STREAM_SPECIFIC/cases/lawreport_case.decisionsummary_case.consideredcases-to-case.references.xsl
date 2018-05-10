@@ -24,4 +24,22 @@
     <xsl:template match="case:consideredcases[parent::case:decisionsummary/parent::case:headnote]" mode="grp_case.references">
         <xsl:apply-templates/>
     </xsl:template>
+    
+    <!-- Modified by Himanshu, Date: 10th May, 2018:
+        Added template to handle element /CASEDOC/case:body/case:headnote/case:factsummary/case:consideredcases 
+    -->
+    <xsl:template match="case:consideredcases[parent::case:factsummary]">
+        <case:references referencetype="cases">
+            <xsl:apply-templates select="@*|node()"/>
+        </case:references>
+    </xsl:template>
+    
+    <!-- Modified by Himanshu, Date: 10th May, 2018:
+        Added template to handle element /CASEDOC/case:body/case:headnote/case:catchwordgrp/case:consideredcases 
+    -->
+    <xsl:template match="case:consideredcases[parent::catchwordgrp]">
+        <case:references referencetype="cases">
+            <xsl:apply-templates select="@*|node()"/>
+        </case:references>
+    </xsl:template>
 </xsl:stylesheet>
