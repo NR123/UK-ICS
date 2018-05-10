@@ -21,7 +21,7 @@
     </xsl:template>
     
     <xsl:template match="page[parent::catchphrase]">
-        <xsl:element name="page">
+        <xsl:element name="page" inherit-namespaces="no">
             <xsl:apply-templates select="@*"/>
         </xsl:element>
     </xsl:template>

@@ -62,18 +62,18 @@
                         <xsl:call-template name="replace">
                             <xsl:with-param name="text" select="regex-group(1)"/>
                         </xsl:call-template>
-                        <ci:cite searchtype='CASE-REF'>
-                            <ci:case>
-                                <ci:caseref>
-                                    <ci:reporter value="{regex-group(4)}"/>
-                                    <ci:volume num="{regex-group(3)}"/>
-                                    <ci:edition>
-                                        <ci:date year="{translate(regex-group(2),'()','')}"/>
+                        <ci:cite searchtype='CASE-REF' xsl:exclude-result-prefixes="#all">
+                            <ci:case xsl:exclude-result-prefixes="#all">
+                                <ci:caseref xsl:exclude-result-prefixes="#all">
+                                    <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                                    <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                                    <ci:edition xsl:exclude-result-prefixes="#all">
+                                        <ci:date year="{translate(regex-group(2),'()','')}" xsl:exclude-result-prefixes="#all"/>
                                     </ci:edition>
-                                    <ci:page num="{regex-group(5)}"/>
+                                    <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
                                 </ci:caseref>
                             </ci:case>
-                            <ci:content><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
+                            <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
                         </ci:cite><xsl:value-of select="regex-group(6)"/>
                     </xsl:matching-substring>
                 </xsl:analyze-string>

@@ -4,25 +4,47 @@
 
     <xsl:template match="table | tbody">
         <xsl:choose>
-            <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
-            <xsl:when test="self::table/parent::fnbody and self::table/preceding-sibling::*[1][name()='p']"/>
+            <xsl:when test="self::table/parent::fnbody">
+                <footnote fntoken="0" xsl:exclude-result-prefixes="#all">
+                    <fnbody xsl:exclude-result-prefixes="#all">
+                        <p xsl:exclude-result-prefixes="#all">
+                            <xsl:element name="{name()}">
+                                <xsl:apply-templates select="@* | node()"/>
+                            </xsl:element>
+                        </p>
+                    </fnbody>
+                </footnote>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
+        
+        <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
+    Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
+    So need not move the table to the preceeding sibling p-->
+        <!--<xsl:choose>
+            <!-\- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -\->
+            <xsl:when test="self::table/parent::fnbody and self::table/preceding-sibling::*[1][name()='p']"/>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>-->
         <!-- Revathi: 07May2018 - Moved the below code as xsl:otherwise block -->
         <!--<xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>-->
     </xsl:template>
     
-    <xsl:template match="table" mode="footnote-table">
+    <!--<xsl:template match="table" mode="footnote-table">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="table/@*[not(name() = 'frame')] | row/@*"/>
 
@@ -142,7 +164,7 @@
             <!-- Revathi: 04May2018 - colspec element should be created only when there are any valid entries inside the table. So added condition to check $Maxcols is > 0 -->
             <xsl:if test="$Maxcols > 0">
                 <xsl:for-each select="1 to $Maxcols">
-                    <colspec colname="{current()}" colwidth="{tokenize($colspec,',')[current()]}"/>
+                    <colspec colname="{current()}" colwidth="{tokenize($colspec,',')[current()]}" xsl:exclude-result-prefixes="#all"/>
                 </xsl:for-each>
             </xsl:if>
 
@@ -150,7 +172,7 @@
             <xsl:for-each-group select="self::tgroup//row" group-adjacent="self::row">
                 <xsl:for-each select="current-group()">
                     <xsl:if test="current-group()/entry/text() = 'TABLE'">
-                        <thead>
+                        <thead xsl:exclude-result-prefixes="#all">
                             <xsl:apply-templates select="." mode="thead"/>
 
                         </thead>
@@ -164,9 +186,9 @@
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <tbody>
-                        <row>
-                            <entry/>
+                    <tbody xsl:exclude-result-prefixes="#all">
+                        <row xsl:exclude-result-prefixes="#all">
+                            <entry xsl:exclude-result-prefixes="#all"/>
                         </row>
                     </tbody>
                 </xsl:otherwise>
@@ -262,7 +284,7 @@
                     <xsl:choose>
                         <xsl:when test="$diff_count > 0">
                             <xsl:for-each select="1 to $diff_count">
-                                <entry>
+                                <entry xsl:exclude-result-prefixes="#all">
                                     <xsl:if
                                         test="$selectorID = 'dictionary' or $docinfo.selector = 'Transcripts'">
                                         <xsl:attribute name="colsep" select="'0'"/>

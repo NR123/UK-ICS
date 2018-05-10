@@ -9,7 +9,7 @@
     
     
     <xsl:template match="title[parent::heading/parent::dict:body][not(child::*[name()!='emph'])][$selectorID='dictionary']">
-        <xsl:element name="desig">
+        <xsl:element name="desig" inherit-namespaces="no">
             <xsl:attribute name="value">
                 <xsl:value-of select="self::title//text()"/>
             </xsl:attribute>

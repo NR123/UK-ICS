@@ -35,8 +35,8 @@
 
 
     <xsl:template match="emph[@typestyle = 'smcaps'][$selectorID = 'index']">
-        <emph typestyle="smcaps">
-            <remotelink service="DOC-ID" remotekey1="REFPTID">
+        <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
+            <remotelink service="DOC-ID" remotekey1="REFPTID" xsl:exclude-result-prefixes="#all">
                 <xsl:attribute name="refpt">
                     <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
                     <xsl:variable name="remtext" select="self::emph/text()"/>

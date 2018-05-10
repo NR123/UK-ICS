@@ -6,8 +6,8 @@
     <xsl:template match="h">
         <xsl:choose>
             <xsl:when test="self::h[preceding-sibling::*[1][name() = 'h']] and $selectorID = 'cases'">
-                <p>
-                    <text>
+                <p xsl:exclude-result-prefixes="#all">
+                    <text xsl:exclude-result-prefixes="#all">
                         <xsl:apply-templates select="self::h//text()"/>
                     </text>
                 </p>
