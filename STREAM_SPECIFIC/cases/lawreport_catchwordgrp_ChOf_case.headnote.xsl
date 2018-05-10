@@ -76,7 +76,7 @@
                     <xsl:choose>
                         <!-- When more delimiter is present, process the text before the delimiter -->
                         <xsl:when test="$test_for_last_value = 'no'">
-                            <catchphrase>
+                            <catchphrase xsl:exclude-result-prefixes="#all">
                                 <xsl:call-template name="replace">
                                     <xsl:with-param name="text"
                                         select="normalize-space(substring-before($text, $delimiter))"/>
@@ -85,13 +85,13 @@
                         </xsl:when>
                         <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
                         <xsl:when test="$test_for_last_value = 'yes'">
-                            <catchphrase>
+                            <catchphrase xsl:exclude-result-prefixes="#all">
                                 <xsl:call-template name="replace">
                                     <xsl:with-param name="text"
                                         select="normalize-space(substring-before($text, $delimiter))"/>
                                 </xsl:call-template>
                             </catchphrase>
-                            <catchphrase>
+                            <catchphrase xsl:exclude-result-prefixes="#all">
                                 <xsl:call-template name="replace">
                                     <xsl:with-param name="text"
                                         select="normalize-space(substring-after($text, $delimiter))"/>
@@ -125,7 +125,7 @@
     <xsl:template match="ci:cite[parent::catchphrase/ancestor::catchwordgrp/parent::case:headnote]"/>
 
     <xsl:template match="ci:cite[parent::catchphrase]" mode="catchphrase">
-        <catchphrase>
+        <catchphrase xsl:exclude-result-prefixes="#all">
             <xsl:value-of
                 select="normalize-space(concat(self::ci:cite//ci:content//text(), translate(following-sibling::node()[1][./name() = ''], '&#x2013;', '')))"
             />

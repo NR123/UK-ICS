@@ -15,7 +15,7 @@
     <xsl:template match="glp:note[parent::case:content]">
         <xsl:choose>
             <xsl:when test="self::glp:note/following-sibling::*[1][name()='case:appendix']">
-                <case:appendix>
+                <case:appendix xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>
                 </case:appendix>
             </xsl:when>

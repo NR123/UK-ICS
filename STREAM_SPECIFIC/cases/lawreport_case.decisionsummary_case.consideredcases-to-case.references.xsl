@@ -9,7 +9,7 @@
         mode="references">
         <xsl:choose>
             <xsl:when test="self::case:consideredcases/not(preceding-sibling::case:consideredcases)">
-                <case:references referencetype="cases">
+                <case:references referencetype="cases" xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>
                     <xsl:apply-templates select="following-sibling::case:consideredcases|following-sibling::node()[name()!=('p')][preceding-sibling::case:consideredcases]" mode="grp_case.references"/>
                 </case:references>

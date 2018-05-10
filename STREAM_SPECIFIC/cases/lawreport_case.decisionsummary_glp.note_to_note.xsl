@@ -7,7 +7,7 @@
         mode="glp.note">
         <xsl:choose>
             <xsl:when test="self::glp:note/not(preceding-sibling::glp:note)">
-                <xsl:element name="note">
+                <xsl:element name="note" inherit-namespaces="no">
                     <xsl:attribute name="notetype" select="'commentary'"/>
                     <xsl:apply-templates/>
                     <xsl:apply-templates select="following-sibling::glp:note|following-sibling::node()[preceding-sibling::glp:note][not(preceding-sibling::case:consideredcases)]" mode="grp_glp.note"/>                    
@@ -26,7 +26,7 @@
     
     <!--Dayanand Singh 2018-4-30 ceated new template match-->
     <xsl:template match="glp:note[parent::case:constituents/parent::case:judgment]">
-        <xsl:element name="glp:note">
+        <xsl:element name="glp:note" inherit-namespaces="no">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>

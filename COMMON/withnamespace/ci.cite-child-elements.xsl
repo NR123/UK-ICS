@@ -15,9 +15,9 @@
             <xsl:when test="self::ci:content and matches(self::ci:content,'(\[[0-9]{4}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)') and $selectorID='index'">
                 <xsl:analyze-string select="self::ci:content" regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
                     <xsl:matching-substring>
-                        <ci:content>
+                        <ci:content xsl:exclude-result-prefixes="#all">
                             <xsl:value-of select="concat(regex-group(1),' ')"/>
-                            <emph typestyle="bf">
+                            <emph typestyle="bf" xsl:exclude-result-prefixes="#all">
                                 <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
                             </emph>
                             <xsl:value-of select="concat(' ',regex-group(4))"/>
