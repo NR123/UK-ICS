@@ -11,8 +11,10 @@
                     <xsl:choose>
                         <xsl:when
                             test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('">
+                            <!--<xsl:analyze-string select="self::text/text()[1]"
+                                regex="^(\(?[a-zA-Z0-9]+\)?\.?|●|&#x25cf;|&#x2022;)([\t ]*)">-->
                             <xsl:analyze-string select="self::text/text()[1]"
-                                regex="^(\([a-zA-Z0-9]+\)|●|&#x25cf;|&#x2022;)([\t ]*)">
+                                regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:non-matching-substring>
                                     <xsl:call-template name="replace">
                                         <xsl:with-param name="text"
@@ -26,8 +28,8 @@
                         <!-- Revathi: The below condition is to identify the lilabel content which is occuring in the pattern '(<emph typestyle="it">b</emph>)' inside li/p/text -->
                         <xsl:when
                             test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')">
-                            <!--<xsl:analyze-string select="self::text/node()[3]"
-                                regex="(\)[\s|&#160;]+)">
+                           <!-- <xsl:analyze-string select="self::text/node()[3]"
+                                regex="(^\)[\s|&#160;]+)">
                                 <xsl:non-matching-substring>
                                     <xsl:call-template name="replace">
                                         <xsl:with-param name="text" select="."/>
@@ -35,12 +37,12 @@
                                 </xsl:non-matching-substring>
                             </xsl:analyze-string>-->
                             <xsl:analyze-string select="self::text/node()[3]"
-                                regex="(^\)[\s|&#160;]+)">
-                                <xsl:non-matching-substring>
+                                regex="(^\)\.?[\s|&#160;]*)([\w\W]*)">
+                                <xsl:matching-substring>
                                     <xsl:call-template name="replace">
-                                        <xsl:with-param name="text" select="."/>
+                                        <xsl:with-param name="text" select="regex-group(2)"/>
                                     </xsl:call-template>
-                                </xsl:non-matching-substring>
+                                </xsl:matching-substring>
                             </xsl:analyze-string>
                             <!--Revathi: 08May2018 - To handle the remaining nodes except for the lilabel content -->
                             <xsl:apply-templates select="node()[position()>3]"/>
@@ -63,13 +65,13 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="self::text[parent::p/parent::fnbody]">
+                <!--<xsl:when test="self::text[parent::p/parent::fnbody]">
                     <xsl:choose>
-                        <!-- Revathi: 08May2018 - Added &#160;(non-breaking-space) to the regex match -->
+                        <!-\- Revathi: 08May2018 - Added &#160;(non-breaking-space) to the regex match -\->
                         <xsl:when
-                            test="name(self::text/node()[1]) = '' and matches(substring-before(self::text/node()[1], ' '), '^[0-9]+\.?')">
+                            test="name(self::text/node()[1]) = '' and matches(self::text/node()[1], '(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+')">
                             <xsl:analyze-string select="self::text/node()[1]"
-                                regex="(^[0-9]+\.?)[\s|&#160;]+([\w\W]+)">
+                                regex="(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+([\w\W]+)">
                                
                                 <xsl:matching-substring>
                                     <xsl:choose>
@@ -90,7 +92,7 @@
                     </xsl:choose>
 
 
-                </xsl:when>
+                </xsl:when>-->
                 <!-- Revathi: 04May2018 - Added the below code to handle the content apart from pnum content.-->
                 <xsl:when
                     test="self::text/node()[1][name() = ''] and matches(self::text/node()[1], '^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')  and $selectorID = 'journal'">

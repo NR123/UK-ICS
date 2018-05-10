@@ -13,44 +13,61 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template name="fntoken">
+    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
+    Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
+    So the element sup should be retained as sup itself in LA output.-->
+    
+    <!--<xsl:template name="fntoken">
         <xsl:param name="fnlabel_footnote"/>
         <xsl:choose>
             <xsl:when test="//sup[self::sup/text()=$fnlabel_footnote][ancestor::fnbody]">
                 <xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][ancestor::fnbody]" mode="footnote"/> 
             </xsl:when>
-            <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
-                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
+            <!-\- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
+                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -\->
+            <!-\-<xsl:when test="//fnbody/p/text[substring-before(self::text/node()[1],' ')=$fnlabel_footnote]">
+                <xsl:apply-templates select="//fnbody/p/text[substring-before(self::text/node()[1],' ')=$fnlabel_footnote]" mode="footnote"/> 
+            </xsl:when>-\->
+            <xsl:when test="//fnbody/p/text[substring-before(self::text/node()[1],'&#160;')=$fnlabel_footnote]">
+                <xsl:apply-templates select="//fnbody/p/text[substring-before(self::text/node()[1],'&#160;')=$fnlabel_footnote]" mode="footnote"/> 
+            </xsl:when>
             <xsl:when test="//fnbody/p/text[substring-before(self::text/node()[1],' ')=$fnlabel_footnote]">
                 <xsl:apply-templates select="//fnbody/p/text[substring-before(self::text/node()[1],' ')=$fnlabel_footnote]" mode="footnote"/> 
             </xsl:when>
         </xsl:choose>
-        <!-- Revathi: 04May2018 - Commented the below code and added the above code -->
-        <!--<xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][ancestor::fnbody]" mode="footnote"/> -->
+        <!-\- Revathi: 04May2018 - Commented the below code and added the above code -\->
+        <!-\-<xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][ancestor::fnbody]" mode="footnote"/> -\->
        
-    </xsl:template>
+    </xsl:template>-->
     
-    <xsl:template name="fnrtoken">
+    <!--<xsl:template name="fnrtoken">
         <xsl:param name="fnlabel_footnote"/>          
         <xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][not(ancestor::fnbody)]" mode="footnote"/>        
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- Revathi: 04May2018 - Added a condition check -->
-    <xsl:template match="//sup | //fnbody/p/text" mode="footnote">
+    <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
-    </xsl:template>
-
+    </xsl:template>-->
+    
     <xsl:template match="p[parent::fnbody]">
-        <footnote type="editorial">
-            <xsl:attribute name="fntoken">
+        <footnote type="editorial" xsl:exclude-result-prefixes="#all">
+            <xsl:attribute name="fntoken" select="0"/>
+            <!--<xsl:attribute name="fntoken">
                 <xsl:variable name="v_fnlabel">
                     <xsl:choose>
                         <xsl:when test="self::p/text/sup/text()">
                             <xsl:value-of select="self::p/text/sup/text()"/>
                         </xsl:when>
-                        <!-- Revathi: 04May2018 - Added the below code to handle variations of fnlabel content -->
-                        <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
-                            <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
+                        <!-\- Revathi: 04May2018 - Added the below code to handle variations of fnlabel content -\->
+                        <xsl:when test="name(self::p/text/node()[1])='' and matches(self::p/text/node()[1],'(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+')">
+                            <xsl:analyze-string select="self::p/text/node()[1]"
+                                regex="(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+([\w\W]+)">
+                                
+                                <xsl:matching-substring>
+                                    <xsl:value-of select="regex-group(1)"/>
+                                </xsl:matching-substring>
+                            </xsl:analyze-string>
                         </xsl:when>
                     </xsl:choose>
                 </xsl:variable>
@@ -74,8 +91,14 @@
                             <xsl:when test="self::p/text/sup/text()">
                                 <xsl:value-of select="self::p/text/sup/text()"/>
                             </xsl:when>
-                            <xsl:when test="name(self::p/text/node()[1])='' and matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+[\s]?')">
-                                <xsl:value-of select="substring-before(self::p/text/node()[1],' ')"/>
+                            <xsl:when test="name(self::p/text/node()[1])='' and matches(self::p/text/node()[1],'(^\(?[0-9a-zA-Z]+\.?\)?)')">
+                                <xsl:analyze-string select="self::p/text/node()[1]"
+                                    regex="(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+([\w\W]+)">
+                                    
+                                    <xsl:matching-substring>
+                                        <xsl:value-of select="regex-group(1)"/>
+                                    </xsl:matching-substring>
+                                </xsl:analyze-string>
                             </xsl:when>
                         </xsl:choose>
                     </xsl:with-param>
@@ -84,22 +107,36 @@
             
             <xsl:if test="$fnrval!=''">
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
-            </xsl:if>
+            </xsl:if>-->
             
             <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
                 But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
             <xsl:choose>
                 <xsl:when test="self::p/text/*[1][name() = 'sup']">                
-                    <fnlabel>
+                    <fnlabel xsl:exclude-result-prefixes="#all">
                         <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                     </fnlabel>
                 </xsl:when>
-                <xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
-                    <fnlabel>
-                        <!-- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -->
-                        <xsl:value-of select="replace(substring-before(self::p/text/node()[1],' '),'&#160;','')"/>
+                <!--<xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
+                    <fnlabel xsl:exclude-result-prefixes="#all">
+                        <!-\- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -\->
+                        <!-\-<xsl:value-of select="replace(substring-before(self::p/text/node()[1],' '),'&#160;','')"/>-\->
+                        
+                        <xsl:choose>
+                            <xsl:when
+                                test="name(self::p/text/node()[1]) = '' and matches(self::p/text/node()[1], '(^\(?[0-9a-zA-Z]+\.?\)?)')">
+                                <xsl:analyze-string select="self::p/text/node()[1]"
+                                    regex="(^\(?[0-9a-zA-Z]+\.?\)?)[\s|&#160;]+([\w\W]+)">
+                                    
+                                    <xsl:matching-substring>
+                                        <xsl:value-of select="regex-group(1)"/>
+                                    </xsl:matching-substring>
+                                </xsl:analyze-string>
+                            </xsl:when>
+                        </xsl:choose>
+                        
                     </fnlabel>
-                </xsl:when>
+                </xsl:when>-->
             </xsl:choose>
             
             <!-- Revathi: 04May2018 - Commented the below code and added the above code -->
@@ -109,11 +146,11 @@
                     <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                 </fnlabel>
             </xsl:if>-->
-            <fnbody>
-                <p>
+            <fnbody xsl:exclude-result-prefixes="#all">
+                <p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      
                     <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
-                    <xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>
+                    <!--<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-->
                 </p>
             </fnbody>
         </footnote>

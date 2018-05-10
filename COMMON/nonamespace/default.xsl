@@ -32,7 +32,7 @@
         <xsl:param name="text" select="."/>
         <xsl:param name="usequote" select="$openquote"/>
         <xsl:choose>            
-            <xsl:when test="contains($text,$quot)">
+            <!--<xsl:when test="contains($text,$quot)">
                 <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
                 <xsl:choose>
                     <xsl:when test="matches(substring-after($text,$quot),'^\s')">
@@ -52,7 +52,7 @@
                     <xsl:with-param name="usequote"
                         select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
                 </xsl:call-template>
-            </xsl:when>
+            </xsl:when>-->
       
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
@@ -62,18 +62,18 @@
                         <xsl:call-template name="replace">
                             <xsl:with-param name="text" select="regex-group(1)"/>
                         </xsl:call-template>
-                        <ci:cite searchtype='CASE-REF'>
-                            <ci:case>
-                                <ci:caseref>
-                                    <ci:reporter value="{regex-group(4)}"/>
-                                    <ci:volume num="{regex-group(3)}"/>
-                                    <ci:edition>
-                                        <ci:date year="{translate(regex-group(2),'()','')}"/>
+                        <ci:cite searchtype='CASE-REF' xsl:exclude-result-prefixes="#all">
+                            <ci:case xsl:exclude-result-prefixes="#all">
+                                <ci:caseref xsl:exclude-result-prefixes="#all">
+                                    <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                                    <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                                    <ci:edition xsl:exclude-result-prefixes="#all">
+                                        <ci:date year="{translate(regex-group(2),'()','')}" xsl:exclude-result-prefixes="#all"/>
                                     </ci:edition>
-                                    <ci:page num="{regex-group(5)}"/>
+                                    <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
                                 </ci:caseref>
                             </ci:case>
-                            <ci:content><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
+                            <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
                         </ci:cite><xsl:value-of select="regex-group(6)"/>
                     </xsl:matching-substring>
                 </xsl:analyze-string>
