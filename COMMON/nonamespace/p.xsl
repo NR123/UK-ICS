@@ -28,7 +28,7 @@
                     <!-- Revathi - 04MAy2018 - Commented the above code and added the below code to correctly capture pnum -->
                     <xsl:analyze-string select="child::text/node()[1]" regex="^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)">
                         <xsl:matching-substring>
-                            <pnum>
+                            <pnum xsl:exclude-result-prefixes="#all">
                                 <xsl:call-template name="replace">
                                     <xsl:with-param name="text" select="."/>
                                 </xsl:call-template>

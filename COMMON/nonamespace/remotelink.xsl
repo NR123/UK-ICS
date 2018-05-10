@@ -27,7 +27,7 @@
                  <xsl:apply-templates select="@* except(@href)"/>
                  <xsl:choose>
                      <xsl:when test="self::remotelink/node()[1]/name()!='emph'">
-                         <emph typestyle="un">
+                         <emph typestyle="un" xsl:exclude-result-prefixes="#all">
                              <xsl:apply-templates select="node()"/>
                          </emph>   
                      </xsl:when>

@@ -12,7 +12,7 @@
             <xsl:when test="self::case:judgments/not(preceding-sibling::case:judgments) and self::case:judgments[child::node()]">
                 <xsl:element name="{name()}">
                     <xsl:if test="parent::case:content/preceding-sibling::case:headnote//case:decisionsummary/p">
-                        <prelim>
+                        <prelim xsl:exclude-result-prefixes="#all">
                             <xsl:apply-templates select="parent::case:content/preceding-sibling::case:headnote//case:decisionsummary/p" mode="prelim"/>
                         </prelim>
                     </xsl:if>
@@ -28,7 +28,7 @@
     </xsl:template>
     
     <xsl:template match="glp:note[parent::case:judgments]">
-        <prelim>
+        <prelim xsl:exclude-result-prefixes="#all">
             <!-- This mode is defined in the file "case.judgements_ChOf_case.content.xsl" -->
             <xsl:apply-templates mode="prelim"/>
         </prelim>      
