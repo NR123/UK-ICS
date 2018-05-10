@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
@@ -17,15 +16,14 @@
                     </xsl:matching-substring>
                 </xsl:analyze-string>
             </xsl:variable>
-            
-            <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}"/> 
+
+            <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}" xsl:exclude-result-prefixes="#all"/> 
             <!--<xsl:choose>
                 <xsl:when test="$selectorID='dictionary'">
                     <docinfo:dpsi id-string="0KMN"/> 
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
                     <docinfo:dpsi id-string="0T2S"/>
-                    <!--<docinfo:dpsi id-string="0GNE"/>-->
                 </xsl:when>
                 <xsl:when test="$selectorID='cases' and $docinfo.selector='Transcript'">
                     <docinfo:dpsi id-string="02ED"/>
@@ -303,9 +301,8 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-
-
-<!--Dayanand Singh 08-05-2018 -->
+    
+    <!--Dayanand Singh 08-05-2018 -->
     <xsl:template match="docinfo:topiccodes">
         <xsl:element name="docinfo:topiccodes">
             <xsl:apply-templates select="node()|@*"/>
@@ -317,7 +314,8 @@
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-
+    
+    
 
     <xsl:template
         match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
@@ -325,4 +323,3 @@
 
 
 </xsl:stylesheet>
-
