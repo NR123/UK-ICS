@@ -91,10 +91,11 @@
     
     <!-- DAYANAND SINGH: 10May2018-->
     
-    <xsl:template match="emph[parent::h]">
+    <!--<xsl:template match="emph[parent::h]">
         <xsl:element name="emph">
             <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
-    </xsl:template>
+    </xsl:template>-->
+    <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
 
 </xsl:stylesheet>
