@@ -1,9 +1,0 @@
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\bin\Debug\LADatabase.mdf
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\bin\Debug\LADatabase_log.ldf
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\obj\Debug\FileHandlingApplication.csprojResolveAssemblyReference.cache
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\obj\Debug\FileHandlingApplication.csproj.CoreCompileInputs.cache
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\obj\Debug\FileHandlingApplication.exe
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\obj\Debug\FileHandlingApplication.pdb
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\bin\Debug\FileHandlingApplication.exe.config
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\bin\Debug\FileHandlingApplication.exe
-C:\Murali\Application\FileHandlingApplication\FileHandlingApplication\bin\Debug\FileHandlingApplication.pdb
