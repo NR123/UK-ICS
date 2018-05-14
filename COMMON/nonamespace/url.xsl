@@ -11,6 +11,12 @@
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
+            </xsl:when>       
+<!--   Dayanand singh 14 MAY 2018 Added for casse selector id -->
+            <xsl:when test="$selectorID='cases'">
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates select="@* | node()"/>        
