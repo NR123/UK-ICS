@@ -8,6 +8,13 @@
     <xsl:template match="remotelink">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@*"/>
+            <xsl:if test="$selectorID='index'">
+                <xsl:attribute name="refpt">
+                    <xsl:call-template name="fn_refpt">
+                        <xsl:with-param name="id" select="self::remotelink/@refpt"/>
+                    </xsl:call-template>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:attribute name="status" select="'valid'"/>
             <xsl:apply-templates select="node()"/>            
         </xsl:element>
@@ -18,6 +25,9 @@
             <xsl:value-of select="."/>
         </xsl:attribute>
     </xsl:template>
+    
+    <xsl:template match="remotelink/@refpt[$selectorID='index']"/>
+    
 
     <xsl:template match="remotelink[$selectorID='journal']">
              <xsl:element name="{name()}">

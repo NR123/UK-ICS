@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-10T13:58:57.649+05:30-->
+Compiled:  2018-05-15T15:09:32.498+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -330,6 +330,22 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
                  mode="grp_case.references">
       <xsl:apply-templates/>
    </xsl:template>
+   <!-- Modified by Himanshu, Date: 10th May, 2018:
+        Added template to handle element /CASEDOC/case:body/case:headnote/case:factsummary/case:consideredcases 
+    -->
+   <xsl:template match="case:consideredcases[parent::case:factsummary]">
+      <case:references referencetype="cases">
+         <xsl:apply-templates select="@*|node()"/>
+      </case:references>
+   </xsl:template>
+   <!-- Modified by Himanshu, Date: 10th May, 2018:
+        Added template to handle element /CASEDOC/case:body/case:headnote/case:catchwordgrp/case:consideredcases 
+    -->
+   <xsl:template match="case:consideredcases[parent::catchwordgrp]">
+      <case:references referencetype="cases">
+         <xsl:apply-templates select="@*|node()"/>
+      </case:references>
+   </xsl:template>
 
    <xsl:template match="case:priorhist[ancestor::case:headnote]">
       <xsl:element name="{name()}">
@@ -483,17 +499,29 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
+
+   <xsl:template match="case:dates">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:decisiondate">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
+   <xsl:variable name="v_getDPSI">
+      <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
+         <xsl:matching-substring>
+            <xsl:value-of select="regex-group(1)"/>
+         </xsl:matching-substring>
+      </xsl:analyze-string>
+   </xsl:variable>
    <xsl:template match="docinfo">
       <xsl:element name="{name()}">
-         <xsl:variable name="v_getDPSI">
-            <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
-               <xsl:matching-substring>
-                  <xsl:value-of select="regex-group(1)"/>
-               </xsl:matching-substring>
-            </xsl:analyze-string>
-         </xsl:variable>
          <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}"
                        xsl:exclude-result-prefixes="#all"/>
          <!--<xsl:choose>
@@ -801,27 +829,26 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
    <xsl:template match="text()" name="replace" priority="20">
       <xsl:param name="text" select="."/>
       <xsl:param name="usequote" select="$openquote"/>
-      <xsl:choose><!--<xsl:when test="contains($text,$quot)">
-                <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
-                <xsl:choose>
-                    <xsl:when test="matches(substring-after($text,$quot),'^\s')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    
-                    <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    <xsl:otherwise>  
-                        <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>                      
-                    </xsl:otherwise>
-                </xsl:choose>
-                
-                <xsl:call-template name="replace">
-                    <xsl:with-param name="text" select="substring-after($text,$quot)"/>
-                    <xsl:with-param name="usequote"
-                        select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
-                </xsl:call-template>
-            </xsl:when>-->
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
                                 regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
@@ -924,7 +951,7 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
    </xsl:template>
 
    <xsl:template match="refpt[$selectorID='dictionary']">
-      <xsl:element name="{name()}">
+      <xsl:element name="{name()}" inherit-namespaces="no">
          <xsl:attribute name="type" select="./@type"/>
          <xsl:choose>
             <xsl:when test="$selectorID = 'dictionary'">
@@ -961,14 +988,57 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
                </xsl:matching-substring>
             </xsl:analyze-string>
          </xsl:when>
-         <xsl:when test="self::refpt[$selectorID='index']">
-            <xsl:analyze-string select="$id"
-                                regex="([\w]{{4}}_[0-9]+_[A-Z]+_)([\w_]+)(:HTCOMM-INDEXID)">
-               <xsl:matching-substring>
-                  <xsl:value-of select="concat('acronym:HALS-INDEX::term:', regex-group(2))"/>
-               </xsl:matching-substring>
-            </xsl:analyze-string>
+         <xsl:when test="self::refpt[$selectorID='index']"><!-- <xsl:choose>
+                    <xsl:when test="matches(self::refpt/node()[1], '([\w]{4}_[0-9]+_[A-Z]+_)([\w_]+)(:HTCOMM-INDEXID)')">
+                        <xsl:analyze-string select="$id" regex="([\w]{{4}}_[0-9]+_[A-Z]+_)([\w_]+)(:HTCOMM-INDEXID)">
+                            <xsl:matching-substring>
+                                <xsl:value-of select="concat('acronym:HALS-INDEX::term:', regex-group(2))"/>
+                            </xsl:matching-substring>
+                        </xsl:analyze-string>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="$id"/>
+                    </xsl:otherwise>
+                </xsl:choose> -->
+            <xsl:variable name="v_normalize">
+               <xsl:call-template name="Normalize_id_string">
+                  <xsl:with-param name="string" select="self::refpt/following-sibling::node()"/>
+               </xsl:call-template>
+            </xsl:variable>
+            <xsl:value-of select="concat('acronym:HALS-INDEX::term:',$v_normalize)"/>
          </xsl:when>
+         <xsl:when test="self::remotelink[$selectorID='index']">
+            <xsl:attribute name="refpt">
+               <xsl:variable name="prepend" select="'acronym:HALS::'"/>
+               <xsl:variable name="volume">
+                  <xsl:variable name="v_getvalue">
+                     <xsl:analyze-string select="$id"
+                                         regex="(([0-9][0-9a-z]{{3}}_[0-9]+_([0-9a-zA-Z_]+)):[\w]+-VOL)(_([\w]+):[\w]+-PARA)">
+                        <xsl:matching-substring>
+                           <xsl:value-of select="regex-group(3)"/>
+                        </xsl:matching-substring>
+                     </xsl:analyze-string>
+                  </xsl:variable>
+                  <xsl:value-of select="concat('volume:', normalize-space($v_getvalue))"/>
+               </xsl:variable>
+               <xsl:variable name="paragraph">
+                  <xsl:variable name="v_getvalue">
+                     <xsl:analyze-string select="$id"
+                                         regex="(([0-9][0-9a-z]{{3}}_[0-9]+_([0-9a-zA-Z_]+)):[\w]+-VOL)(_([\w]+):[\w]+-PARA)">
+                        <xsl:matching-substring>
+                           <xsl:value-of select="regex-group(5)"/>
+                        </xsl:matching-substring>
+                     </xsl:analyze-string>
+                  </xsl:variable>
+                  <xsl:value-of select="concat('paragraph:', normalize-space($v_getvalue))"/>
+               </xsl:variable>
+               <!-- attribute @refpt value -->
+               <xsl:value-of select="concat($prepend,$volume,'::',$paragraph)"/>
+            </xsl:attribute>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of select="$id"/>
+         </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
 
@@ -1027,9 +1097,10 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
             <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
                <xsl:choose>
                   <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('"><!--<xsl:analyze-string select="self::text/text()[1]"
-                                regex="^(\(?[a-zA-Z0-9]+\)?\.?|●|&#x25cf;|&#x2022;)([\t ]*)">-->
+                                regex="^(\(?[a-zA-Z0-9]+\)?\.?|●|&#x25cf;|&#x2022;)([\t ]*)">--><!--<xsl:analyze-string select="self::text/text()[1]"
+                                regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">-->
                      <xsl:analyze-string select="self::text/text()[1]"
-                                         regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s| ){{1,}}">
+                                         regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
                         <xsl:non-matching-substring>
                            <xsl:call-template name="replace">
                               <xsl:with-param name="text"
@@ -1146,7 +1217,17 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
    </xsl:template>
 
    <xsl:template match="emph[@typestyle = 'bf'][$selectorID = 'index']">
-      <xsl:apply-templates/>
+      <xsl:choose>
+         <xsl:when test="self::emph/parent::remotelink">
+            <xsl:apply-templates/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:attribute name="typestyle" select="./@typestyle"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="emph[parent::jrnl:articletitle][$selectorID = 'journal'] | emph[parent::name.text][$selectorID = 'journal'] | emph[parent::title][$selectorID = 'journal'] | emph[ancestor::abstract][$selectorID = 'journal']">
@@ -1200,10 +1281,21 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
    <xsl:template match="emph/@*">
       <xsl:copy/>
    </xsl:template>
-
+   <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
+        <xsl:element name="emph">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+    </xsl:template>-->   <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
    <xsl:template match="remotelink">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@*"/>
+         <xsl:if test="$selectorID='index'">
+            <xsl:attribute name="refpt">
+               <xsl:call-template name="fn_refpt">
+                  <xsl:with-param name="id" select="self::remotelink/@refpt"/>
+               </xsl:call-template>
+            </xsl:attribute>
+         </xsl:if>
          <xsl:attribute name="status" select="'valid'"/>
          <xsl:apply-templates select="node()"/>
       </xsl:element>
@@ -1214,6 +1306,8 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
          <xsl:value-of select="."/>
       </xsl:attribute>
    </xsl:template>
+
+   <xsl:template match="remotelink/@refpt[$selectorID='index']"/>
 
    <xsl:template match="remotelink[$selectorID='journal']">
       <xsl:element name="{name()}">
@@ -1487,9 +1581,9 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
          <xsl:choose>
             <xsl:when test="following-sibling::p">
                <xsl:choose>
-                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('"><!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="^(\(?[a-zA-Z0-9]+\)?\.?|&#x25cf;|&#x2022;)([\t&#160;]*)">-->
+                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('"><!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="^(\(?[a-zA-Z0-9]+\)?\.?|&#x25cf;|&#x2022;)([\t&#160;]*)">--><!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">-->
                      <xsl:analyze-string select="following-sibling::p/text/text()[1]"
-                                         regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s| ){{1,}}">
+                                         regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
                         <xsl:matching-substring>
                            <xsl:value-of select="regex-group(1)"/>
                         </xsl:matching-substring>
@@ -1887,6 +1981,14 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
          </xsl:when>
+         <!-- added url element so choosed cases as selectorID by himanshu -->
+         <!--   Dayanand singh 14 MAY 2018 Added for casse selector id -->
+         <xsl:when test="$selectorID='cases'">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:when>
+         <!-- end -->
          <xsl:otherwise>
             <xsl:apply-templates select="@* | node()"/>
          </xsl:otherwise>
