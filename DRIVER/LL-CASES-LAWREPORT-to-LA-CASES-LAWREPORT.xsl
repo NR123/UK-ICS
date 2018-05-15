@@ -760,6 +760,19 @@ Compiled:  2018-05-10T13:58:57.649+05:30-->
       </xsl:element>
    </xsl:template>
 
+  <!--Dayanand Singh 08-05-2018 -->
+    <xsl:template match="docinfo:topiccodes">
+        <xsl:element name="docinfo:topiccodes">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="docinfo:topiccode">
+        <xsl:element name="docinfo:topiccode">
+            <xsl:value-of select="."/>
+        </xsl:element>
+    </xsl:template>
+
    <xsl:template match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
                  priority="20"/>
 
