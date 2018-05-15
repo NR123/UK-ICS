@@ -60,7 +60,8 @@
                     <xsl:choose>
                         <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('">                            
                             <!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="^(\(?[a-zA-Z0-9]+\)?\.?|&#x25cf;|&#x2022;)([\t&#160;]*)">-->
-                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">
+                            <!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">-->
+                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
                                     <xsl:value-of select="regex-group(1)"/>                             
                                 </xsl:matching-substring>

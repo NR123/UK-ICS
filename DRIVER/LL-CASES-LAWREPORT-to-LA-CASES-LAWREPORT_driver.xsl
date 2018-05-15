@@ -62,6 +62,12 @@
     <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.appendix_ChOf_case.content.xsl"/>
 
     <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.author_ChOf_case.content.xsl"/>
+    
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.dates.xsl"/>
+    
+    <xsl:include href="../STREAM_SPECIFIC/cases/lawreport_case.decisiondate.xsl"/>
+    
+    
     <!-- END OF CONTENT SPECIFIC XSLS -->
 
     <!-- START OF GENERIC XSLS -->
