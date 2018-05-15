@@ -12,6 +12,14 @@
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
             </xsl:when>
+            
+  <!-- added url element so choosed cases as selectorID by himanshu -->          
+            <xsl:when test="$selectorID='cases'">
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:when>
+  <!-- end -->          
             <xsl:otherwise>
                 <xsl:apply-templates select="@* | node()"/>        
             </xsl:otherwise>
