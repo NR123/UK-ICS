@@ -25,7 +25,17 @@
     </xsl:template>
 
     <xsl:template match="emph[@typestyle = 'bf'][$selectorID = 'index']">
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <xsl:when test="self::emph/parent::remotelink">
+                <xsl:apply-templates/>   
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:attribute name="typestyle" select="./@typestyle"/>
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>        
     </xsl:template>
 
     <xsl:template
@@ -35,20 +45,28 @@
 
 
     <xsl:template match="emph[@typestyle = 'smcaps'][$selectorID = 'index']">
-        <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
-            <remotelink service="DOC-ID" remotekey1="REFPTID" xsl:exclude-result-prefixes="#all">
-                <xsl:attribute name="refpt">
-                    <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
-                    <xsl:variable name="remtext" select="self::emph/text()"/>
-                    <xsl:value-of
-                        select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
-                </xsl:attribute>
-                <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
-                <xsl:attribute name="dpsi" select="'003B'"/>
-                <xsl:attribute name="status" select="'valid'"/>
+        <xsl:choose>
+            <xsl:when test="self::emph[not(child::remotelink)]">
+                <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
+                    <remotelink service="DOC-ID" remotekey1="REFPTID" xsl:exclude-result-prefixes="#all">
+                        <xsl:attribute name="refpt">
+                            <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
+                            <xsl:variable name="remtext" select="self::emph"/>
+                            <xsl:value-of
+                                select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
+                        <xsl:attribute name="dpsi" select="'003B'"/>
+                        <xsl:attribute name="status" select="'valid'"/>
+                        <xsl:apply-templates/>
+                    </remotelink>
+                </emph>
+            </xsl:when>
+            <xsl:otherwise>
                 <xsl:apply-templates/>
-            </remotelink>
-        </emph>
+            </xsl:otherwise>
+        </xsl:choose>
+        
     </xsl:template>
 
     <xsl:template match="emph">
@@ -89,5 +107,15 @@
     <xsl:template match="emph/@*">
         <xsl:copy/>
     </xsl:template>
+    
+    <!-- DAYANAND SINGH: 10May2018-->
+    
+    <!--<xsl:template match="emph[parent::h]">
+        <xsl:element name="emph">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+    </xsl:template>-->
+    <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
+    
 
 </xsl:stylesheet>

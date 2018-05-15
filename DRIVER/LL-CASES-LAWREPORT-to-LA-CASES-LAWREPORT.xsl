@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-15T15:09:32.498+05:30-->
+Compiled:  2018-05-15T17:41:53.052+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -1222,21 +1222,28 @@ Compiled:  2018-05-15T15:09:32.498+05:30-->
    </xsl:template>
 
    <xsl:template match="emph[@typestyle = 'smcaps'][$selectorID = 'index']">
-      <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
-         <remotelink service="DOC-ID"
-                     remotekey1="REFPTID"
-                     xsl:exclude-result-prefixes="#all">
-            <xsl:attribute name="refpt">
-               <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
-               <xsl:variable name="remtext" select="self::emph/text()"/>
-               <xsl:value-of select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
-            </xsl:attribute>
-            <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
-            <xsl:attribute name="dpsi" select="'003B'"/>
-            <xsl:attribute name="status" select="'valid'"/>
+      <xsl:choose>
+         <xsl:when test="self::emph[not(child::remotelink)]">
+            <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
+               <remotelink service="DOC-ID"
+                           remotekey1="REFPTID"
+                           xsl:exclude-result-prefixes="#all">
+                  <xsl:attribute name="refpt">
+                     <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
+                     <xsl:variable name="remtext" select="self::emph"/>
+                     <xsl:value-of select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
+                  </xsl:attribute>
+                  <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
+                  <xsl:attribute name="dpsi" select="'003B'"/>
+                  <xsl:attribute name="status" select="'valid'"/>
+                  <xsl:apply-templates/>
+               </remotelink>
+            </emph>
+         </xsl:when>
+         <xsl:otherwise>
             <xsl:apply-templates/>
-         </remotelink>
-      </emph>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="emph">

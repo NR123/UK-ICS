@@ -59,324 +59,297 @@
     </xsl:template>
 
     <!--<xsl:template match="in:entry-text" mode="in-entry">-->
+
     <xsl:template name="fn-entry-text" as="item()*">
         <xsl:param name="indexref" as="element()*"/>
-        
-        <xsl:choose>
-            <!-- When child element is remotelink -->
-            <!-- Eg: <emph typestyle="bf">
+        <xsl:for-each select="$indexref/child::node()">
+            <xsl:choose>
+                <!-- When child element is remotelink -->
+                <!-- Eg: <emph typestyle="bf">
 							<remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0089_2_70:HTCOMM-VOL_5:HTCOMM-EDITION_93:HTCOMM-PARA" dpsi="0089">70</remotelink>
 						</emph>
 						<remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0089_2_70:HTCOMM-VOL_5:HTCOMM-EDITION_93:HTCOMM-PARA" dpsi="0089"> (5th) 93</remotelink>; -->
+                <xsl:when
+                    test="self::node()[self::emph[child::remotelink]][following-sibling::node()[1][name() = 'remotelink']]">
+                    <xsl:variable name="dpsi">
+                        <xsl:value-of select="self::emph/child::remotelink/@dpsi"/>
+                    </xsl:variable>
 
-            <xsl:when
-                test="$indexref/child::node()[1]/name() = 'emph' and $indexref/child::node()[1][name()='emph'][not(child::*[name() != 'remotelink'])]/following-sibling::node()[1][name() = 'remotelink']">
-                <!-- The content emph/remotelink and its immediate following sibling remotelink are grouped under a single remotelink element in LA. 
-                The below for-each-group is to group if there is multiple groups of emph/remotelink-following-sibling remotelink pair.-->
-                <!--<xsl:for-each-group select="emph" group-by="self::emph">-->
-                <xsl:for-each select="$indexref/node()">
+                    <xsl:variable name="volume">
+                        <xsl:choose>
+                            <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
+                            <xsl:when
+                                test="string-length(self::emph//remotelink) > 1 and matches(substring(self::emph//remotelink, 1, 2), '[0-9]{2}')">
+                                <xsl:value-of
+                                    select="concat('volume:', substring(self::emph//remotelink, 2))"
+                                />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="''"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+
                     <xsl:choose>
-                        <xsl:when test="self::emph/following-sibling::node()[1][name() = 'remotelink']">
-                            <xsl:variable name="dpsi">
-                                <xsl:value-of select="self::emph/child::remotelink/@dpsi"/>
-                            </xsl:variable>
+                        <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
+                        <xsl:when test="$volume = ''">
+                            <xsl:value-of select="self::emph"/>
+                            <xsl:value-of
+                                select="self::emph/following-sibling::*[1][name() = 'remotelink']"/>
 
-                            <xsl:variable name="volume">
-                                <xsl:choose>
-                                    <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
-                                    <xsl:when
-                                        test="string-length(self::emph//remotelink) > 1 and matches(substring(self::emph//remotelink, 1, 2), '[0-9]{2}')">
-                                        <xsl:value-of
-                                            select="concat('volume:', substring(self::emph//remotelink, 2))"
-                                        />
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="''"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
-
-                            <xsl:choose>
-                                <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
-                                <xsl:when test="$volume = ''">
-                                    <xsl:value-of select="self::emph"/>
-                                    <xsl:value-of
-                                        select="self::emph/following-sibling::*[1][name() = 'remotelink']"/>
-                                   
-                                    <!--<xsl:if
+                            <!--<xsl:if
                                         test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
                                         <xsl:value-of
                                             select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
                                         />
                                     </xsl:if>-->
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
-                                    <xsl:value-of select="substring(self::emph//remotelink, 1, 1)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
+                            <xsl:value-of select="substring(self::emph//remotelink, 1, 1)"/>
 
-                                    <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
-                                        xsl:exclude-result-prefixes="#all">
-                                        <xsl:attribute name="refpt">
-                                            <xsl:variable name="prepend" select="'acronym:HALS::'"/>
-                                            <xsl:variable name="edition">
-                                                <xsl:variable name="v_getValue">
-                                                  <xsl:analyze-string
-                                                  select="self::emph/following-sibling::*[1][name() = 'remotelink']/@refpt"
-                                                  regex="(_([\w]+):[\w]+-EDITION)(_([\w]+):[\w]+-PARA)">
-                                                  <xsl:matching-substring>
+                            <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
+                                xsl:exclude-result-prefixes="#all">
+                                <xsl:attribute name="refpt">
+                                    <xsl:variable name="prepend" select="'acronym:HALS::'"/>
+                                    <xsl:variable name="edition">
+                                        <xsl:variable name="v_getValue">
+                                            <xsl:analyze-string
+                                                select="self::emph/following-sibling::*[1][name() = 'remotelink']/@refpt"
+                                                regex="(_([\w]+):[\w]+-EDITION)(_([\w]+):[\w]+-PARA)">
+                                                <xsl:matching-substring>
                                                   <xsl:value-of select="regex-group(2)"/>
-                                                  </xsl:matching-substring>
-                                                  </xsl:analyze-string>
-                                                </xsl:variable>
-                                                <xsl:if test="$v_getValue != ''">
-                                                  <xsl:value-of
-                                                  select="concat('edition:', $v_getValue, '::')"/>
-                                                </xsl:if>
+                                                </xsl:matching-substring>
+                                            </xsl:analyze-string>
+                                        </xsl:variable>
+                                        <xsl:if test="$v_getValue != ''">
+                                            <xsl:value-of
+                                                select="concat('edition:', $v_getValue, '::')"/>
+                                        </xsl:if>
 
-                                            </xsl:variable>
-                                            <xsl:variable name="paragraph">
-                                                <xsl:variable name="v_getValue">
-                                                  <xsl:analyze-string
-                                                  select="self::emph/following-sibling::*[1][name() = 'remotelink']/@refpt"
-                                                  regex="(_([\w]+):[\w]+-EDITION)?(_([\w]+):[\w]+-PARA)">
-                                                  <xsl:matching-substring>
+                                    </xsl:variable>
+                                    <xsl:variable name="paragraph">
+                                        <xsl:variable name="v_getValue">
+                                            <xsl:analyze-string
+                                                select="self::emph/following-sibling::*[1][name() = 'remotelink']/@refpt"
+                                                regex="(_([\w]+):[\w]+-EDITION)?(_([\w]+):[\w]+-PARA)">
+                                                <xsl:matching-substring>
                                                   <xsl:value-of select="regex-group(4)"/>
-                                                  </xsl:matching-substring>
-                                                  </xsl:analyze-string>
-                                                </xsl:variable>
-                                                <xsl:value-of
-                                                  select="concat('paragraph:', $v_getValue)"/>
-                                            </xsl:variable>
+                                                </xsl:matching-substring>
+                                            </xsl:analyze-string>
+                                        </xsl:variable>
+                                        <xsl:value-of select="concat('paragraph:', $v_getValue)"/>
+                                    </xsl:variable>
 
-                                            <!-- attribute @refpt value -->
-                                            <xsl:value-of
-                                                select="concat($prepend, $volume, '::', $edition, $paragraph)"
-                                            />
-                                        </xsl:attribute>
+                                    <!-- attribute @refpt value -->
+                                    <xsl:value-of
+                                        select="concat($prepend, $volume, '::', $edition, $paragraph)"
+                                    />
+                                </xsl:attribute>
 
-                                        <xsl:attribute name="status" select="'invalid'"/>
-                                        <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
-                                        <xsl:value-of
-                                            select="normalize-space(substring(self::emph//remotelink, 2)), normalize-space(self::emph/following-sibling::*[1][name() = 'remotelink'])"
-                                        />
-                                    </remotelink>
+                                <xsl:attribute name="status" select="'invalid'"/>
+                                <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
+                                <xsl:value-of
+                                    select="normalize-space(substring(self::emph//remotelink, 2)), normalize-space(self::emph/following-sibling::*[1][name() = 'remotelink'])"
+                                />
+                            </remotelink>
 
-                                    <!-- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -->
-                                    <!--<xsl:if
-                                        test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
+                            <!-- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -->
+                            <!--<xsl:if
+                                        test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1][name() = '']/following-sibling::node()[1][self::emph/following-sibling::*[1][name() = 'remotelink']]">
                                         <xsl:value-of
                                             select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
                                         />
                                     </xsl:if>-->
 
-                                </xsl:otherwise>
-                            </xsl:choose>
-
-                            <!--<xsl:for-each-group select="self::emph/following-sibling::node()[position()>2]" group-ending-with="emph">
-                                <xsl:for-each select="current-group()">
-                                    <xsl:apply-templates select="."/>
-                                </xsl:for-each>
-                            </xsl:for-each-group>-->
-                        </xsl:when>
-
-                        <xsl:when test="self::remotelink/preceding-sibling::*[1][name()='emph']"/>
-                        <xsl:when
-                            test="self::emph/not(preceding-sibling::ci:cite or preceding-sibling::remotelink or preceding-sibling::emph/remotelink)"/>
-                        <xsl:otherwise>
-                            <xsl:apply-templates/>
                         </xsl:otherwise>
                     </xsl:choose>
-
-                </xsl:for-each>
-
-            </xsl:when>
-            <xsl:when
-                test="($indexref/child::emph[matches(text(), '[0-9]+')] and $indexref/child::emph/following-sibling::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/name() = '') or ($indexref/child::emph[matches(text(), '[0-9]*\(?[0-9]+\)?')] and $indexref/child::emph/following-sibling::node()[matches(., '[\s]*\[[0-9]+\]')])">
-                <xsl:for-each select="$indexref/node()">
-                    <xsl:choose>
-                        <!-- Revathi: 11May2018 - Added the below when condition when the emph doesnt have following sibling remotelink. Eg:<emph typestyle="bf">81</emph> (5th) 437. -->
-                        <xsl:when
-                            test="self::emph[not(child::*)] and self::emph[matches(text(), '[0-9]+')] and self::emph/following-sibling::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/name() = ''">
-                            <xsl:variable name="dpsi">
-                                <xsl:value-of select="substring($v_getDPSI, 1, 4)"/>
-                            </xsl:variable>
-
-                            <xsl:variable name="volume">
-                                <xsl:choose>
-                                    <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
-                                    <xsl:when test="string-length(self::emph) > 1">
-                                        <xsl:value-of
-                                            select="concat('volume:', substring(self::emph, 2))"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="''"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
-
+                </xsl:when>
+                <xsl:when
+                    test="self::remotelink/preceding-sibling::node()[1][name() = 'emph'][matches(.,'^[\s]*[0-9]+')]"/>
+                <xsl:when
+                    test="self::node()[name() = ('emph', '')][matches(., '[0-9]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(.,'^[\s]*[0-9]+')][name() = 'emph'] and not(self::node()/name()=preceding-sibling::node()/name())"/>
+                <xsl:when
+                    test="self::node()[name() = ('emph', '')][matches(., '^[\s]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(.,'^[\s]*[0-9]+')][name() = 'emph'] and not(self::node()/name()=preceding-sibling::node()/name())"/>
+                
+                <xsl:when
+                    test="self::node()[(self::emph[matches(., '[0-9]+')] and self::emph/following-sibling::node()[1][matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/name() = '') or (self::emph[matches(., '[0-9]*\(?[0-9]+\)?')] and self::emph/following-sibling::node()[1][matches(., '[\s]*\[[0-9]+\]')])]"
+                > 
+                <xsl:choose>
+                    <xsl:when
+                        test="self::emph[matches(., '[0-9]+')] and self::emph/following-sibling::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/name() = ''">
+                        <xsl:variable name="dpsi">
+                            <xsl:value-of select="substring($v_getDPSI, 1, 4)"/>
+                        </xsl:variable>
+                        
+                        <xsl:variable name="volume">
                             <xsl:choose>
-                                <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
-                                <xsl:when test="$volume = ''">
-                                    <xsl:value-of select="self::emph"/>
+                                <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
+                                <xsl:when test="string-length(self::emph) > 1">
                                     <xsl:value-of
-                                        select="self::emph/following-sibling::*[1][name() = '']/text()"
-                                    />
+                                        select="concat('volume:', substring(self::emph, 2))"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
-                                    <xsl:value-of select="substring(self::emph, 1, 1)"/>
-
-                                    <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
-                                        xsl:exclude-result-prefixes="#all">
-                                        <xsl:attribute name="refpt">
-                                            <xsl:variable name="prepend" select="'acronym:HALS::'"/>
-                                            <xsl:variable name="edition">
-                                                <xsl:variable name="v_getvalue">
-                                                  <xsl:analyze-string
-                                                  select="self::emph/following-sibling::text()"
-                                                  regex="[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)">
-                                                  <xsl:matching-substring>
-                                                  <!-- In the above regex, the regex-group 1, matches the content present within the '(' and ')'. So get the numeric content only, we are matching regex-group(2) -->
-                                                  <xsl:value-of select="regex-group(2)"/>
-                                                  </xsl:matching-substring>
-                                                  </xsl:analyze-string>
-                                                </xsl:variable>
-                                                <xsl:value-of
-                                                  select="concat('edition:', normalize-space($v_getvalue))"
-                                                />
+                                    <xsl:value-of select="''"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:variable>
+                        
+                        <xsl:choose>
+                            <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
+                            <xsl:when test="$volume = ''">
+                                <xsl:value-of select="self::emph"/>
+                                <xsl:value-of
+                                    select="self::emph/following-sibling::*[1][name() = '']/text()"
+                                />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
+                                <xsl:value-of select="substring(self::emph, 1, 1)"/>
+                                
+                                <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
+                                    xsl:exclude-result-prefixes="#all">
+                                    <xsl:attribute name="refpt">
+                                        <xsl:variable name="prepend" select="'acronym:HALS::'"/>
+                                        <xsl:variable name="edition">
+                                            <xsl:variable name="v_getvalue">
+                                                <xsl:analyze-string
+                                                    select="self::emph/following-sibling::text()"
+                                                    regex="[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)">
+                                                    <xsl:matching-substring>
+                                                        <!-- In the above regex, the regex-group 1, matches the content present within the '(' and ')'. So get the numeric content only, we are matching regex-group(2) -->
+                                                        <xsl:value-of select="regex-group(2)"/>
+                                                    </xsl:matching-substring>
+                                                </xsl:analyze-string>
                                             </xsl:variable>
-                                            <xsl:variable name="paragraph">
-                                                <xsl:variable name="v_getvalue">
-                                                  <xsl:analyze-string
-                                                  select="self::emph/following-sibling::text()"
-                                                  regex="[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)">
-                                                  <xsl:matching-substring>
-                                                  <xsl:value-of select="regex-group(3)"/>
-                                                  </xsl:matching-substring>
-                                                  </xsl:analyze-string>
-                                                </xsl:variable>
-                                                <xsl:value-of
-                                                  select="concat('paragraph:', normalize-space($v_getvalue))"
-                                                />
-                                            </xsl:variable>
-
-                                            <!-- attribute @refpt value -->
                                             <xsl:value-of
-                                                select="concat($prepend, $volume, '::', $edition, '::', $paragraph)"
+                                                select="concat('edition:', normalize-space($v_getvalue))"
                                             />
-                                        </xsl:attribute>
-
-                                        <xsl:attribute name="status" select="'invalid'"/>
-                                        <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
+                                        </xsl:variable>
+                                        <xsl:variable name="paragraph">
+                                            <xsl:variable name="v_getvalue">
+                                                <xsl:analyze-string
+                                                    select="self::emph/following-sibling::text()"
+                                                    regex="[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)">
+                                                    <xsl:matching-substring>
+                                                        <xsl:value-of select="regex-group(3)"/>
+                                                    </xsl:matching-substring>
+                                                </xsl:analyze-string>
+                                            </xsl:variable>
+                                            <xsl:value-of
+                                                select="concat('paragraph:', normalize-space($v_getvalue))"
+                                            />
+                                        </xsl:variable>
+                                        
+                                        <!-- attribute @refpt value -->
                                         <xsl:value-of
-                                            select="normalize-space(substring(self::emph, 2)), normalize-space(self::emph/following-sibling::text())"
+                                            select="concat($prepend, $volume, '::', $edition, '::', $paragraph)"
                                         />
-                                    </remotelink>
-
-                                    <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
+                                    </xsl:attribute>
+                                    
+                                    <xsl:attribute name="status" select="'invalid'"/>
+                                    <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
+                                    <xsl:value-of
+                                        select="normalize-space(substring(self::emph, 2)), normalize-space(self::emph/following-sibling::text())"
+                                    />
+                                </remotelink>
+                                
+                                <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
                                     <xsl:if
                                         test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
                                         <xsl:value-of
                                             select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
                                         />
                                     </xsl:if>-->
-
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:when>
-                        <xsl:when
-                            test="self::emph[not(child::*)] and (self::node()[matches(text(), '^[0-9]*\(?[0-9]+\)?')] and self::node()/following-sibling::node()[1][matches(., '[\s]*\[[0-9]+\]')])">
-                            <xsl:variable name="dpsi">
-                                <xsl:value-of select="substring($v_getDPSI, 1, 4)"/>
-                            </xsl:variable>
-
-                            <xsl:variable name="volume">
-                                <xsl:choose>
-                                    <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
-                                    <xsl:when test="string-length(self::emph) > 1">
-                                        <xsl:value-of
-                                            select="concat('volume:', substring(self::emph, 2))"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="''"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
-
+                                
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:when
+                        test="(self::node()[matches(., '^[0-9]*\(?[0-9]+\)?')] and self::node()/following-sibling::node()[1][matches(., '[\s]*\[[0-9]+\]')])">
+                        <xsl:variable name="dpsi">
+                            <xsl:value-of select="substring($v_getDPSI, 1, 4)"/>
+                        </xsl:variable>
+                        
+                        <xsl:variable name="volume">
                             <xsl:choose>
-                                <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
-                                <xsl:when test="$volume = ''">
-                                    <xsl:value-of select="self::emph"/>
+                                <!-- If the remotelink PCDATA's string length is more than 1, then the first digit is moved outside of remotelink and the rest of the content is retained as remotelink's PCDATA. -->
+                                <xsl:when test="string-length(self::emph) > 1">
                                     <xsl:value-of
-                                        select="self::emph/following-sibling::*[1][name() = '']/text()"
-                                    />
+                                        select="concat('volume:', substring(self::emph, 2))"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
-                                    <xsl:value-of select="substring(self::emph, 1, 1)"/>
-
-                                    <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
-                                        xsl:exclude-result-prefixes="#all">
-                                        <xsl:attribute name="refpt">
-                                            <xsl:variable name="prepend" select="'acronym:HALS::'"/>
-
-                                            <xsl:variable name="paragraph">
-                                                <xsl:variable name="v_getvalue">
-                                                  <xsl:analyze-string
-                                                  select="self::emph/following-sibling::node()[1]"
-                                                  regex="[\s]*\[?([0-9]+)\]?">
-                                                  <xsl:matching-substring>
-                                                  <xsl:value-of select="regex-group(1)"/>
-                                                  </xsl:matching-substring>
-                                                  </xsl:analyze-string>
-                                                </xsl:variable>
-                                                <xsl:value-of
-                                                  select="concat('paragraph:', normalize-space($v_getvalue))"
-                                                />
+                                    <xsl:value-of select="''"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:variable>
+                        
+                        <xsl:choose>
+                            <!-- The volume will be '' when the PCDATA of remotelink is single digit. In this case, the remotelink created in LA should have both emph/remotelink and the following sibling remotelink's PCDATA -->
+                            <xsl:when test="$volume = ''">
+                                <xsl:value-of select="self::emph"/>
+                                <xsl:value-of
+                                    select="self::emph/following-sibling::*[1][name() = '']/text()"
+                                />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <!-- The first digit of remotelink's PCDATA is moved outside remotelink  -->
+                                <xsl:value-of select="substring(self::emph, 1, 1)"/>
+                                
+                                <remotelink service="DOC-ID" remotekey1="REFPTID" dpsi="{$dpsi}"
+                                    xsl:exclude-result-prefixes="#all">
+                                    <xsl:attribute name="refpt">
+                                        <xsl:variable name="prepend" select="'acronym:HALS::'"/>
+                                        
+                                        <xsl:variable name="paragraph">
+                                            <xsl:variable name="v_getvalue">
+                                                <xsl:analyze-string
+                                                    select="self::emph/following-sibling::node()[1]"
+                                                    regex="[\s]*\[?([0-9]+)\]?">
+                                                    <xsl:matching-substring>
+                                                        <xsl:value-of select="regex-group(1)"/>
+                                                    </xsl:matching-substring>
+                                                </xsl:analyze-string>
                                             </xsl:variable>
-
-                                            <!-- attribute @refpt value -->
                                             <xsl:value-of
-                                                select="concat($prepend, $volume, '::', $paragraph)"
+                                                select="concat('paragraph:', normalize-space($v_getvalue))"
                                             />
-                                        </xsl:attribute>
-
-                                        <xsl:attribute name="status" select="'invalid'"/>
-                                        <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
+                                        </xsl:variable>
+                                        
+                                        <!-- attribute @refpt value -->
                                         <xsl:value-of
-                                            select="normalize-space(substring(self::emph, 2)), normalize-space(self::emph/following-sibling::node()[1])"
+                                            select="concat($prepend, $volume, '::', $paragraph)"
                                         />
-                                    </remotelink>
-
-                                    <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
+                                    </xsl:attribute>
+                                    
+                                    <xsl:attribute name="status" select="'invalid'"/>
+                                    <!--the remotelink created in LA should have both emph/remotelink's PCDATA[first digit removed] and the following sibling remotelink's PCDATA -->
+                                    <xsl:value-of
+                                        select="normalize-space(substring(self::emph, 2)), normalize-space(self::emph/following-sibling::node()[1])"
+                                    />
+                                </remotelink>
+                                
+                                <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
                                     <xsl:if
                                         test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
                                         <xsl:value-of
                                             select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
                                         />
                                     </xsl:if>-->
-
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:when>
-                        <xsl:when
-                            test="self::node()[name() = ('emph', '')][matches(text(), '[0-9]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(.,'^[\s]*[0-9]+')][name() = 'emph'][@typestyle = 'bf']"/>
-                        <xsl:when
-                            test="self::node()[name() = ('emph', '')][matches(., '^[\s]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(.,'^[\s]*[0-9]+')][name() = 'emph'][@typestyle = 'bf']"/>
-                        <!--<xsl:when test="self::emph/not(preceding-sibling::ci:cite or preceding-sibling::remotelink or preceding-sibling::emph/remotelink)"/>-->
-                        <xsl:otherwise>
-                            <xsl:apply-templates select="."/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:for-each>
-
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:apply-templates select="$indexref/child::node()"/>
-            </xsl:otherwise>
-        </xsl:choose>
-
-
+                                
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>                                
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>                   
+                    <xsl:apply-templates select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="in:entry-text">
@@ -506,29 +479,30 @@
             </xsl:otherwise>
         </xsl:choose>-->
         <xsl:element name="{name()}">
-        <xsl:for-each select="child::node()">
-            <xsl:choose>
-                <xsl:when test="self::node()[self::remotelink or self::ci:cite[not(self::ci:cite=parent::in:entry-text/node()[1])] or self::emph[@typestyle='bf']] or self::node()[preceding-sibling::node()[self::remotelink or self::ci:cite[not(self::ci:cite=parent::in:entry-text/node()[1])] or self::emph[@typestyle='bf']]]"/>
-                <xsl:otherwise>
-                    <xsl:choose>
-                        <xsl:when
-                            test="self::node()/name() = '' and self::node() = parent::in:entry-text/node()[1] and self::node()/following-sibling::*[1][name() = ('remotelink', 'ci:cite', 'emph')] and contains(self::node(), '[')">
-                            <xsl:value-of select="substring-before(., '[')"/>
-                        </xsl:when>
-                        <xsl:when test="self::ci:cite">
-                            <xsl:call-template name="replace">
-                                <xsl:with-param name="text" select="self::ci:cite/ci:content"/>
-                            </xsl:call-template>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:apply-templates select="."/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:for-each>
+            <xsl:for-each select="child::node()">
+                <xsl:choose>
+                    <xsl:when
+                        test="self::node()[self::remotelink or self::ci:cite[not(self::ci:cite = parent::in:entry-text/node()[1])] or self::emph[@typestyle = 'bf']] or self::node()[preceding-sibling::node()[self::remotelink or self::ci:cite[not(self::ci:cite = parent::in:entry-text/node()[1])] or self::emph[@typestyle = 'bf']]]"/>
+                    <xsl:otherwise>
+                        <xsl:choose>
+                            <xsl:when
+                                test="self::node()/name() = '' and self::node() = parent::in:entry-text/node()[1] and self::node()/following-sibling::*[1][name() = ('remotelink', 'ci:cite', 'emph')] and contains(self::node(), '[')">
+                                <xsl:value-of select="substring-before(., '[')"/>
+                            </xsl:when>
+                            <xsl:when test="self::ci:cite">
+                                <xsl:call-template name="replace">
+                                    <xsl:with-param name="text" select="self::ci:cite/ci:content"/>
+                                </xsl:call-template>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:apply-templates select="."/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
             <!--  refpt is created for in:entry-text when the node()[1] is PCDATA -->
-                   <!--<xsl:if test="self::in:entry-text/node()[1]/name() = ''">
+            <!--<xsl:if test="self::in:entry-text/node()[1]/name() = ''">
                         <refpt xsl:exclude-result-prefixes="#all">
                             <xsl:attribute name="id">
                                 <xsl:variable name="lbu">
@@ -600,16 +574,17 @@
             
             <xsl:variable name="v-indexref" as="element()">
                 <indexref>
-                <xsl:for-each select="self::in:entry-text/child::node()">
-                    <xsl:choose>
-                        <xsl:when test="self::node()[self::remotelink or self::ci:cite[not(self::ci:cite=parent::in:entry-text/node()[1])] or self::emph[@typestyle='bf']] or self::node()[preceding-sibling::node()[self::remotelink or self::ci:cite[not(self::ci:cite=parent::in:entry-text/node()[1])] or self::emph[@typestyle='bf']]]">
-                            <xsl:copy-of select="." copy-namespaces="no"/>
-                        </xsl:when>                       
-                    </xsl:choose>
-                </xsl:for-each>
+                    <xsl:for-each select="self::in:entry-text/child::node()">
+                        <xsl:choose>
+                            <xsl:when
+                                test="self::node()[self::remotelink or self::ci:cite[not(self::ci:cite = parent::in:entry-text/node()[1])] or self::emph[@typestyle = 'bf']] or self::node()[preceding-sibling::node()[self::remotelink or self::ci:cite[not(self::ci:cite = parent::in:entry-text/node()[1])] or self::emph[@typestyle = 'bf']]]">
+                                <xsl:copy-of select="." copy-namespaces="no"/>
+                            </xsl:when>
+                        </xsl:choose>
+                    </xsl:for-each>
                 </indexref>
             </xsl:variable>
-            
+            <xsl:message select="$v-indexref"></xsl:message>
             <!--<xsl:variable name="v-indexref" as="element()">
                 <indexref>
                     <xsl:for-each
@@ -618,7 +593,7 @@
                     </xsl:for-each>
                 </indexref>
             </xsl:variable>-->
-            <xsl:message select="$v-indexref"></xsl:message>
+
             <!-- The child elements are run in the in-entry mode -->
             <!--<xsl:apply-templates select="$v-indexref" mode="in-entry"/>-->
             <xsl:call-template name="fn-entry-text">
