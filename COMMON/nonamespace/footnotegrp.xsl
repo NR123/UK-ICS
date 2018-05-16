@@ -8,9 +8,24 @@
         </xsl:element>
         <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
     </xsl:template>
-
-    <xsl:template match="footnote | fnbody">
-        <xsl:apply-templates/>
+    
+    <!-- Dayanand Singh 15 May 2018 Create new seperate templates to handle "footnote & fnbody" 
+        Old Code:
+        <xsl:template match="footnote | fnbody">
+            <xsl:apply-templates/>
+        </xsl:template>
+    -->
+    <xsl:template match="footnote">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="fntoken" select="@fntoken"/>
+            <xsl:apply-templates/> 
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="fnbody">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates/>
+        </xsl:element>
     </xsl:template>
     
     <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
@@ -156,6 +171,9 @@
         </footnote>
     </xsl:template>  
     
+    
+    
+    
     <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->
     <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
@@ -167,4 +185,15 @@
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
     </xsl:template>-->
+    
+<!--    Dayanand singh-->
+    <xsl:template match="footnote/fnbody[child::l]">
+        <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="0"/>
+            <xsl:element name="fnbody">
+                <xsl:apply-templates select="@* | node() except table"/>
+            </xsl:element>
+        </xsl:element>
+        <xsl:apply-templates select="child::table"/>
+    </xsl:template>
 </xsl:stylesheet>
