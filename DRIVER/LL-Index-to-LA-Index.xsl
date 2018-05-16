@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-16T15:22:25.361+05:30-->
+Compiled:  2018-05-16T18:30:20.348+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -698,7 +698,63 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
    <xsl:variable name="quot">'</xsl:variable>
    <xsl:variable name="openquote">‘</xsl:variable>
    <xsl:variable name="closequote">’</xsl:variable>
-   <xsl:template match="text()" name="replace" priority="20">
+   <xsl:template match="text()" priority="20">
+      <xsl:param name="text" select="."/>
+      <xsl:param name="usequote" select="$openquote"/>
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
+         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
+            <xsl:analyze-string select="$text"
+                                regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+               <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text" select="regex-group(1)"/>
+                  </xsl:call-template>
+                  <ci:cite searchtype="CASE-REF" xsl:exclude-result-prefixes="#all">
+                     <ci:case xsl:exclude-result-prefixes="#all">
+                        <ci:caseref xsl:exclude-result-prefixes="#all">
+                           <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                           <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                           <ci:edition xsl:exclude-result-prefixes="#all">
+                              <ci:date year="{translate(regex-group(2),'()','')}"
+                                       xsl:exclude-result-prefixes="#all"/>
+                           </ci:edition>
+                           <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
+                        </ci:caseref>
+                     </ci:case>
+                     <ci:content xsl:exclude-result-prefixes="#all">
+                        <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
+                     </ci:content>
+                  </ci:cite>
+                  <xsl:value-of select="regex-group(6)"/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of select="translate($text,' ','')"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template name="replace">
       <xsl:param name="text" select="."/>
       <xsl:param name="usequote" select="$openquote"/>
       <xsl:choose>
@@ -722,38 +778,31 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
             </xsl:call-template>
          </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
-            <xsl:choose>
-               <xsl:when test="self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
-                  <xsl:analyze-string select="$text"
-                                      regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
-                     <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
-                        <xsl:call-template name="replace">
-                           <xsl:with-param name="text" select="regex-group(1)"/>
-                        </xsl:call-template>
-                        <ci:cite searchtype="CASE-REF" xsl:exclude-result-prefixes="#all">
-                           <ci:case xsl:exclude-result-prefixes="#all">
-                              <ci:caseref xsl:exclude-result-prefixes="#all">
-                                 <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
-                                 <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
-                                 <ci:edition xsl:exclude-result-prefixes="#all">
-                                    <ci:date year="{translate(regex-group(2),'()','')}"
-                                             xsl:exclude-result-prefixes="#all"/>
-                                 </ci:edition>
-                                 <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
-                              </ci:caseref>
-                           </ci:case>
-                           <ci:content xsl:exclude-result-prefixes="#all">
-                              <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
-                           </ci:content>
-                        </ci:cite>
-                        <xsl:value-of select="regex-group(6)"/>
-                     </xsl:matching-substring>
-                  </xsl:analyze-string>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:value-of select="translate($text,' ','')"/>
-               </xsl:otherwise>
-            </xsl:choose>
+            <xsl:analyze-string select="$text"
+                                regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+               <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
+                  <xsl:call-template name="replace">
+                     <xsl:with-param name="text" select="regex-group(1)"/>
+                  </xsl:call-template>
+                  <ci:cite searchtype="CASE-REF" xsl:exclude-result-prefixes="#all">
+                     <ci:case xsl:exclude-result-prefixes="#all">
+                        <ci:caseref xsl:exclude-result-prefixes="#all">
+                           <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                           <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                           <ci:edition xsl:exclude-result-prefixes="#all">
+                              <ci:date year="{translate(regex-group(2),'()','')}"
+                                       xsl:exclude-result-prefixes="#all"/>
+                           </ci:edition>
+                           <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
+                        </ci:caseref>
+                     </ci:case>
+                     <ci:content xsl:exclude-result-prefixes="#all">
+                        <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
+                     </ci:content>
+                  </ci:cite>
+                  <xsl:value-of select="regex-group(6)"/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
          </xsl:when>
          <xsl:otherwise>
             <xsl:value-of select="translate($text,' ','')"/>
@@ -1903,12 +1952,21 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
    </xsl:template>
 
    <xsl:template match="page[$selectorID = 'cases']">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="text" select="normalize-space(./@text)"/>
-         <xsl:attribute name="reporter" select="./@reporter"/>
-         <xsl:attribute name="count" select="./@count"/>
-         <xsl:apply-templates/>
-      </xsl:element>
+      <xsl:choose>
+         <xsl:when test="self::page[parent::catchphrase]">
+            <xsl:element name="page" inherit-namespaces="no">
+               <xsl:apply-templates select="@*"/>
+            </xsl:element>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:attribute name="text" select="normalize-space(./@text)"/>
+               <xsl:attribute name="reporter" select="./@reporter"/>
+               <xsl:attribute name="count" select="./@count"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="page[$selectorID = 'journal']">
@@ -1919,13 +1977,11 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
          <xsl:apply-templates/>
       </xsl:element>
    </xsl:template>
-
-   <xsl:template match="page[parent::catchphrase]">
-      <xsl:element name="page" inherit-namespaces="no">
-         <xsl:apply-templates select="@*"/>
-      </xsl:element>
-   </xsl:template>
-
+   <!--<xsl:template match="page[parent::catchphrase]">
+        <xsl:element name="page" inherit-namespaces="no">
+            <xsl:apply-templates select="@*"/>
+        </xsl:element>
+    </xsl:template>-->
    <xsl:template match="page/@*"/>
 
    <xsl:template match="footnotegrp">
@@ -1934,23 +1990,17 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-   <!-- Dayanand Singh 15 May 2018 Create new seperate templates to handle "footnote & fnbody" 
-        Old Code:
-        <xsl:template match="footnote | fnbody">
-            <xsl:apply-templates/>
-        </xsl:template>
-    -->
-   <xsl:template match="footnote">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="fntoken" select="@fntoken"/>
-         <xsl:apply-templates/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="fnbody">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates/>
-      </xsl:element>
+   <!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy-->
+   <xsl:template match="footnote | fnbody">
+      <xsl:if test="fnbody=''">
+         <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="@fntoken"/>
+            <xsl:element name="fnbody">
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:element>
+      </xsl:if>
+      <xsl:apply-templates/>
    </xsl:template>
    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -2089,7 +2139,7 @@ Compiled:  2018-05-16T15:22:25.361+05:30-->
         <xsl:element name="{name()}">
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
-    </xsl:template>-->   <!--    Dayanand singh-->
+    </xsl:template>-->   <!--    Dayanand singh 16 May 2018 added list under footnote-->
    <xsl:template match="footnote/fnbody[child::l]">
       <xsl:element name="footnote">
          <xsl:attribute name="fntoken" select="0"/>
