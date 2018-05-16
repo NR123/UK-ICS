@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-16T15:20:02.642+05:30-->
+Compiled:  2018-05-16T15:31:55.101+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -2049,23 +2049,17 @@ Compiled:  2018-05-16T15:20:02.642+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-   <!-- Dayanand Singh 15 May 2018 Create new seperate templates to handle "footnote & fnbody" 
-        Old Code:
-        <xsl:template match="footnote | fnbody">
-            <xsl:apply-templates/>
-        </xsl:template>
-    -->
-   <xsl:template match="footnote">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="fntoken" select="@fntoken"/>
-         <xsl:apply-templates/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="fnbody">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates/>
-      </xsl:element>
+   <!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy-->
+   <xsl:template match="footnote | fnbody">
+      <xsl:if test="fnbody=''">
+         <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="@fntoken"/>
+            <xsl:element name="fnbody">
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:element>
+      </xsl:if>
+      <xsl:apply-templates/>
    </xsl:template>
    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -2204,7 +2198,7 @@ Compiled:  2018-05-16T15:20:02.642+05:30-->
         <xsl:element name="{name()}">
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
-    </xsl:template>-->   <!--    Dayanand singh-->
+    </xsl:template>-->   <!--    Dayanand singh 16 May 2018 added list under footnote-->
    <xsl:template match="footnote/fnbody[child::l]">
       <xsl:element name="footnote">
          <xsl:attribute name="fntoken" select="0"/>
