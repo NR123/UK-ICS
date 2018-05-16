@@ -54,29 +54,36 @@
                 </xsl:call-template>
             </xsl:when>
       
-            <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
+            <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
-                <xsl:analyze-string select="$text" regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
-                    <xsl:matching-substring>
-                        <!-- Revathi: Added the below call-template to handle the content present before citation like content -->
-                        <xsl:call-template name="replace">
-                            <xsl:with-param name="text" select="regex-group(1)"/>
-                        </xsl:call-template>
-                        <ci:cite searchtype='CASE-REF' xsl:exclude-result-prefixes="#all">
-                            <ci:case xsl:exclude-result-prefixes="#all">
-                                <ci:caseref xsl:exclude-result-prefixes="#all">
-                                    <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
-                                    <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
-                                    <ci:edition xsl:exclude-result-prefixes="#all">
-                                        <ci:date year="{translate(regex-group(2),'()','')}" xsl:exclude-result-prefixes="#all"/>
-                                    </ci:edition>
-                                    <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
-                                </ci:caseref>
-                            </ci:case>
-                            <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
-                        </ci:cite><xsl:value-of select="regex-group(6)"/>
-                    </xsl:matching-substring>
-                </xsl:analyze-string>
+                <xsl:choose>
+                    <xsl:when test="self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
+                        <xsl:analyze-string select="$text" regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+                            <xsl:matching-substring>
+                                <!-- Revathi: Added the below call-template to handle the content present before citation like content -->
+                                <xsl:call-template name="replace">
+                                    <xsl:with-param name="text" select="regex-group(1)"/>
+                                </xsl:call-template>
+                                <ci:cite searchtype='CASE-REF' xsl:exclude-result-prefixes="#all">
+                                    <ci:case xsl:exclude-result-prefixes="#all">
+                                        <ci:caseref xsl:exclude-result-prefixes="#all">
+                                            <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                                            <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                                            <ci:edition xsl:exclude-result-prefixes="#all">
+                                                <ci:date year="{translate(regex-group(2),'()','')}" xsl:exclude-result-prefixes="#all"/>
+                                            </ci:edition>
+                                            <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
+                                        </ci:caseref>
+                                    </ci:case>
+                                    <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
+                                </ci:cite><xsl:value-of select="regex-group(6)"/>
+                            </xsl:matching-substring>
+                        </xsl:analyze-string>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="translate($text,'&#160;','')"/>
+                    </xsl:otherwise>
+                </xsl:choose>                
             </xsl:when>
             <xsl:otherwise>                
                 <xsl:value-of select="translate($text,'&#160;','')"/>
