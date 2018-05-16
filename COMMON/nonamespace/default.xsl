@@ -54,7 +54,7 @@
                 </xsl:call-template>
             </xsl:when>
       
-            <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')">
+            <xsl:when test="matches($text,'^\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
                 <xsl:choose>
                     <xsl:when test="self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
