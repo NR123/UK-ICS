@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-16T13:56:15.015+05:30-->
+Compiled:  2018-05-16T15:20:02.642+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -271,11 +271,13 @@ Compiled:  2018-05-16T13:56:15.015+05:30-->
          </xsl:when>
       </xsl:choose>
    </xsl:template>
-   <!--    Dayanand singh 15 may 2018 commenting the below code for processing the glp:note element-->   <!-- <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
-    
-    <xsl:template match="glp:note[parent::case:headnote and following-sibling::case:decisionsummary]">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+   <!--    Dayanand singh 15 may 2018 commenting the below code for processing the glp:note element-->
+   <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
+
+   <xsl:template match="glp:note[parent::case:headnote and following-sibling::case:decisionsummary]">
+      <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="glp:note[parent::case:decisionsummary/parent::case:headnote]"
                  mode="glp.note">
       <xsl:choose>
@@ -834,32 +836,39 @@ Compiled:  2018-05-16T13:56:15.015+05:30-->
                                select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
             </xsl:call-template>
          </xsl:when>
-         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
-            <xsl:analyze-string select="$text"
-                                regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
-               <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
-                  <xsl:call-template name="replace">
-                     <xsl:with-param name="text" select="regex-group(1)"/>
-                  </xsl:call-template>
-                  <ci:cite searchtype="CASE-REF" xsl:exclude-result-prefixes="#all">
-                     <ci:case xsl:exclude-result-prefixes="#all">
-                        <ci:caseref xsl:exclude-result-prefixes="#all">
-                           <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
-                           <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
-                           <ci:edition xsl:exclude-result-prefixes="#all">
-                              <ci:date year="{translate(regex-group(2),'()','')}"
-                                       xsl:exclude-result-prefixes="#all"/>
-                           </ci:edition>
-                           <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
-                        </ci:caseref>
-                     </ci:case>
-                     <ci:content xsl:exclude-result-prefixes="#all">
-                        <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
-                     </ci:content>
-                  </ci:cite>
-                  <xsl:value-of select="regex-group(6)"/>
-               </xsl:matching-substring>
-            </xsl:analyze-string>
+         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
+            <xsl:choose>
+               <xsl:when test="self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
+                  <xsl:analyze-string select="$text"
+                                      regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
+                     <xsl:matching-substring><!-- Revathi: Added the below call-template to handle the content present before citation like content -->
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text" select="regex-group(1)"/>
+                        </xsl:call-template>
+                        <ci:cite searchtype="CASE-REF" xsl:exclude-result-prefixes="#all">
+                           <ci:case xsl:exclude-result-prefixes="#all">
+                              <ci:caseref xsl:exclude-result-prefixes="#all">
+                                 <ci:reporter value="{regex-group(4)}" xsl:exclude-result-prefixes="#all"/>
+                                 <ci:volume num="{regex-group(3)}" xsl:exclude-result-prefixes="#all"/>
+                                 <ci:edition xsl:exclude-result-prefixes="#all">
+                                    <ci:date year="{translate(regex-group(2),'()','')}"
+                                             xsl:exclude-result-prefixes="#all"/>
+                                 </ci:edition>
+                                 <ci:page num="{regex-group(5)}" xsl:exclude-result-prefixes="#all"/>
+                              </ci:caseref>
+                           </ci:case>
+                           <ci:content xsl:exclude-result-prefixes="#all">
+                              <xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/>
+                           </ci:content>
+                        </ci:cite>
+                        <xsl:value-of select="regex-group(6)"/>
+                     </xsl:matching-substring>
+                  </xsl:analyze-string>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="translate($text,' ','')"/>
+               </xsl:otherwise>
+            </xsl:choose>
          </xsl:when>
          <xsl:otherwise>
             <xsl:value-of select="translate($text,' ','')"/>

@@ -254,14 +254,6 @@
                                     />
                                 </remotelink>
                                 
-                                <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
-                                    <xsl:if
-                                        test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
-                                        <xsl:value-of
-                                            select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
-                                        />
-                                    </xsl:if>-->
-                                
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
@@ -327,15 +319,7 @@
                                     <xsl:value-of
                                         select="normalize-space(substring(self::emph, 2)), normalize-space(self::emph/following-sibling::node()[1])"
                                     />
-                                </remotelink>
-                                
-                                <!--<!-\- To handle if there is PCDATA following the remotelink element i.e., emph/remotelink/following-sibling::remotelink/following:sibling::PCDATA -\->
-                                    <xsl:if
-                                        test="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]/name() = ''">
-                                        <xsl:value-of
-                                            select="self::emph/following-sibling::*[1][name() = 'remotelink']/following-sibling::node()[1]"
-                                        />
-                                    </xsl:if>-->
+                                </remotelink>                               
                                 
                             </xsl:otherwise>
                         </xsl:choose>
@@ -352,132 +336,7 @@
         </xsl:for-each>
     </xsl:template>
 
-    <xsl:template match="in:entry-text">
-        <!--<xsl:choose>
-            <!-\- When the child is ci:cite or remotelink, the content before ci:cite or remotelink is retained inside in:entry-text and the child ci:cite and remotelink is moved inside in:index-ref -\->
-            <xsl:when
-                test="self::in:entry-text/*[self::ci:cite = parent::in:entry-text/node()[1]] or self::in:entry-text/*[name() = ('ci:cite', 'remotelink')] or self::in:entry-text/child::emph[@typestyle = 'bf']">
-                <xsl:element name="{name()}">
-                    <!-\-<xsl:for-each select="child::node()[(self::node()[name()='ci:cite']=parent::in:entry-text/node()[1]) or (not(self::node()/preceding-sibling::node()/name()=('remotelink','ci:cite')) and not(self::node()[name()=('remotelink','ci:cite')]) and not(self::node()[matches(.,'[0-9]+')][@typestyle='bf']/name()='emph') and not(self::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/preceding-sibling::emph/@typestyle='bf') and not(self::node()/name()='emph' and child::node()/name()=('remotelink','ci:cite')) and self::node()[not(preceding-sibling::node()[remotelink or ci:cite or emph/remotelink])])]">-\->
-                    <xsl:for-each
-                        select="node()[not(self::node()/name() = ('remotelink', 'ci:cite') or (self::node()[matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]) or (self::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/preceding-sibling::node()[1][matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']) or (self::node()[matches(.,'\[?[0-9]+\]?')][name()='emph'][@typestyle='smcaps']) or (self::node()[matches(., '^[0-9]+\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]) or (self::node()[matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(., '^\(?[0-9]+\)?\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']) or self::node()[name() = 'emph']/following-sibling::*[1][remotelink] or self::node()[name() = 'emph']/child::remotelink or self::node()/preceding-sibling::node()[name() = ('remotelink', 'ci:cite')] or self::node()[name() = '']/preceding-sibling::node()[remotelink or ci:cite or emph/remotelink] or self::node()/preceding-sibling::emph/child::node()[name() = ('remotelink', 'ci:cite')]) or self::node() = parent::in:entry-text/node()[1]]">
-                        <xsl:choose>
-                            <xsl:when
-                                test="self::node()/name() = '' and self::node() = parent::in:entry-text/node()[1] and self::node()/following-sibling::*[1][name() = ('remotelink', 'ci:cite', 'emph')] and contains(self::node(), '[')">
-                                <xsl:value-of select="substring-before(., '[')"/>
-                            </xsl:when>
-                            <xsl:when test="self::ci:cite">
-                                <xsl:call-template name="replace">
-                                    <xsl:with-param name="text" select="self::ci:cite/ci:content"/>
-                                </xsl:call-template>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:apply-templates select="."/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:for-each>
-
-                    <!-\- refpt is created for in:entry-text when the node()[1] is PCDATA -\->
-                    <!-\-<xsl:if test="self::in:entry-text/node()[1]/name() = ''">
-                        <refpt xsl:exclude-result-prefixes="#all">
-                            <xsl:attribute name="id">
-                                <xsl:variable name="lbu">
-                                    <!-\\- TBD: Awaiting clarification for refpt -\\->
-                                    <xsl:choose>
-                                        <xsl:when
-                                            test="//docinfo:lbu-meta/docinfo:metaitem[@name = 'lbu-sourcename']/contains(@value, 'All England Law Reports')">
-                                            <xsl:value-of select="'AELR'"/>
-                                        </xsl:when>
-                                        <xsl:when
-                                            test="//docinfo:lbu-meta/docinfo:metaitem[@name = 'lbu-sourcename']/contains(@value, 'Halsbury')">
-                                            <xsl:value-of select="'HALS'"/>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <xsl:value-of select="'HALS'"/>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:variable>
-
-                                <xsl:variable name="text">
-                                    <!-\\- If the PCDATA has '['in it then the content before '[' should be retained inside in:entry-text and the content after '[' should be moved to in:index-ref -\\->
-                                    <xsl:variable name="before_sqbracket">
-                                        <xsl:value-of
-                                            select="substring-before(self::in:entry-text/node()[1], '[')"
-                                        />
-                                    </xsl:variable>
-                                    <xsl:choose>
-                                        <!-\\- If the PCDATA doesn't have '[' capture it inside in:entry-text -\\->
-                                        <xsl:when test="$before_sqbracket = ''">
-                                            <xsl:value-of
-                                                select="normalize-space(self::in:entry-text/node()[1])"
-                                            />
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <xsl:value-of select="$before_sqbracket"/>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:variable>
-
-                                <!-\\- Normalise the @id -\\->
-                                <xsl:variable name="normalize_refpt_id">
-                                    <xsl:call-template name="Normalize_id_string">
-                                        <xsl:with-param name="string" select="$text"/>
-                                    </xsl:call-template>
-                                </xsl:variable>
-                                <xsl:value-of
-                                    select="concat('acronym:', $lbu, '-INDEX::term:', upper-case($normalize_refpt_id))"
-                                />
-                            </xsl:attribute>
-                        </refpt>
-                    </xsl:if>-\->
-
-                </xsl:element>
-                <!-\- The child element ci:cite and remotelink is moved inside in:index-ref -\->
-                <in:index-ref xsl:exclude-result-prefixes="#all">
-                    <!-\- If the PCDATA has '[', then the content after '[' should be moved inside in:index-ref-\->
-                    <xsl:variable name="after_sqbracket">
-                        <xsl:value-of select="substring-after(self::in:entry-text/node()[1], '[')"/>
-                    </xsl:variable>
-                    <xsl:choose>
-                        <xsl:when test="$after_sqbracket != ''">
-                            <xsl:call-template name="replace">
-                                <xsl:with-param name="text" select="concat('[', $after_sqbracket)"/>
-                            </xsl:call-template>
-                        </xsl:when>
-                        <xsl:when test="ends-with(self::in:entry-text/node()[1], '[')">
-                            <xsl:value-of select="'['"/>
-                        </xsl:when>
-                    </xsl:choose>
-                    
-                    <xsl:variable name="v-indexref" as="element()">
-                        <xsl:for-each select="node()[self::node()[matches(.,'^[\s]*\(?\[?[0-9]+\)?\]?')][name()='ci:cite' or name()='remotelink' or self::emph//remotelink]][preceding-sibling::node()[not(matches(.,'^[\s]*\(?\[?[0-9]+\)?\]?'))]][name()='ci:cite' or name()='remotelink' or emph//remotelink]">
-                        <xsl:copy-of select="." copy-namespaces="no"/>
-                    </xsl:for-each>
-                    </xsl:variable>
-                       
-                    <!-\-<xsl:variable name="v-indexref" as="element()">
-                        <indexref>
-                            <xsl:for-each
-                                select="node()[self::node()/name() = ('remotelink', 'ci:cite') or (self::node()[matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]) or (self::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/preceding-sibling::node()[1][matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']) or (self::node()[matches(.,'\[?[0-9]+\]?')][name()='emph'][@typestyle='smcaps']) or (self::node()[matches(., '^[0-9]+\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]) or (self::node()[matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(., '^\(?[0-9]+\)?\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']) or self::node()[name() = 'emph']/following-sibling::*[1][remotelink] or self::node()[name() = 'emph']/child::remotelink or self::node()/preceding-sibling::node()[name() = ('remotelink', 'ci:cite')] or self::node()[name() = ''][not(self::node() = parent::in:entry-text/node()[1])]/preceding-sibling::node()[remotelink or ci:cite or emph/remotelink] or self::node()/preceding-sibling::emph/child::node()[name() = ('remotelink', 'ci:cite')]]">
-                                <xsl:copy-of select="." copy-namespaces="no"/>
-                            </xsl:for-each>
-                        </indexref>
-                    </xsl:variable>-\->
-                    <xsl:message select="$v-indexref"/>
-                    <!-\- The child elements are run in the in-entry mode -\->
-                    <!-\-<xsl:apply-templates select="$v-indexref" mode="in-entry"/>-\->
-                    <xsl:call-template name="fn-entry-text">
-                        <xsl:with-param name="indexref" select="$v-indexref" as="element()*"/>
-                    </xsl:call-template>
-                </in:index-ref>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:element name="{name()}">
-                    <xsl:apply-templates select="node() except refpt"/>
-                    <xsl:apply-templates select="refpt"/>
-                </xsl:element>
-            </xsl:otherwise>
-        </xsl:choose>-->
+    <xsl:template match="in:entry-text">        
         <xsl:element name="{name()}">
             <xsl:for-each select="child::node()">
                 <xsl:choose>
@@ -502,11 +361,11 @@
                 </xsl:choose>
             </xsl:for-each>
             <!--  refpt is created for in:entry-text when the node()[1] is PCDATA -->
-            <!--<xsl:if test="self::in:entry-text/node()[1]/name() = ''">
+            <xsl:if test="self::in:entry-text/node()[1]/name() = ''">
                         <refpt xsl:exclude-result-prefixes="#all">
                             <xsl:attribute name="id">
                                 <xsl:variable name="lbu">
-                                    <!-\- TBD: Awaiting clarification for refpt -\->
+                                    <!-- TBD: Awaiting clarification for refpt -->
                                     <xsl:choose>
                                         <xsl:when
                                             test="//docinfo:lbu-meta/docinfo:metaitem[@name = 'lbu-sourcename']/contains(@value, 'All England Law Reports')">
@@ -523,14 +382,14 @@
                                 </xsl:variable>
 
                                 <xsl:variable name="text">
-                                    <!-\- If the PCDATA has '['in it then the content before '[' should be retained inside in:entry-text and the content after '[' should be moved to in:index-ref -\->
+                                    <!-- If the PCDATA has '['in it then the content before '[' should be retained inside in:entry-text and the content after '[' should be moved to in:index-ref -->
                                     <xsl:variable name="before_sqbracket">
                                         <xsl:value-of
                                             select="substring-before(self::in:entry-text/node()[1], '[')"
                                         />
                                     </xsl:variable>
                                     <xsl:choose>
-                                        <!-\- If the PCDATA doesn't have '[' capture it inside in:entry-text -\->
+                                        <!-- If the PCDATA doesn't have '[' capture it inside in:entry-text -->
                                         <xsl:when test="$before_sqbracket = ''">
                                             <xsl:value-of
                                                 select="normalize-space(self::in:entry-text/node()[1])"
@@ -542,7 +401,7 @@
                                     </xsl:choose>
                                 </xsl:variable>
 
-                                <!-\- Normalise the @id -\->
+                                <!-- Normalise the @id -->
                                 <xsl:variable name="normalize_refpt_id">
                                     <xsl:call-template name="Normalize_id_string">
                                         <xsl:with-param name="string" select="$text"/>
@@ -553,7 +412,7 @@
                                 />
                             </xsl:attribute>
                         </refpt>
-                    </xsl:if> -->
+                    </xsl:if> 
         </xsl:element>
         <!-- The child element ci:cite and remotelink is moved inside in:index-ref -->
         <in:index-ref xsl:exclude-result-prefixes="#all">
@@ -583,16 +442,7 @@
                         </xsl:choose>
                     </xsl:for-each>
                 </indexref>
-            </xsl:variable>
-            <xsl:message select="$v-indexref"></xsl:message>
-            <!--<xsl:variable name="v-indexref" as="element()">
-                <indexref>
-                    <xsl:for-each
-                        select="node()[self::node()/name() = ('remotelink', 'ci:cite') or (self::node()[matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]) or (self::node()[matches(., '[\s]*\((([0-9]+)th|rt|st)\)[\s]*([0-9]+)')]/preceding-sibling::node()[1][matches(., '[0-9]+')][@typestyle = 'bf'][name() = 'emph']) or (self::node()[matches(.,'\[?[0-9]+\]?')][name()='emph'][@typestyle='smcaps']) or (self::node()[matches(., '^[0-9]+\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']/following-sibling::node()[1][matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]) or (self::node()[matches(., '[\s]*[0-9]*[\s]*\[?[0-9]+\]?')]/preceding-sibling::node()[1][matches(., '^\(?[0-9]+\)?\(?[0-9]*\)?')][@typestyle = 'bf'][name() = 'emph']) or self::node()[name() = 'emph']/following-sibling::*[1][remotelink] or self::node()[name() = 'emph']/child::remotelink or self::node()/preceding-sibling::node()[name() = ('remotelink', 'ci:cite')] or self::node()[name() = ''][not(self::node() = parent::in:entry-text/node()[1])]/preceding-sibling::node()[remotelink or ci:cite or emph/remotelink] or self::node()/preceding-sibling::emph/child::node()[name() = ('remotelink', 'ci:cite')]]">
-                        <xsl:copy-of select="." copy-namespaces="no"/>
-                    </xsl:for-each>
-                </indexref>
-            </xsl:variable>-->
+            </xsl:variable>            
 
             <!-- The child elements are run in the in-entry mode -->
             <!--<xsl:apply-templates select="$v-indexref" mode="in-entry"/>-->
