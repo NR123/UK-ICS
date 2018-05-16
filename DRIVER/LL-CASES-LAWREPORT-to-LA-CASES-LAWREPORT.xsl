@@ -836,7 +836,7 @@ Compiled:  2018-05-16T15:31:55.101+05:30-->
                                select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
             </xsl:call-template>
          </xsl:when>
-         <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
+         <xsl:when test="matches($text,'^\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:choose>
                <xsl:when test="self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
                   <xsl:analyze-string select="$text"
