@@ -102,8 +102,7 @@
 
     <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->
     <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
-
-
+    
     <xsl:template match="emph/@*">
         <xsl:copy/>
     </xsl:template>
@@ -116,6 +115,5 @@
         </xsl:element>
     </xsl:template>-->
     <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
-    
 
 </xsl:stylesheet>
