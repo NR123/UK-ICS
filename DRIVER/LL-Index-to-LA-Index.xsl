@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-15T17:42:00.298+05:30-->
+Compiled:  2018-05-16T13:56:21.808+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -2043,13 +2043,16 @@ Compiled:  2018-05-15T17:42:00.298+05:30-->
    <xsl:template match="inlineobject/@*">
       <xsl:copy/>
    </xsl:template>
-
+   <!-- Changed by Dayanand as per DTD 10 May 2018-->   <!--<xsl:template match="nl[ancestor::searchhit|ancestor::emph|ancestor::alias|ancestor::glp:note|ancestor::note|ancestor::page|ancestor::fnr]">-->   <!-- Revathi: 11May2018 - Commented out the above nl template and added the below generic nl template-->
    <xsl:template match="nl">
-      <xsl:apply-templates select="@* | node()"/>
+      <xsl:apply-templates/>
       <!-- Added by Dayanand -->
-      <xsl:if test="contains(.,'')">
-         <xsl:element name="nl"/>
-      </xsl:if>
+      <!-- Revathi: 10May2018 - Commented the below code as whenever nl element occurs we need to suppress the element and retain the child contents-->
+      <!--<xsl:if test="contains(.,'')">
+                    <xsl:element name="nl"/>
+                   
+                    
+            </xsl:if>-->
    </xsl:template>
 
    <xsl:template match="page[$selectorID = 'cases']">
@@ -2084,9 +2087,23 @@ Compiled:  2018-05-15T17:42:00.298+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
+   <!-- Dayanand Singh 15 May 2018 Create new seperate templates to handle "footnote & fnbody" 
+        Old Code:
+        <xsl:template match="footnote | fnbody">
+            <xsl:apply-templates/>
+        </xsl:template>
+    -->
+   <xsl:template match="footnote">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="fntoken" select="@fntoken"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
 
-   <xsl:template match="footnote | fnbody">
-      <xsl:apply-templates/>
+   <xsl:template match="fnbody">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
    </xsl:template>
    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -2225,7 +2242,17 @@ Compiled:  2018-05-15T17:42:00.298+05:30-->
         <xsl:element name="{name()}">
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
-    </xsl:template>-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+    </xsl:template>-->   <!--    Dayanand singh-->
+   <xsl:template match="footnote/fnbody[child::l]">
+      <xsl:element name="footnote">
+         <xsl:attribute name="fntoken" select="0"/>
+         <xsl:element name="fnbody">
+            <xsl:apply-templates select="@* | node() except table"/>
+         </xsl:element>
+      </xsl:element>
+      <xsl:apply-templates select="child::table"/>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="person[$selectorID = ('cases','journal')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
