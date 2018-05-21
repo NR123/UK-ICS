@@ -53,17 +53,23 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="lilabel">
+    <xsl:template match="lilabel">        
         <xsl:element name="{name()}">
             <xsl:choose>
                 <xsl:when test="following-sibling::p">                    
                     <xsl:choose>
-                        <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('">                            
-                            <!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="^(\(?[a-zA-Z0-9]+\)?\.?|&#x25cf;|&#x2022;)([\t&#160;]*)">-->
-                            <!--<xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">-->
-                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
+                        <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('">
+                            <!-- Arun- 18May2018 Updated the below code to handle special characters before lilabel content and replaced multiple single quotes into single quote -->
+                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
-                                    <xsl:value-of select="regex-group(1)"/>                             
+                                    <xsl:choose>
+                                        <xsl:when test="$selectorID = 'commentary'">
+                                            <xsl:value-of select="replace(regex-group(1),'''''|''&#34;|&#34;''','''')"/>                                            
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="regex-group(1)"/>  
+                                        </xsl:otherwise>
+                                    </xsl:choose>                 
                                 </xsl:matching-substring>
                             </xsl:analyze-string> 
                         </xsl:when>
