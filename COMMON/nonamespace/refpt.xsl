@@ -34,6 +34,16 @@
             </xsl:attribute>            
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="refpt[$selectorID='commentary']">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="id">
+                <xsl:call-template name="fn_refpt">
+                    <xsl:with-param name="id" select="./@id"/>
+                </xsl:call-template>
+            </xsl:attribute>            
+        </xsl:element>
+    </xsl:template>
 
     <xsl:template name="fn_refpt">
         <xsl:param name="id"/>

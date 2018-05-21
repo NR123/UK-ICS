@@ -71,7 +71,7 @@
 
     <xsl:template match="emph">
         <xsl:choose>
-            <xsl:when test="self::emph[ancestor::h]">
+            <xsl:when test="self::emph[ancestor::h] or self::emph[parent::title]">
                 <xsl:apply-templates select="node()"/>
             </xsl:when>
             <!-- Revathi: 04May2018 - Added the below condition check -->
@@ -90,6 +90,10 @@
                         <xsl:apply-templates select="node() except node()[1]"/>
                     </xsl:element>
                 
+            </xsl:when>
+            <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
+            <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+                <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">

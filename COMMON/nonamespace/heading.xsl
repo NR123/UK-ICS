@@ -10,5 +10,6 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="heading/@*[$selectorID='journal']"/>
+    <!-- Arun- 18May2018 Updated the below code to handle heading attributes for commentary -->
+    <xsl:template match="heading/@*[$selectorID=('journal','commentary')]"/>
 </xsl:stylesheet>
