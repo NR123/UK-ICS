@@ -26,6 +26,8 @@
     <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
     
     <xsl:template match="glp:note[parent::case:headnote and following-sibling::case:decisionsummary]">
-        <xsl:apply-templates/>
+        <note>
+            <xsl:apply-templates/>  
+        </note>
     </xsl:template>
 </xsl:stylesheet>

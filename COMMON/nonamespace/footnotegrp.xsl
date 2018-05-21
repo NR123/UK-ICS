@@ -9,8 +9,22 @@
         <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
     </xsl:template>
 
-    <xsl:template match="footnote | fnbody">
-        <xsl:apply-templates/>
+    <!-- 15th May, 2018 - Himanshu: Created new seperated templates to handle "footnote & fnbody" elements.
+        <xsl:template match="footnote | fnbody">
+            <xsl:apply-templates/>
+        </xsl:template>
+    -->
+    <xsl:template match="footnote">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="fntoken" select="@fntoken"/>
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="fnbody">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates/>
+        </xsl:element>
     </xsl:template>
     
     <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
