@@ -10,9 +10,9 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="edpnum[$selectorID='commentary']">
+    <xsl:template match="edpnum[$selectorID=('commentary','commentaryleghist')]">
         <xsl:element name="{name()}">
-            <xsl:attribute name="value" select="translate(self::edpnum,'[]','')"/>
+            <xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>
             <xsl:attribute name="inline" select="'false'"/>
             <xsl:apply-templates/>
         </xsl:element>

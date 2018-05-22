@@ -11,7 +11,7 @@
             <!-- Revathi: Added the below condition check to accomodate following changes. The generic code to handle remotelink, that is already present here is moved inside xsl:otherwise -->
             <!-- Whenever, emph has only remotelink as child in commentary data, then the emph should be suppressed and the child remotelink is converted as ci:cite/@type='paragraph-ref'
             and the PCDATA of remotelink is mapped to ci:content.-->
-            <xsl:when test="(self::remotelink/parent::emph and parent::emph/not(child::node()[name()!='remotelink'])) and $selectorID='commentary'">
+            <xsl:when test="(self::remotelink/parent::emph and parent::emph/not(child::node()[name()!='remotelink'])) and $selectorID=('commentary','commentaryleghist')">
                 <ci:cite type='paragraph-ref' xsl:exclude-result-prefixes="#all">
                     <ci:content xsl:exclude-result-prefixes="#all">
                         <xsl:apply-templates/>
@@ -36,7 +36,10 @@
         
     </xsl:template>
     
-    <xsl:template match="remotelink/@href|remotelink/@hrefclass">
+	<!-- DATE: 22 May, 2018 - Modified by Himanshu to handle attribute "remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi".
+        Old Code: <xsl:template match="remotelink/@href|remotelink/@hrefclass">
+    -->
+    <xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
         <xsl:attribute name="{name()}">
             <xsl:value-of select="."/>
         </xsl:attribute>

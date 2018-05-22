@@ -19,6 +19,14 @@
             <xsl:when test="self::li//child::blockquote and $selectorID='dictionary'">
                 <xsl:apply-templates select="node()"/>
             </xsl:when>
+            <!-- Revathi: 22May2018 - In commentary, whenever l is appearing as child of bodytext, it should be enclosed within blockquote -->
+            <!--<xsl:when test="self::l[parent::bodytext/parent::level] and $selectorID='commentary'">
+                <blockquote xsl:exclude-result-prefixes="#all">
+                    <xsl:element name="{name()}">
+                        <xsl:apply-templates select="@* | node()"/>
+                    </xsl:element>
+                </blockquote>
+            </xsl:when>-->
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
@@ -59,12 +67,14 @@
                 <xsl:when test="following-sibling::p">                    
                     <xsl:choose>
                         <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('">
-                            <!-- Arun- 18May2018 Updated the below code to handle special characters before lilabel content and replaced multiple single quotes into single quote -->
-                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
+                            <!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content and replaced multiple single quotes into single quote -->
+                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^●|^&#x25cf;|^&#x2022;|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
                                     <xsl:choose>
-                                        <xsl:when test="$selectorID = 'commentary'">
-                                            <xsl:value-of select="replace(regex-group(1),'''''|''&#34;|&#34;''','''')"/>                                            
+                                        <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+                                            <xsl:call-template name="replace">
+                                                <xsl:with-param name="text" select="replace(regex-group(1),'&#160;| ','')"/>
+                                            </xsl:call-template>                                                                                        
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <xsl:value-of select="regex-group(1)"/>  

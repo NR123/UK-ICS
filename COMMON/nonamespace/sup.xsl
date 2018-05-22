@@ -5,9 +5,16 @@
     version="2.0">
     
     <xsl:template match="sup">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates select="@* | node()"/>
-        </xsl:element>
+        <xsl:choose>
+            <!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
+            <xsl:when test="self::sup=parent::text/node()[1] and ancestor::fnbody"/>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
+        
     </xsl:template>
     
     <!--<xsl:template match="//case:content//text[ancestor::footnote]/sup" mode="fnrtoken">

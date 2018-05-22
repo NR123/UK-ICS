@@ -29,17 +29,7 @@
     <xsl:variable name="closequote">&#8217;</xsl:variable>
     
     <xsl:template match="text()" priority="20">
-        <!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
-        <xsl:param name="text">
-            <xsl:choose>
-                <xsl:when test="$selectorID='commentary'">
-                    <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>  
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:param>
+        <xsl:param name="text" select="."/>  
         <xsl:param name="usequote" select="$openquote"/>
         <xsl:choose>            
             <xsl:when test="contains($text,$quot)">
@@ -95,17 +85,7 @@
     </xsl:template>
     
     <xsl:template name="replace">
-        <!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
-        <xsl:param name="text">
-            <xsl:choose>
-                <xsl:when test="$selectorID='commentary'">
-                    <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>  
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:param>
+        <xsl:param name="text" select="."/>           
         <xsl:param name="usequote" select="$openquote"/>
         <xsl:choose>            
             <xsl:when test="contains($text,$quot)">
