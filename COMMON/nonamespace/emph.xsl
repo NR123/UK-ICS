@@ -74,7 +74,9 @@
                 
             </xsl:when>
             <xsl:otherwise>
+<!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
                 <xsl:element name="{name()}">
+                    <xsl:attribute name="typestyle" select="@typestyle"/>
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
             </xsl:otherwise>
@@ -84,8 +86,12 @@
 
     <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->
     <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
+   
+    <!-- DAYANAND SINGH: 22 May 2018 changed for dictionary selector-->
+   
     
-    <xsl:template match="emph/@*">
+    
+    <xsl:template match="emph/@*[$selectorID = 'cases']">
         <xsl:copy/>
     </xsl:template>
     
