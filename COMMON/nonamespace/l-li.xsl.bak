@@ -63,7 +63,7 @@
                             <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
                                     <xsl:choose>
-                                        <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+                                        <xsl:when test="$selectorID=('commentary','legislative_history')">
                                             <xsl:value-of select="replace(regex-group(1),'''''|''&#34;|&#34;''','''')"/>                                            
                                         </xsl:when>
                                         <xsl:otherwise>

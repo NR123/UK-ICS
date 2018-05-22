@@ -25,7 +25,17 @@
     </xsl:template>
 
     <xsl:template match="emph[@typestyle = 'bf'][$selectorID = 'index']">
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <xsl:when test="self::emph/parent::remotelink">
+                <xsl:apply-templates/>   
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:attribute name="typestyle" select="./@typestyle"/>
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>        
     </xsl:template>
 
     <xsl:template
@@ -35,25 +45,33 @@
 
 
     <xsl:template match="emph[@typestyle = 'smcaps'][$selectorID = 'index']">
-        <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
-            <remotelink service="DOC-ID" remotekey1="REFPTID" xsl:exclude-result-prefixes="#all">
-                <xsl:attribute name="refpt">
-                    <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
-                    <xsl:variable name="remtext" select="self::emph/text()"/>
-                    <xsl:value-of
-                        select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
-                </xsl:attribute>
-                <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
-                <xsl:attribute name="dpsi" select="'003B'"/>
-                <xsl:attribute name="status" select="'valid'"/>
+        <xsl:choose>
+            <xsl:when test="self::emph[not(child::remotelink)]">
+                <emph typestyle="smcaps" xsl:exclude-result-prefixes="#all">
+                    <remotelink service="DOC-ID" remotekey1="REFPTID" xsl:exclude-result-prefixes="#all">
+                        <xsl:attribute name="refpt">
+                            <xsl:variable name="prepend" select="'acronym:HALS-INDEX::term:'"/>
+                            <xsl:variable name="remtext" select="self::emph"/>
+                            <xsl:value-of
+                                select="concat($prepend, translate(upper-case($remtext), ' ', '_'))"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="docidref" select="'95ed127a-e22e-4234-939e-bf12978c46da'"/>
+                        <xsl:attribute name="dpsi" select="'003B'"/>
+                        <xsl:attribute name="status" select="'valid'"/>
+                        <xsl:apply-templates/>
+                    </remotelink>
+                </emph>
+            </xsl:when>
+            <xsl:otherwise>
                 <xsl:apply-templates/>
-            </remotelink>
-        </emph>
+            </xsl:otherwise>
+        </xsl:choose>
+        
     </xsl:template>
 
     <xsl:template match="emph">
         <xsl:choose>
-            <xsl:when test="self::emph[ancestor::h]">
+            <xsl:when test="self::emph[ancestor::h] or self::emph[parent::title]">
                 <xsl:apply-templates select="node()"/>
             </xsl:when>
             <!-- Revathi: 04May2018 - Added the below condition check -->
@@ -73,6 +91,10 @@
                     </xsl:element>
                 
             </xsl:when>
+            <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
+            <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
@@ -84,7 +106,8 @@
 
     <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->
     <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
-    
+
+
     <xsl:template match="emph/@*">
         <xsl:copy/>
     </xsl:template>
@@ -97,5 +120,6 @@
         </xsl:element>
     </xsl:template>-->
     <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
+    
 
 </xsl:stylesheet>

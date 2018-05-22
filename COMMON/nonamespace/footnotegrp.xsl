@@ -8,24 +8,19 @@
         </xsl:element>
         <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
     </xsl:template>
-
-    <!-- 15th May, 2018 - Himanshu: Created new seperated templates to handle "footnote & fnbody" elements.
+    
+<!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy-->
         <xsl:template match="footnote | fnbody">
+           <xsl:if test="fnbody=''">
+               <xsl:element name="footnote">
+                   <xsl:attribute name="fntoken" select="@fntoken"/>
+                   <xsl:element name="fnbody">
+                       <xsl:apply-templates/>
+                   </xsl:element>
+               </xsl:element>
+           </xsl:if>
             <xsl:apply-templates/>
         </xsl:template>
-    -->
-    <xsl:template match="footnote">
-        <xsl:element name="{name()}">
-            <xsl:attribute name="fntoken" select="@fntoken"/>
-            <xsl:apply-templates/>
-        </xsl:element>
-    </xsl:template>
-    
-    <xsl:template match="fnbody">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates/>
-        </xsl:element>
-    </xsl:template>
     
     <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -170,6 +165,9 @@
         </footnote>
     </xsl:template>  
     
+    
+    
+    
     <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->
     <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
@@ -181,4 +179,15 @@
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
     </xsl:template>-->
+    
+<!--    Dayanand singh 16 May 2018 added list under footnote-->
+    <xsl:template match="footnote/fnbody[child::l]">
+        <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="0"/>
+            <xsl:element name="fnbody">
+                <xsl:apply-templates select="@* | node() except table"/>
+            </xsl:element>
+        </xsl:element>
+        <xsl:apply-templates select="child::table"/>
+    </xsl:template>
 </xsl:stylesheet>
