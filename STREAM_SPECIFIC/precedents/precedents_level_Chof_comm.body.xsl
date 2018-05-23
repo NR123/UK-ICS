@@ -20,10 +20,10 @@
         <xsl:choose>
             <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
                 <xsl:element name="{name()}">
-                    <bodytext>
-                        <legfragment>
-                            <leg:level>
-                                <leg:level-vrnt leveltype="{$v_leveltype}">
+                    <bodytext xsl:exclude-result-prefixes="#all">
+                        <legfragment xsl:exclude-result-prefixes="#all">
+                            <leg:level xsl:exclude-result-prefixes="#all">
+                                <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
                                     <xsl:apply-templates/>
                                 </leg:level-vrnt>
                             </leg:level>
