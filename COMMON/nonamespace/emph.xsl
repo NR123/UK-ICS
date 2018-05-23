@@ -71,7 +71,7 @@
 
     <xsl:template match="emph">
         <xsl:choose>
-            <xsl:when test="self::emph[ancestor::h] or self::emph[parent::title]">
+            <xsl:when test="self::emph[ancestor::h] or self::emph[ancestor::title]">
                 <xsl:apply-templates select="node()"/>
             </xsl:when>
             <!-- Revathi: 04May2018 - Added the below condition check -->

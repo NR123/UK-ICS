@@ -176,7 +176,7 @@
     </xsl:template>
 
     <xsl:template
-        match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:assoc-links | docinfo:normcite"/>
+        match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal','precedents','treatises','commentaryleghist')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal','precedents','treatises','commentaryleghist')] | docinfo:assoc-links | docinfo:normcite"/>
 
     <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
         <xsl:element name="{name()}">

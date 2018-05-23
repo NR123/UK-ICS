@@ -35,7 +35,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="refpt[$selectorID=('commentary','commentaryleghist')]">
+    <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:element name="{name()}">
             <xsl:attribute name="id">
                 <xsl:call-template name="fn_refpt">

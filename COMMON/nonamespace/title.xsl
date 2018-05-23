@@ -38,9 +38,10 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="title[ancestor::comm:body][$selectorID=('commentary','commentaryleghist')]">
+    <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
-            <xsl:when test="self::title/count(child::emph)=2">
+            <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
+            <xsl:when test="self::title/count(child::emph) > 1">
                 <desig xsl:exclude-result-prefixes="#all">
                     <xsl:attribute name="value">
                         <xsl:call-template name="Normalize_id_string">
@@ -52,12 +53,15 @@
                     </designum>
                 </desig>
                 <title xsl:exclude-result-prefixes="#all">
-                    <xsl:call-template name="replace">
+                    <!-- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -->
+                    <xsl:apply-templates select="self::title/emph[position() > 1]"/>
+                    <!--<xsl:call-template name="replace">
                         <xsl:with-param name="text" select="self::title/emph[2]//text()"/>
-                    </xsl:call-template>
+                    </xsl:call-template>-->
                 </title>
             </xsl:when>
-            <xsl:when test="self::title/child::emph/count(child::emph)=2">
+            <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
+            <xsl:when test="self::title/child::emph/count(child::emph) > 1">
                 <desig xsl:exclude-result-prefixes="#all">
 				<!-- DATE: 22 May, 2018 - Modified by Himanshu to resolve text of element <emph>/text() = "2 &amp; 3 Edw 6 c 13" for element <desig>/@value.
                         Attribute @value value of type NMTOKEN must be a name token.
@@ -65,7 +69,7 @@
                         <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
                     -->
                     <xsl:attribute name="value">
-                        <xsl:choose>
+                        <!--<xsl:choose>
                             <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
                                 <xsl:variable name="DESIGVALUE" select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
                                 <xsl:value-of select="$DESIGVALUE[1]"/>
@@ -73,21 +77,27 @@
                             <xsl:otherwise>
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
-                        </xsl:choose>
+                        </xsl:choose>-->
+                        <!-- Revathi: Commented the above code and added the below to normalise the value -->
+                        <xsl:call-template name="Normalize_id_string">
+                            <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                        </xsl:call-template>
                     </xsl:attribute>		
                     <designum xsl:exclude-result-prefixes="#all">
                         <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                     </designum>
                 </desig>
                 <title xsl:exclude-result-prefixes="#all">
-                    <xsl:call-template name="replace">
+                    <!-- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -->
+                    <xsl:apply-templates select="self::title/emph/emph[position() > 1]"/>
+                    <!--<xsl:call-template name="replace">
                         <xsl:with-param name="text" select="self::title/emph/emph[2]//text()"/>
-                    </xsl:call-template>
+                    </xsl:call-template>-->
                 </title>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates select="self::title//text()"/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
