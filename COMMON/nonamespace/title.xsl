@@ -74,6 +74,7 @@
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
                         </xsl:choose>-->
+			    <!-- Revathi: Commented the above code and added the below to normalise the value -->
                         <xsl:call-template name="Normalize_id_string">
                             <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
                         </xsl:call-template>
