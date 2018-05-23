@@ -25,9 +25,9 @@
     
 <!--    Dayanand singh 15 may 2018 commenting the below code for processing the glp:note element-->
     
-   <!-- <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
+    <xsl:template match="glp:note[parent::case:decisionsummary] | case:consideredcases[parent::case:decisionsummary]"/>
     
     <xsl:template match="glp:note[parent::case:headnote and following-sibling::case:decisionsummary]">
         <xsl:apply-templates/>
-    </xsl:template>-->
+    </xsl:template>
 </xsl:stylesheet>

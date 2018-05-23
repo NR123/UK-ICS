@@ -25,4 +25,12 @@
     </xsl:template>
 
     <xsl:template match="case:juris[parent::case:courtinfo[parent::case:info | parent::judgment]]"/>
+    
+    <!-- case:publishdate element added by himanshu -->
+    <xsl:template match="case:publishdate[parent::case:dates[parent::case:courtinfo]]">
+        <case:publishdate>
+            <xsl:apply-templates select="@*|node()"/>
+        </case:publishdate>
+    </xsl:template>
+    
 </xsl:stylesheet>
