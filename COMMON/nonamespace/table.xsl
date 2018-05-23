@@ -51,7 +51,7 @@
     <xsl:template match="table/@frame">
         <xsl:choose>
             <xsl:when test="$selectorID = 'dictionary'"/>
-            <xsl:when test="$selectorID = 'commentary'">
+            <xsl:when test="$selectorID = ('precedents','treatises')">
                 <xsl:attribute name="frame" select="'none'"/>
             </xsl:when>
             <xsl:otherwise>
@@ -342,7 +342,7 @@
                     </xsl:if>
                     <!-- Revathi: 22May2016 - Added the below condition check. As the entry PCDATA in commentary should be wrapped by the element p-limited-->
                     <xsl:choose>
-                        <xsl:when test="$selectorID='commentary'">
+                        <xsl:when test="$selectorID=('precedents','treatises')">
                             <p-limited xsl:exclude-result-prefixes="#all">
                                 <xsl:apply-templates select="node()"/> 
                             </p-limited>

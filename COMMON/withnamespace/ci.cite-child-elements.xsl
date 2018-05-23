@@ -130,7 +130,14 @@
 
                 </xsl:matching-substring>
             </xsl:analyze-string></xsl:variable>
-        <xsl:value-of select="$test"/>
+        <xsl:choose>
+            <xsl:when test="$test = ''">
+                <xsl:value-of select="./@num"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$test"/>
+            </xsl:otherwise>
+        </xsl:choose>       
     </xsl:template>
 
     <xsl:template

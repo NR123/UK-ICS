@@ -38,7 +38,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="title[ancestor::comm:body][$selectorID=('commentary','commentaryleghist')]">
+    <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
             <xsl:when test="self::title/count(child::emph)=2">
                 <desig xsl:exclude-result-prefixes="#all">
@@ -65,7 +65,7 @@
                         <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
                     -->
                     <xsl:attribute name="value">
-                        <xsl:choose>
+                        <!--<xsl:choose>
                             <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
                                 <xsl:variable name="DESIGVALUE" select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
                                 <xsl:value-of select="$DESIGVALUE[1]"/>
@@ -73,7 +73,11 @@
                             <xsl:otherwise>
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
-                        </xsl:choose>
+                        </xsl:choose>-->
+			    <!-- Revathi: Commented the above code and added the below to normalise the value -->
+                        <xsl:call-template name="Normalize_id_string">
+                            <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                        </xsl:call-template>
                     </xsl:attribute>		
                     <designum xsl:exclude-result-prefixes="#all">
                         <xsl:value-of select="self::title/emph/emph[1]//text()"/>
@@ -87,7 +91,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates select="self::title//text()"/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>

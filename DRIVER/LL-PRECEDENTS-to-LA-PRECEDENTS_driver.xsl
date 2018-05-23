@@ -20,7 +20,7 @@
     exclude-result-prefixes="xs" version="2.0">
 
 
-    <xsl:param name="selectorID" select="'commentary'"/>
+    <xsl:param name="selectorID" select="'precedents'"/>
 
     <xsl:output encoding="utf-8" indent="yes"/>
 
@@ -99,6 +99,8 @@
     <xsl:include href="../COMMON/nonamespace/strike.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/edpnum.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/lnlink.xsl"/>
     
     <!-- END OF GENERIC XSLS -->
     
