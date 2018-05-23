@@ -16,5 +16,17 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="glp:note[parent::name.text]">
+        <!-- <xsl:element name="{name()}">-->
+        <xsl:apply-templates/>
+        <!--</xsl:element>-->
+    </xsl:template>
+    
+    <xsl:template match="glp:note[parent::text]">
+        <!-- <xsl:element name="{name()}">-->
+        <xsl:apply-templates/>
+        <!--</xsl:element>-->
+    </xsl:template>
   
 </xsl:stylesheet>
