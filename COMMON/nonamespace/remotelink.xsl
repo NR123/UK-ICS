@@ -39,7 +39,9 @@
 	<!-- DATE: 22 May, 2018 - Modified by Himanshu to handle attribute "remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi".
         Old Code: <xsl:template match="remotelink/@href|remotelink/@hrefclass">
     -->
-    <xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
+    <!--     Dayanand singh 23 May 2018 added here [$selectorID='commentryleghist'] for removing ambigutiy-->
+    
+    <xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@dpsi|remotelink/@refpt[$selectorID='commentryleghist']">
         <xsl:attribute name="{name()}">
             <xsl:value-of select="."/>
         </xsl:attribute>
@@ -76,22 +78,28 @@
         <xsl:copy/>
     </xsl:template>
     
-    <xsl:template match="remotelink/@refpt [$selectorID='dictionary']">
-        <xsl:variable name="id">
-            <xsl:value-of select="."/>
-        </xsl:variable>
+     
+    <xsl:template match="remotelink/@refpt[$selectorID='dictionary']">
+        
+        
+                <xsl:variable name="id">
+                    <xsl:value-of select="."/>
+                </xsl:variable>
 
-        <xsl:attribute name="refpt">
-            <xsl:call-template name="fn_refpt">
-                <xsl:with-param name="id" select="$id"/>
-            </xsl:call-template>
-        </xsl:attribute>
-        <xsl:attribute name="docidref" select="'TBD'"/>
+                <xsl:attribute name="refpt">
+                    <xsl:call-template name="fn_refpt">
+                        <xsl:with-param name="id" select="$id"/>
+                    </xsl:call-template>
+                </xsl:attribute>
+                    <xsl:attribute name="docidref" select="'TBD'"/>
+            
     </xsl:template>
     
-        
+<!--     Dayanand singh 23 May 2018 changed for retain in output xml-->
     <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
+        <xsl:element name="remotelink">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
     </xsl:template>
     
 </xsl:stylesheet>

@@ -117,10 +117,11 @@
         <xsl:copy/>
     </xsl:template>
 
-
-    <xsl:template match="emph/@*">
+    <!-- DAYANAND SINGH: 23 May 2018 comment for dictionary selector-->
+    
+    <!--<xsl:template match="emph/@*">
         <xsl:copy/>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- DAYANAND SINGH: 10May2018-->
     
