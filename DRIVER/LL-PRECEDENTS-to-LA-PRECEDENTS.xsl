@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-23T15:54:27.928+05:30-->
+Compiled:  2018-05-23T16:55:12.517+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -420,27 +420,26 @@ Compiled:  2018-05-23T15:54:27.928+05:30-->
    <xsl:template match="text()" priority="20">
       <xsl:param name="text" select="."/>
       <xsl:param name="usequote" select="$openquote"/>
-      <xsl:choose><!--<xsl:when test="contains($text,$quot)">
-                <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
-                <xsl:choose>
-                    <xsl:when test="matches(substring-after($text,$quot),'^\s')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    
-                    <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    <xsl:otherwise>  
-                        <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>                      
-                    </xsl:otherwise>
-                </xsl:choose>
-                
-                <xsl:call-template name="replace">
-                    <xsl:with-param name="text" select="substring-after($text,$quot)"/>
-                    <xsl:with-param name="usequote"
-                        select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
-                </xsl:call-template>
-            </xsl:when>-->
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
                                 regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
@@ -477,27 +476,26 @@ Compiled:  2018-05-23T15:54:27.928+05:30-->
    <xsl:template name="replace">
       <xsl:param name="text" select="."/>
       <xsl:param name="usequote" select="$openquote"/>
-      <xsl:choose><!--<xsl:when test="contains($text,$quot)">
-                <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
-                <xsl:choose>
-                    <xsl:when test="matches(substring-after($text,$quot),'^\s')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    
-                    <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    <xsl:otherwise>  
-                        <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>                      
-                    </xsl:otherwise>
-                </xsl:choose>
-                
-                <xsl:call-template name="replace">
-                    <xsl:with-param name="text" select="substring-after($text,$quot)"/>
-                    <xsl:with-param name="usequote"
-                        select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
-                </xsl:call-template>
-            </xsl:when>-->
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
                                 regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
