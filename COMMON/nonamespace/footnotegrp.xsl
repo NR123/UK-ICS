@@ -184,8 +184,9 @@
         </xsl:element>
     </xsl:template>-->
     
+    <!-- Revathi: 23May2018 - Commented the below code as i have added the generic code to handle the child elements of fnbody irrespective of the element name in <xsl:template match="node()[parent::fnbody]"> -->
 <!--    Dayanand singh 16 May 2018 added list under footnote-->
-    <xsl:template match="footnote/fnbody[child::l]">
+   <!-- <xsl:template match="footnote/fnbody[child::l]">
         <xsl:element name="footnote">
             <xsl:attribute name="fntoken" select="0"/>
             <xsl:element name="fnbody">
@@ -193,5 +194,5 @@
             </xsl:element>
         </xsl:element>
         <xsl:apply-templates select="child::table"/>
-    </xsl:template>
+    </xsl:template>-->
 </xsl:stylesheet>

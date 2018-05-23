@@ -65,7 +65,7 @@
                         <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
                     -->
                     <xsl:attribute name="value">
-                        <xsl:choose>
+                        <!--<xsl:choose>
                             <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
                                 <xsl:variable name="DESIGVALUE" select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
                                 <xsl:value-of select="$DESIGVALUE[1]"/>
@@ -73,7 +73,10 @@
                             <xsl:otherwise>
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
-                        </xsl:choose>
+                        </xsl:choose>-->
+                        <xsl:call-template name="Normalize_id_string">
+                            <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                        </xsl:call-template>
                     </xsl:attribute>		
                     <designum xsl:exclude-result-prefixes="#all">
                         <xsl:value-of select="self::title/emph/emph[1]//text()"/>
