@@ -59,7 +59,7 @@
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->
     
-    <xsl:template match="p[parent::fnbody]">
+    <xsl:template match="node()[parent::fnbody]">
         <footnote type="editorial" xsl:exclude-result-prefixes="#all">
             <xsl:attribute name="fntoken" select="0"/>
             <!--<xsl:attribute name="fntoken">
@@ -156,11 +156,15 @@
                 </fnlabel>
             </xsl:if>-->
             <fnbody xsl:exclude-result-prefixes="#all">
-                <p xsl:exclude-result-prefixes="#all">
+                <!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates/>
+                </xsl:element>
+                <!--<p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      
-                    <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
-                    <!--<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-->
-                </p>
+                    <!-\- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -\->
+                    <!-\-<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-\->
+                </p>-->
             </fnbody>
         </footnote>
     </xsl:template>  

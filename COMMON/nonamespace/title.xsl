@@ -38,7 +38,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="title[ancestor::comm:body][$selectorID=('commentary','commentaryleghist')]">
+    <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
             <xsl:when test="self::title/count(child::emph)=2">
                 <desig xsl:exclude-result-prefixes="#all">
@@ -87,7 +87,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates select="self::title//text()"/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>

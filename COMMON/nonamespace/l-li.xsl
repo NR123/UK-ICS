@@ -20,7 +20,7 @@
                 <xsl:apply-templates select="node()"/>
             </xsl:when>
             <!-- Revathi: 22May2018 - In commentary, whenever l is appearing as child of bodytext, it should be enclosed within blockquote -->
-            <!--<xsl:when test="self::l[parent::bodytext/parent::level] and $selectorID='commentary'">
+            <!--<xsl:when test="self::l[parent::bodytext/parent::level] and $selectorID=('precedents','treatises')">
                 <blockquote xsl:exclude-result-prefixes="#all">
                     <xsl:element name="{name()}">
                         <xsl:apply-templates select="@* | node()"/>
@@ -71,7 +71,7 @@
                             <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^●|^&#x25cf;|^&#x2022;|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
                                     <xsl:choose>
-                                        <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+                                        <xsl:when test="$selectorID=('precedents','treatises','commentaryleghist')">
                                             <xsl:call-template name="replace">
                                                 <xsl:with-param name="text" select="replace(regex-group(1),'&#160;| ','')"/>
                                             </xsl:call-template>                                                                                        
