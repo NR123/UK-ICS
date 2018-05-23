@@ -7,15 +7,16 @@
     <xsl:variable name="path"
         select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
     
+    <xsl:variable name="v_getDPSI">
+        <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
+            <xsl:matching-substring>
+                <xsl:value-of select="regex-group(1)"/>
+            </xsl:matching-substring>
+        </xsl:analyze-string>
+    </xsl:variable>
+    
     <xsl:template match="docinfo">       
-        <xsl:element name="{name()}">
-            <xsl:variable name="v_getDPSI">
-                <xsl:analyze-string select="$path" regex="[/]([0-9][0-9A-Z]{{3}})[_|-]?">
-                    <xsl:matching-substring>
-                        <xsl:value-of select="regex-group(1)"/>
-                    </xsl:matching-substring>
-                </xsl:analyze-string>
-            </xsl:variable>
+        <xsl:element name="{name()}">            
 
             <docinfo:dpsi id-string="{substring($v_getDPSI,1,4)}" xsl:exclude-result-prefixes="#all"/> 
             <!--<xsl:choose>
@@ -175,7 +176,7 @@
     </xsl:template>
 
     <xsl:template
-        match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal')] | docinfo:assoc-links | docinfo:normcite"/>
+        match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:assoc-links | docinfo:normcite"/>
 
     <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
         <xsl:element name="{name()}">

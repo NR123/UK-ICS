@@ -9,7 +9,9 @@
             <xsl:apply-templates select="@* | node()"/>        
     </xsl:template>
         
-        <xsl:template match="pgrp[$selectorID='journal']">
+        <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
+        
+        <xsl:template match="pgrp[$selectorID=('journal','commentary','commentaryleghist')]">
                 <xsl:apply-templates/>        
         </xsl:template>
 </xsl:stylesheet>

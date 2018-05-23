@@ -51,6 +51,9 @@
     <xsl:template match="table/@frame">
         <xsl:choose>
             <xsl:when test="$selectorID = 'dictionary'"/>
+            <xsl:when test="$selectorID = 'commentary'">
+                <xsl:attribute name="frame" select="'none'"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:attribute name="frame" select="'all'"/>
             </xsl:otherwise>
@@ -121,12 +124,38 @@
             <xsl:variable name="colspec">
                 <!-- Revathi: 04-May-2018 - Added the condition to check $Maxcols is not less than 0-->
                 <xsl:if test="$Maxcols > 0">
-                    <xsl:choose>
+                    <xsl:for-each select="self::tgroup/colspec">
+                        <xsl:if test="position() &lt;= $Maxcols">
+                            <xsl:variable name="count" select="position()" as="xs:integer"/>   
+                            <!-- Revathi: 22May2018 - Incorporated the pixel to pixel conversion shared by Awntika -->
+                            <xsl:choose>
+                                <xsl:when test="$colspec_type = '*'">
+                                    <xsl:variable name="colwidths" select="../colspec/@colwidth"/>
+                                    <xsl:variable name="totalwidth"
+                                        select="sum(for $x in $colwidths return if(contains($x,'*')) then xs:decimal(substring-before($x,'*')) else xs:decimal($x))"/>
+                                    <xsl:value-of
+                                        select="if(contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*'))      then concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*')) * 100 div $totalwidth, '#'),'*')      else concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'),'*')"
+                                    />                                   
+                                </xsl:when>
+                                <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end --> 
+                                <xsl:otherwise>
+                                    <xsl:value-of
+                                        select="concat(ceiling(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', ''))) * 1440, '*')"
+                                    />
+                                </xsl:otherwise>
+                            </xsl:choose>
+                                                       
+                            <!--<xsl:value-of
+                                select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>-->
+                            <xsl:text>,</xsl:text>
+                        </xsl:if>
+                    </xsl:for-each>
+                    <!--<xsl:choose>
                         <xsl:when test="$selectorID = 'dictionary'">
                             <xsl:for-each select="self::tgroup/colspec">
                                 <xsl:if test="position() &lt;= $Maxcols">
                                     <xsl:variable name="count" select="position()" as="xs:integer"/>
-                                    <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
+                                    <!-\- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -\->
                                     <xsl:value-of
                                         select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>
                                     <xsl:text>,</xsl:text>
@@ -137,7 +166,7 @@
                             <xsl:for-each select="self::tgroup/colspec">
                                 <xsl:if test="position() &lt;= $Maxcols">
                                     <xsl:variable name="count" select="position()" as="xs:integer"/>
-                                    <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
+                                    <!-\- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -\->
                                     <xsl:choose>
                                         <xsl:when test="$colspec_type = '*'">
                                             <xsl:value-of
@@ -156,7 +185,7 @@
                                 </xsl:if>
                             </xsl:for-each>
                         </xsl:otherwise>
-                    </xsl:choose>
+                    </xsl:choose>-->
                 </xsl:if>
             </xsl:variable>
 
@@ -311,7 +340,18 @@
                         <xsl:attribute name="colsep" select="'0'"/>
                         <xsl:attribute name="rowsep" select="'0'"/>
                     </xsl:if>
-                    <xsl:apply-templates select="node()"/>
+                    <!-- Revathi: 22May2016 - Added the below condition check. As the entry PCDATA in commentary should be wrapped by the element p-limited-->
+                    <xsl:choose>
+                        <xsl:when test="$selectorID='commentary'">
+                            <p-limited xsl:exclude-result-prefixes="#all">
+                                <xsl:apply-templates select="node()"/> 
+                            </p-limited>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="node()"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <!--<xsl:apply-templates select="node()"/>-->
                 </xsl:element>
             </xsl:when>
         </xsl:choose>
