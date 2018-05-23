@@ -6,8 +6,8 @@
     
     <!-- DAYANAND SINGH: 22May2018-->
 
-    <xsl:template match="index">
-        <xsl:element name="index">
+    <xsl:template match="see-also">
+        <xsl:element name="see-also">
             <xsl:apply-templates select="@*|node()"/>
         </xsl:element>
     </xsl:template>
