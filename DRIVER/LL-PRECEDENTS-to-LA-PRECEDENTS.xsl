@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-23T12:49:39.45+05:30-->
+Compiled:  2018-05-23T16:55:12.517+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -75,10 +75,10 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
       <xsl:choose>
          <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
             <xsl:element name="{name()}">
-               <bodytext>
-                  <legfragment>
-                     <leg:level>
-                        <leg:level-vrnt leveltype="{$v_leveltype}">
+               <bodytext xsl:exclude-result-prefixes="#all">
+                  <legfragment xsl:exclude-result-prefixes="#all">
+                     <leg:level xsl:exclude-result-prefixes="#all">
+                        <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
                            <xsl:apply-templates/>
                         </leg:level-vrnt>
                      </leg:level>
@@ -563,7 +563,7 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
    <xsl:template match="heading">
       <xsl:choose>
          <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
-            <leg:heading>
+            <leg:heading xsl:exclude-result-prefixes="#all">
                <xsl:apply-templates select="@* | node()"/>
             </leg:heading>
          </xsl:when>
@@ -607,8 +607,8 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
    </xsl:template>
 
    <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:choose>
-         <xsl:when test="self::title/count(child::emph)=2">
+      <xsl:choose><!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
+         <xsl:when test="self::title/count(child::emph) &gt; 1">
             <desig xsl:exclude-result-prefixes="#all">
                <xsl:attribute name="value">
                   <xsl:call-template name="Normalize_id_string">
@@ -619,38 +619,42 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
                   <xsl:value-of select="self::title/emph[1]//text()"/>
                </designum>
             </desig>
-            <title xsl:exclude-result-prefixes="#all">
-               <xsl:call-template name="replace">
-                  <xsl:with-param name="text" select="self::title/emph[2]//text()"/>
-               </xsl:call-template>
+            <title xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -->
+               <xsl:apply-templates select="self::title/emph[position() &gt; 1]"/>
+               <!--<xsl:call-template name="replace">
+                        <xsl:with-param name="text" select="self::title/emph[2]//text()"/>
+                    </xsl:call-template>-->
             </title>
          </xsl:when>
-         <xsl:when test="self::title/child::emph/count(child::emph)=2">
+         <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
+         <xsl:when test="self::title/child::emph/count(child::emph) &gt; 1">
             <desig xsl:exclude-result-prefixes="#all"><!-- DATE: 22 May, 2018 - Modified by Himanshu to resolve text of element <emph>/text() = "2 &amp; 3 Edw 6 c 13" for element <desig>/@value.
                         Attribute @value value of type NMTOKEN must be a name token.
                         Old Code: 
                         <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
                     -->
-               <xsl:attribute name="value">
-                  <xsl:choose>
-                     <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
-                        <xsl:variable name="DESIGVALUE"
-                                      select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
-                        <xsl:value-of select="$DESIGVALUE[1]"/>
-                     </xsl:when>
-                     <xsl:otherwise>
-                        <xsl:value-of select="self::title/emph/emph[1]//text()"/>
-                     </xsl:otherwise>
-                  </xsl:choose>
+               <xsl:attribute name="value"><!--<xsl:choose>
+                            <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
+                                <xsl:variable name="DESIGVALUE" select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
+                                <xsl:value-of select="$DESIGVALUE[1]"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="self::title/emph/emph[1]//text()"/>
+                            </xsl:otherwise>
+                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value -->
+                  <xsl:call-template name="Normalize_id_string">
+                     <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                  </xsl:call-template>
                </xsl:attribute>
                <designum xsl:exclude-result-prefixes="#all">
                   <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                </designum>
             </desig>
-            <title xsl:exclude-result-prefixes="#all">
-               <xsl:call-template name="replace">
-                  <xsl:with-param name="text" select="self::title/emph/emph[2]//text()"/>
-               </xsl:call-template>
+            <title xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -->
+               <xsl:apply-templates select="self::title/emph/emph[position() &gt; 1]"/>
+               <!--<xsl:call-template name="replace">
+                        <xsl:with-param name="text" select="self::title/emph/emph[2]//text()"/>
+                    </xsl:call-template>-->
             </title>
          </xsl:when>
          <xsl:otherwise>
@@ -994,7 +998,7 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
 
    <xsl:template match="emph">
       <xsl:choose>
-         <xsl:when test="self::emph[ancestor::h] or self::emph[parent::title]">
+         <xsl:when test="self::emph[ancestor::h] or self::emph[ancestor::title]">
             <xsl:apply-templates select="node()"/>
          </xsl:when>
          <!-- Revathi: 04May2018 - Added the below condition check -->
@@ -1014,14 +1018,19 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
          <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
             <xsl:apply-templates/>
          </xsl:when>
-         <xsl:otherwise>
+         <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
             <xsl:element name="{name()}">
+               <xsl:attribute name="typestyle" select="@typestyle"/>
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
+   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 22 May 2018 changed for dictionary selector-->
+   <xsl:template match="emph/@*[$selectorID = 'cases']">
+      <xsl:copy/>
+   </xsl:template>
+
    <xsl:template match="emph/@*">
       <xsl:copy/>
    </xsl:template>
@@ -1926,7 +1935,7 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->
-   <xsl:template match="p[parent::fnbody]">
+   <xsl:template match="node()[parent::fnbody]">
       <footnote type="editorial" xsl:exclude-result-prefixes="#all">
          <xsl:attribute name="fntoken" select="0"/>
          <!--<xsl:attribute name="fntoken">
@@ -2019,12 +2028,15 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
                     <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                 </fnlabel>
             </xsl:if>-->
-         <fnbody xsl:exclude-result-prefixes="#all">
-            <p xsl:exclude-result-prefixes="#all">
+         <fnbody xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
+            <xsl:element name="{name()}">
                <xsl:apply-templates/>
-               <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
-               <!--<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-->
-            </p>
+            </xsl:element>
+            <!--<p xsl:exclude-result-prefixes="#all">
+                    <xsl:apply-templates/>      
+                    <!-\- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -\->
+                    <!-\-<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-\->
+                </p>-->
          </fnbody>
       </footnote>
    </xsl:template>
@@ -2034,17 +2046,15 @@ Compiled:  2018-05-23T12:49:39.45+05:30-->
         <xsl:element name="{name()}">
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
-    </xsl:template>-->   <!--    Dayanand singh 16 May 2018 added list under footnote-->
-   <xsl:template match="footnote/fnbody[child::l]">
-      <xsl:element name="footnote">
-         <xsl:attribute name="fntoken" select="0"/>
-         <xsl:element name="fnbody">
-            <xsl:apply-templates select="@* | node() except table"/>
-         </xsl:element>
-      </xsl:element>
-      <xsl:apply-templates select="child::table"/>
-   </xsl:template>
-   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+    </xsl:template>-->   <!-- Revathi: 23May2018 - Commented the below code as i have added the generic code to handle the child elements of fnbody irrespective of the element name in <xsl:template match="node()[parent::fnbody]"> -->   <!--    Dayanand singh 16 May 2018 added list under footnote-->   <!-- <xsl:template match="footnote/fnbody[child::l]">
+        <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="0"/>
+            <xsl:element name="fnbody">
+                <xsl:apply-templates select="@* | node() except table"/>
+            </xsl:element>
+        </xsl:element>
+        <xsl:apply-templates select="child::table"/>
+    </xsl:template>-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="person[$selectorID = ('cases','journal')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>

@@ -8,7 +8,7 @@
     <xsl:template match="heading">
         <xsl:choose>
             <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
-                <leg:heading>
+                <leg:heading xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates select="@* | node()"/>
                 </leg:heading>
             </xsl:when>
