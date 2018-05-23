@@ -53,11 +53,11 @@
                     <xsl:matching-substring>
                         <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
                     </xsl:matching-substring>
-                    <!-- Dayanand singh, 22 May 2018, changed to fetch non-matcheing id attribute value. -->
+<!-- Dayanand singh, 22 May 2018, changed to fetch non-matcheing id attribute value. -->
                     <xsl:non-matching-substring>
                         <xsl:value-of select="."/>
                     </xsl:non-matching-substring>
-                </xsl:analyze-string>                
+                </xsl:analyze-string>
             </xsl:when>
             <xsl:when test="self::refpt[$selectorID='index']">
                <!-- <xsl:choose>
