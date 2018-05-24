@@ -12,7 +12,12 @@
     
     <xsl:template match="edpnum[$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:element name="{name()}">
-            <xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>
+            <!--<xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>-->
+            <xsl:attribute name="value">
+                <xsl:call-template name="Normalize_id_string">
+                    <xsl:with-param name="string" select="."/>
+                </xsl:call-template>
+            </xsl:attribute>
             <xsl:attribute name="inline" select="'false'"/>
             <xsl:apply-templates/>
         </xsl:element>
