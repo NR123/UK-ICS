@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-21T18:11:39.944+05:30-->
+Compiled:  2018-05-24T13:02:28.839+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -2388,6 +2388,16 @@ Compiled:  2018-05-21T18:11:39.944+05:30-->
       <xsl:element name="{name()}">
          <xsl:apply-templates/>
       </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::name.text]"><!-- <xsl:element name="{name()}">-->
+      <xsl:apply-templates/>
+      <!--</xsl:element>-->
+   </xsl:template>
+
+   <xsl:template match="glp:note[parent::text]"><!-- <xsl:element name="{name()}">-->
+      <xsl:apply-templates/>
+      <!--</xsl:element>-->
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle date element -->
    <xsl:template match="date">
