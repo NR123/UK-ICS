@@ -14,6 +14,9 @@
                 <xsl:when test="matches(@leveltype,'comm[0-9]+')">
                     <xsl:value-of select="'section'"/>
                 </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="self::level/@leveltype"/>
+                </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->

@@ -32,16 +32,22 @@
         </xsl:element>
     </xsl:template>  
     
-    <xsl:template match="title">
+    <xsl:template match="title | desig | designum | desiglabel">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>                       
         </xsl:element>
     </xsl:template>
     
+    <!-- Arun 24May2018 Updated the below code for handling attributes of desig, designum, desiglabel -->
+    
+    <xsl:template match="desig/@* | designum/@* | desiglabel/@*">
+        <xsl:copy/>
+    </xsl:template>
+    
     <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
             <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-            <xsl:when test="self::title/count(child::emph) > 1">
+            <xsl:when test="self::title/node()[1]/name()='emph' and self::title/count(child::emph) > 1">
                 <desig xsl:exclude-result-prefixes="#all">
                     <xsl:attribute name="value">
                         <xsl:call-template name="Normalize_id_string">
@@ -63,7 +69,7 @@
                 </title>
             </xsl:when>
             <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-            <xsl:when test="self::title/child::emph/count(child::emph) > 1">
+            <xsl:when test="self::title/node()[1]/name()='emph' and  self::title/child::emph/count(child::emph) > 1">
                 <xsl:choose>
                     <xsl:when test="self::title/emph/node()[1]/name()!='emph'">
                         <xsl:element name="{name()}">
@@ -110,7 +116,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates select="self::title//text()"/>
+                    <xsl:apply-templates select="self::title/node()"/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>

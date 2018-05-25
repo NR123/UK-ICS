@@ -34,74 +34,78 @@
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_comm.body_Chof_commentarydoc.xsl"/>
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_level_Chof_comm.body.xsl"/>
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_bodytext_chof_level.xsl"/>
-    
+
 
     <!-- END OF CONTENT SPECIFIC XSLS -->
 
 
 
     <!-- START OF GENERIC XSLS -->
-    
+
     <xsl:include href="../COMMON/withnamespace/docinfo-child-elements.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/default.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/ErrorMessage.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/heading.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/title.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/pgrp.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/p.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/text.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/emph.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/remotelink.xsl"/>
-    
+
     <xsl:include href="../COMMON/withnamespace/ci.cite-child-elements.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/h.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/l-li.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/blockquote.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/sup.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/sub.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/table.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/url.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/inlineobject.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/nl.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/page.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/footnotegrp.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/person.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/glpnote.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/date.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/link.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/strike.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/edpnum.xsl"/>
-    
+
     <xsl:include href="../COMMON/nonamespace/lnlink.xsl"/>
-    
+
+    <xsl:include href="../COMMON/nonamespace/form.xsl"/>
+
+
+
     <!-- END OF GENERIC XSLS -->
-    
+
 </xsl:stylesheet>
