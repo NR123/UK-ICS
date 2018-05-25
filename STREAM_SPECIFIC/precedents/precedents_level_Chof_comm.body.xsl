@@ -16,20 +16,47 @@
                 </xsl:when>
             </xsl:choose>
         </xsl:variable>
-        
+        <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
         <xsl:choose>
             <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
-                <xsl:element name="{name()}">
-                    <bodytext xsl:exclude-result-prefixes="#all">
-                        <legfragment xsl:exclude-result-prefixes="#all">
-                            <leg:level xsl:exclude-result-prefixes="#all">
-                                <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
-                                    <xsl:apply-templates/>
-                                </leg:level-vrnt>
-                            </leg:level>
-                        </legfragment>
-                    </bodytext>
-                </xsl:element>
+                <xsl:choose>
+                    <!-- Revathi: To check whether there are any ancestor level with @searchtype='LEGISLATION'.
+                    If present, then should create leg:level/leg:level-vrnt only corresponding to the level in the input-->
+                    <xsl:when test="not(ancestor::level/child::heading/@searchtype='LEGISLATION')">
+                        <xsl:element name="{name()}">
+                            <bodytext xsl:exclude-result-prefixes="#all">
+                                <legfragment xsl:exclude-result-prefixes="#all">
+                                    <leg:level xsl:exclude-result-prefixes="#all">
+                                        <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
+                                            <xsl:apply-templates select="heading"/>
+                                            <leg:levelbody xsl:exclude-result-prefixes="#all">
+                                                <leg:bodytext xsl:exclude-result-prefixes="#all">
+                                                    <xsl:apply-templates select="node() except (heading,level)"/>
+                                                </leg:bodytext>
+                                                <xsl:apply-templates select="level"/>
+                                            </leg:levelbody>
+                                        </leg:level-vrnt>
+                                    </leg:level>
+                                </legfragment>
+                            </bodytext>
+                        </xsl:element>
+                    </xsl:when>
+                    <!-- Otherwise, if there is no ancestor level with @searchtype='LEGISLATION', then create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
+                    <xsl:otherwise>
+                        <leg:level xsl:exclude-result-prefixes="#all">
+                            <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
+                                <xsl:apply-templates select="heading"/>
+                                <leg:levelbody xsl:exclude-result-prefixes="#all">
+                                    <leg:bodytext xsl:exclude-result-prefixes="#all">
+                                        <xsl:apply-templates select="node() except (heading,level)"/>
+                                    </leg:bodytext>
+                                    <xsl:apply-templates select="level"/>
+                                </leg:levelbody>
+                            </leg:level-vrnt>
+                        </leg:level>
+                    </xsl:otherwise>
+                </xsl:choose>
+                
             </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">

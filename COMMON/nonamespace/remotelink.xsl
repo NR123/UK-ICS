@@ -4,7 +4,6 @@
     xmlns:ci="http://www.lexis-nexis.com/ci"
     exclude-result-prefixes="xs"
     version="2.0">
-
     
     <xsl:template match="remotelink">
         <xsl:choose>
@@ -39,11 +38,12 @@
 	<!-- DATE: 22 May, 2018 - Modified by Himanshu to handle attribute "remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi".
         Old Code: <xsl:template match="remotelink/@href|remotelink/@hrefclass">
     -->
-    <xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
+    <!-- Revathi: commented the below code as it will be handled by generic template matching remotelink/@* -->
+    <!--<xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
         <xsl:attribute name="{name()}">
             <xsl:value-of select="."/>
         </xsl:attribute>
-    </xsl:template>
+    </xsl:template>-->
     
     <xsl:template match="remotelink/@refpt[$selectorID='index']"/>
     
@@ -68,15 +68,17 @@
        
     </xsl:template>
     
-    <xsl:template match="remotelink/@*[$selectorID='journal']">
+    <!--<xsl:template match="remotelink/@*[$selectorID='journal']">
+        <xsl:copy/>
+    </xsl:template>-->
+    
+    <!-- Revathi: modified as the below template is common for all content type -->
+    <xsl:template match="remotelink/@*[name()!='refpt']">
         <xsl:copy/>
     </xsl:template>
     
-    <xsl:template match="remotelink/@*[name()!='refpt'][$selectorID='index']">
-        <xsl:copy/>
-    </xsl:template>
-    
-    <xsl:template match="remotelink/@refpt [$selectorID='dictionary']">
+    <!-- Revathi: modified as the below template is common for all content type -->
+    <xsl:template match="remotelink/@refpt">
         <xsl:variable name="id">
             <xsl:value-of select="."/>
         </xsl:variable>
@@ -89,9 +91,9 @@
         <xsl:attribute name="docidref" select="'TBD'"/>
     </xsl:template>
     
-        
-    <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+        <!-- Revathi: Awaiting clarification from daya-->
+    <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
         <xsl:apply-templates/>
-    </xsl:template>
+    </xsl:template>-->
     
 </xsl:stylesheet>
