@@ -1144,9 +1144,12 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
       </xsl:attribute>
       <xsl:attribute name="docidref" select="'TBD'"/>
    </xsl:template>
-   <!-- Revathi: Awaiting clarification from daya-->   <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+   <!--     Dayanand singh 23 May 2018 changed for retain in output xml-->
+   <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+      <xsl:element name="remotelink">
+         <xsl:apply-templates select="@*|node()"/>
+      </xsl:element>
+   </xsl:template>
    <xsl:template match="ci:*">
       <xsl:choose>
          <xsl:when test="self::ci:cite[matches(child::ci:content,'^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
