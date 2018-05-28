@@ -132,9 +132,9 @@
             </xsl:if>-->
             
             <xsl:choose>
-                <!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
-                <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">
-                    <fnlabel xsl:exclude-result-prefixes="#all">
+                <!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->                
+                <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">    
+                <fnlabel xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
                     </fnlabel>
                 </xsl:when>
