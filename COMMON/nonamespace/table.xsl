@@ -2,26 +2,95 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
-    <xsl:template match="table | tbody">
+    <!-- Arun 24May2018 Updated the below code for handling thead -->
+    <xsl:template match="table | tbody | thead">
         <xsl:choose>
             <xsl:when test="self::table/parent::fnbody">
-                <footnote fntoken="0" xsl:exclude-result-prefixes="#all">
-                    <fnbody xsl:exclude-result-prefixes="#all">
-                        <p xsl:exclude-result-prefixes="#all">
-                            <xsl:element name="{name()}">
-                                <xsl:apply-templates select="@* | node()"/>
-                            </xsl:element>
-                        </p>
-                    </fnbody>
-                </footnote>
+                <!-- Revathi: 25May2018 - Commented creation of footnote element as it is handled in footnotegrp's template match - "node()[parent::fnbody]" -->
+                <!--<footnote fntoken="0" xsl:exclude-result-prefixes="#all">
+                    <fnbody xsl:exclude-result-prefixes="#all">-->
+                <p xsl:exclude-result-prefixes="#all">
+                    <xsl:element name="{name()}">
+                        <xsl:apply-templates select="@* | node()"/>
+                    </xsl:element>
+                </p>
+                <!--</fnbody>
+                </footnote>-->
             </xsl:when>
             <xsl:otherwise>
-                <xsl:element name="{name()}">
-                    <xsl:apply-templates select="@* | node()"/>
-                </xsl:element>
+                <!--<xsl:when test="self::tbody//entry/not(child::node())">
+                    
+                    <row xsl:exclude-result-prefixes="#all">
+                        <entry xsl:exclude-result-prefixes="#all"/>
+                    </row>
+                </xsl:when>-->
+                <!-- Revathi: Added the below code to handle when tbody's all the row/entry are self closing elements  -->
+                <xsl:choose>
+                    <xsl:when test="self::tbody">
+                        <xsl:variable name="active_entries">
+                            <xsl:for-each-group select="self::tbody//row" group-adjacent="self::row">
+                                <xsl:for-each select="current-group()/entry">
+                                    <xsl:if test="self::entry != ''">
+                                        <xsl:value-of select="position()"/>
+                                        <xsl:text>,</xsl:text>
+                                    </xsl:if>
+                                </xsl:for-each>
+                            </xsl:for-each-group>
+                        </xsl:variable>
+                        
+                        <!-- To get the count of thead's active entries -->
+                        <xsl:variable name="thead_entries">
+                            <xsl:for-each-group select="ancestor::table//thead//row"
+                                group-adjacent="self::row">
+                                <xsl:for-each select="current-group()/entry">
+                                    <xsl:if test="self::entry != ''">
+                                        <xsl:value-of select="position()"/>
+                                        <xsl:text>,</xsl:text>
+                                    </xsl:if>
+                                </xsl:for-each>
+                            </xsl:for-each-group>
+                        </xsl:variable>
+
+                        <xsl:variable name="count_thead_entries" as="xs:integer">
+                            <!-- A empty space is created as the last content of $distinct_entries because of this we are getting the actual count + 1. so we are reducing the count by 1  -->
+                            <xsl:value-of select="count(tokenize($thead_entries, ',')) - 1"/>
+                        </xsl:variable>
+
+                        <xsl:choose>
+                            <!-- When tbody doesnt have any active entry but thead has valid entry PCDATA -->
+                            <xsl:when test="$active_entries = '' and $thead_entries != ''">
+                                <xsl:element name="{name()}">
+                                    <xsl:for-each select="1 to $count_thead_entries">
+                                        <row xsl:exclude-result-prefixes="#all">
+                                            <entry xsl:exclude-result-prefixes="#all"/>
+                                        </row>
+                                    </xsl:for-each>
+                                </xsl:element>
+                            </xsl:when>
+                            <!-- When both thead and tbody doesnt have any active entry -->
+                            <xsl:when test="$active_entries = '' and $thead_entries = ''">
+                                <xsl:element name="{name()}">
+                                    <row xsl:exclude-result-prefixes="#all">
+                                        <entry xsl:exclude-result-prefixes="#all"/>
+                                    </row>
+                                </xsl:element>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:element name="{name()}">
+                                    <xsl:apply-templates select="@* | node()"/>
+                                </xsl:element>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:element name="{name()}">
+                            <xsl:apply-templates select="@* | node()"/>
+                        </xsl:element>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
-        
+
         <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
     So need not move the table to the preceeding sibling p-->
@@ -39,19 +108,22 @@
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>-->
     </xsl:template>
-    
+
     <!--<xsl:template match="table" mode="footnote-table">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>-->
+    <xsl:template match="thead/@*">
+        <xsl:copy/>
+    </xsl:template>
 
     <xsl:template match="table/@*[not(name() = 'frame')] | row/@*"/>
 
     <xsl:template match="table/@frame">
         <xsl:choose>
             <xsl:when test="$selectorID = 'dictionary'"/>
-            <xsl:when test="$selectorID = ('precedents','treatises')">
+            <xsl:when test="$selectorID = ('precedents', 'treatises')">
                 <xsl:attribute name="frame" select="'none'"/>
             </xsl:when>
             <xsl:otherwise>
@@ -126,25 +198,35 @@
                 <xsl:if test="$Maxcols > 0">
                     <xsl:for-each select="self::tgroup/colspec">
                         <xsl:if test="position() &lt;= $Maxcols">
-                            <xsl:variable name="count" select="position()" as="xs:integer"/>   
+                            <xsl:variable name="count" select="position()" as="xs:integer"/>
                             <!-- Revathi: 22May2018 - Incorporated the pixel to pixel conversion shared by Awntika -->
                             <xsl:choose>
                                 <xsl:when test="$colspec_type = '*'">
                                     <xsl:variable name="colwidths" select="../colspec/@colwidth"/>
                                     <xsl:variable name="totalwidth"
-                                        select="sum(for $x in $colwidths return if(contains($x,'*')) then xs:decimal(substring-before($x,'*')) else xs:decimal($x))"/>
+                                        select="
+                                            sum(for $x in $colwidths
+                                            return
+                                                if (contains($x, '*')) then
+                                                    xs:decimal(substring-before($x, '*'))
+                                                else
+                                                    xs:decimal($x))"/>
                                     <xsl:value-of
-                                        select="if(contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*'))      then concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*')) * 100 div $totalwidth, '#'),'*')      else concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'),'*')"
-                                    />                                   
+                                        select="
+                                            if (contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) then
+                                                concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) * 100 div $totalwidth, '#'), '*')
+                                            else
+                                                concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'), '*')"
+                                    />
                                 </xsl:when>
-                                <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end --> 
+                                <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
                                 <xsl:otherwise>
                                     <xsl:value-of
                                         select="concat(ceiling(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', ''))) * 1440, '*')"
                                     />
                                 </xsl:otherwise>
                             </xsl:choose>
-                                                       
+
                             <!--<xsl:value-of
                                 select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>-->
                             <xsl:text>,</xsl:text>
@@ -193,7 +275,8 @@
             <!-- Revathi: 04May2018 - colspec element should be created only when there are any valid entries inside the table. So added condition to check $Maxcols is > 0 -->
             <xsl:if test="$Maxcols > 0">
                 <xsl:for-each select="1 to $Maxcols">
-                    <colspec colname="{current()}" colwidth="{tokenize($colspec,',')[current()]}" xsl:exclude-result-prefixes="#all"/>
+                    <colspec colname="{current()}" colwidth="{tokenize($colspec,',')[current()]}"
+                        xsl:exclude-result-prefixes="#all"/>
                 </xsl:for-each>
             </xsl:if>
 
@@ -342,9 +425,9 @@
                     </xsl:if>
                     <!-- Revathi: 22May2016 - Added the below condition check. As the entry PCDATA in commentary should be wrapped by the element p-limited-->
                     <xsl:choose>
-                        <xsl:when test="$selectorID=('precedents','treatises')">
+                        <xsl:when test="$selectorID = ('precedents', 'treatises')">
                             <p-limited xsl:exclude-result-prefixes="#all">
-                                <xsl:apply-templates select="node()"/> 
+                                <xsl:apply-templates select="node()"/>
                             </p-limited>
                         </xsl:when>
                         <xsl:otherwise>

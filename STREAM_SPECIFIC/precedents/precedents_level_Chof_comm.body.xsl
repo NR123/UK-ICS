@@ -6,15 +6,20 @@
 
     <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:variable name="v_leveltype">
-            <xsl:choose>               
+            <!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. -->
+            <!--<xsl:choose>               
                 <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
                     <xsl:value-of select="'subsection'"/>
                 </xsl:when>
-                <!-- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -->
+                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
                 <xsl:when test="matches(@leveltype,'comm[0-9]+')">
                     <xsl:value-of select="'section'"/>
                 </xsl:when>
-            </xsl:choose>
+                <xsl:otherwise>
+                    <xsl:value-of select="self::level/@leveltype"/>
+                </xsl:otherwise>
+            </xsl:choose>-->
+            <xsl:value-of select="self::level/@leveltype"/>
         </xsl:variable>
         <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
         <xsl:choose>

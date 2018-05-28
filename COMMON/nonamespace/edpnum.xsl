@@ -15,7 +15,8 @@
             <!--<xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>-->
             <xsl:attribute name="value">
                 <xsl:call-template name="Normalize_id_string">
-                    <xsl:with-param name="string" select="."/>
+                    <!-- Revathi: 25May2018 - Added the condition to replace hyphen entity with regular hyphen as its not a NMTOKEN value -->
+                    <xsl:with-param name="string" select="replace(.,'‒','-')"/>
                 </xsl:call-template>
             </xsl:attribute>
             <xsl:attribute name="inline" select="'false'"/>

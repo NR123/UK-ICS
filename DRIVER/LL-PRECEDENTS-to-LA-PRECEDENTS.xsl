@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-24T18:08:35.781+05:30-->
+Compiled:  2018-05-28T13:54:32.196+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -61,16 +61,19 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
    </xsl:template>
 
    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:variable name="v_leveltype">
-         <xsl:choose>
-            <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
-               <xsl:value-of select="'subsection'"/>
-            </xsl:when>
-            <!-- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -->
-            <xsl:when test="matches(@leveltype,'comm[0-9]+')">
-               <xsl:value-of select="'section'"/>
-            </xsl:when>
-         </xsl:choose>
+      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
+                <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
+                    <xsl:value-of select="'subsection'"/>
+                </xsl:when>
+                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
+                <xsl:when test="matches(@leveltype,'comm[0-9]+')">
+                    <xsl:value-of select="'section'"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="self::level/@leveltype"/>
+                </xsl:otherwise>
+            </xsl:choose>-->
+         <xsl:value-of select="self::level/@leveltype"/>
       </xsl:variable>
       <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
       <xsl:choose>
@@ -431,9 +434,10 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          <RosettaNamespace>xmlns:leg="http://www.lexis-nexis.com/glp/leg"</RosettaNamespace>
          <RosettaNamespace>xmlns:ci="http://www.lexis-nexis.com/ci"</RosettaNamespace>
          <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
-         <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
-         <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
-         <RosettaNamesoace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamesoace>
+         <RosettaNamespace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamespace>
+         <RosettaNamespace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamespace>
+         <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
+         <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -566,7 +570,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
       <xsl:variable name="Remove_apos">
          <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>
       </xsl:variable>
-      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;-.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '______________________')"/>
+      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–«»…', '________________________________________')"/>
    </xsl:template>
    <xsl:variable name="document-uri" select="document-uri(.)"/>
    <xsl:variable name="filename"
@@ -627,15 +631,19 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="title">
+   <xsl:template match="title | desig | designum | desiglabel">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
+   <!-- Arun 24May2018 Updated the below code for handling attributes of desig, designum, desiglabel -->
+   <xsl:template match="desig/@* | designum/@* | desiglabel/@*">
+      <xsl:copy/>
+   </xsl:template>
 
    <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:choose><!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-         <xsl:when test="self::title/count(child::emph) &gt; 1">
+         <xsl:when test="self::title/node()[1]/name()='emph' and self::title/count(child::emph) &gt; 1">
             <desig xsl:exclude-result-prefixes="#all">
                <xsl:attribute name="value">
                   <xsl:call-template name="Normalize_id_string">
@@ -655,7 +663,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
             </title>
          </xsl:when>
          <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-         <xsl:when test="self::title/child::emph/count(child::emph) &gt; 1">
+         <xsl:when test="self::title/node()[1]/name()='emph' and  self::title/child::emph/count(child::emph) &gt; 1">
             <xsl:choose>
                <xsl:when test="self::title/emph/node()[1]/name()!='emph'">
                   <xsl:element name="{name()}">
@@ -697,7 +705,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
-               <xsl:apply-templates select="self::title//text()"/>
+               <xsl:apply-templates select="self::title/node()"/>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
@@ -730,7 +738,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          </xsl:attribute>
       </xsl:element>
    </xsl:template>
-
+   <!--<xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">-->
    <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:attribute name="id">
@@ -738,6 +746,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
                <xsl:with-param name="id" select="./@id"/>
             </xsl:call-template>
          </xsl:attribute>
+         <xsl:attribute name="type" select="./@type"/>
       </xsl:element>
    </xsl:template>
 
@@ -871,7 +880,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          <xsl:choose>
             <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
                <xsl:choose><!-- Revathi: Added the below condition - when lilabel already has PCDATA then p/text should be handled as it is. -->
-                  <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[not(matches(.,'[\s| ]+'))]">
+                  <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[matches(.,'[^\s     ]')]">
                      <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('"><!--<xsl:analyze-string select="self::text/text()[1]"
@@ -1400,13 +1409,13 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
    <xsl:template match="lilabel">
       <xsl:element name="{name()}">
          <xsl:choose><!-- Revathi: 24May2018 - Added the below condition to handle when lilabel has PCDATA  -->
-            <xsl:when test="self::lilabel/child::node() and not(matches(self::lilabel,'[\s| ]+'))">
+            <xsl:when test="self::lilabel/child::node() and matches(self::lilabel,'[^\s     ]')">
                <xsl:apply-templates/>
             </xsl:when>
-            <xsl:when test="following-sibling::p">
-               <xsl:choose>
-                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('"><!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content and replaced multiple single quotes into single quote -->
-                     <xsl:analyze-string select="following-sibling::p/text/text()[1]"
+            <xsl:when test="following-sibling::p[1]">
+               <xsl:choose><!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
+                  <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]!='('"><!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content and replaced multiple single quotes into single quote -->
+                     <xsl:analyze-string select="following-sibling::p[1]/text/node()[1]"
                                          regex="(^●|^●|^•|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
                         <xsl:matching-substring>
                            <xsl:choose>
@@ -1422,16 +1431,17 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
                         </xsl:matching-substring>
                      </xsl:analyze-string>
                   </xsl:when>
-                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]='(' and following-sibling::p/text/node()[2]/name()='emph' and following-sibling::p/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p/text/node()[3]/starts-with(.,')')"><!--<xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),')')"/>-->
+                  <!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
+                  <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]='(' and following-sibling::p[1]/text/node()[2]/name()='emph' and following-sibling::p[1]/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p[1]/text/node()[3]/starts-with(.,')')"><!--<xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),')')"/>-->
                      <xsl:variable name="v-label">
-                        <xsl:analyze-string select="following-sibling::p/text/node()[3]"
+                        <xsl:analyze-string select="following-sibling::p[1]/text/node()[3]"
                                             regex="(^\)\.?[\s| ]*)([\w\W]*)">
                            <xsl:matching-substring>
                               <xsl:value-of select="translate(regex-group(1),'  ','')"/>
                            </xsl:matching-substring>
                         </xsl:analyze-string>
                      </xsl:variable>
-                     <xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),$v-label)"/>
+                     <xsl:value-of select="concat(following-sibling::p[1]/text/node()[1],following-sibling::p[1]/text/node()[2]/node(),$v-label)"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:apply-templates/>
@@ -1474,7 +1484,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
 
    <xsl:template match="sup">
       <xsl:choose><!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-         <xsl:when test="self::sup=parent::text/node()[1] and ancestor::fnbody"/>
+         <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/not(fnlabel) or ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1548,24 +1558,82 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
-
-   <xsl:template match="table | tbody">
+   <!-- Arun 24May2018 Updated the below code for handling thead -->
+   <xsl:template match="table | tbody | thead">
       <xsl:choose>
-         <xsl:when test="self::table/parent::fnbody">
-            <footnote fntoken="0" xsl:exclude-result-prefixes="#all">
-               <fnbody xsl:exclude-result-prefixes="#all">
-                  <p xsl:exclude-result-prefixes="#all">
-                     <xsl:element name="{name()}">
-                        <xsl:apply-templates select="@* | node()"/>
-                     </xsl:element>
-                  </p>
-               </fnbody>
-            </footnote>
+         <xsl:when test="self::table/parent::fnbody"><!-- Revathi: 25May2018 - Commented creation of footnote element as it is handled in footnotegrp's template match - "node()[parent::fnbody]" --><!--<footnote fntoken="0" xsl:exclude-result-prefixes="#all">
+                    <fnbody xsl:exclude-result-prefixes="#all">-->
+            <p xsl:exclude-result-prefixes="#all">
+               <xsl:element name="{name()}">
+                  <xsl:apply-templates select="@* | node()"/>
+               </xsl:element>
+            </p>
+            <!--</fnbody>
+                </footnote>-->
          </xsl:when>
-         <xsl:otherwise>
-            <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>
+         <xsl:otherwise><!--<xsl:when test="self::tbody//entry/not(child::node())">
+                    
+                    <row xsl:exclude-result-prefixes="#all">
+                        <entry xsl:exclude-result-prefixes="#all"/>
+                    </row>
+                </xsl:when>--><!-- Revathi: Added the below code to handle when tbody's all the row/entry are self closing elements  -->
+            <xsl:choose>
+               <xsl:when test="self::tbody">
+                  <xsl:variable name="active_entries">
+                     <xsl:for-each-group select="self::tbody//row" group-adjacent="self::row">
+                        <xsl:for-each select="current-group()/entry">
+                           <xsl:if test="self::entry != ''">
+                              <xsl:value-of select="position()"/>
+                              <xsl:text>,</xsl:text>
+                           </xsl:if>
+                        </xsl:for-each>
+                     </xsl:for-each-group>
+                  </xsl:variable>
+                  <!-- To get the count of thead's active entries -->
+                  <xsl:variable name="thead_entries">
+                     <xsl:for-each-group select="ancestor::table//thead//row" group-adjacent="self::row">
+                        <xsl:for-each select="current-group()/entry">
+                           <xsl:if test="self::entry != ''">
+                              <xsl:value-of select="position()"/>
+                              <xsl:text>,</xsl:text>
+                           </xsl:if>
+                        </xsl:for-each>
+                     </xsl:for-each-group>
+                  </xsl:variable>
+                  <xsl:variable name="count_thead_entries" as="xs:integer"><!-- A empty space is created as the last content of $distinct_entries because of this we are getting the actual count + 1. so we are reducing the count by 1  -->
+                     <xsl:value-of select="count(tokenize($thead_entries, ',')) - 1"/>
+                  </xsl:variable>
+                  <xsl:choose><!-- When tbody doesnt have any active entry but thead has valid entry PCDATA -->
+                     <xsl:when test="$active_entries = '' and $thead_entries != ''">
+                        <xsl:element name="{name()}">
+                           <xsl:for-each select="1 to $count_thead_entries">
+                              <row xsl:exclude-result-prefixes="#all">
+                                 <entry xsl:exclude-result-prefixes="#all"/>
+                              </row>
+                           </xsl:for-each>
+                        </xsl:element>
+                     </xsl:when>
+                     <!-- When both thead and tbody doesnt have any active entry -->
+                     <xsl:when test="$active_entries = '' and $thead_entries = ''">
+                        <xsl:element name="{name()}">
+                           <row xsl:exclude-result-prefixes="#all">
+                              <entry xsl:exclude-result-prefixes="#all"/>
+                           </row>
+                        </xsl:element>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:element name="{name()}">
+                           <xsl:apply-templates select="@* | node()"/>
+                        </xsl:element>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:element name="{name()}">
+                     <xsl:apply-templates select="@* | node()"/>
+                  </xsl:element>
+               </xsl:otherwise>
+            </xsl:choose>
          </xsl:otherwise>
       </xsl:choose>
       <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
@@ -1590,12 +1658,16 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>-->
+   <xsl:template match="thead/@*">
+      <xsl:copy/>
+   </xsl:template>
+
    <xsl:template match="table/@*[not(name() = 'frame')] | row/@*"/>
 
    <xsl:template match="table/@frame">
       <xsl:choose>
          <xsl:when test="$selectorID = 'dictionary'"/>
-         <xsl:when test="$selectorID = ('precedents','treatises')">
+         <xsl:when test="$selectorID = ('precedents', 'treatises')">
             <xsl:attribute name="frame" select="'none'"/>
          </xsl:when>
          <xsl:otherwise>
@@ -1660,8 +1732,8 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
                         <xsl:when test="$colspec_type = '*'">
                            <xsl:variable name="colwidths" select="../colspec/@colwidth"/>
                            <xsl:variable name="totalwidth"
-                                         select="sum(for $x in $colwidths return if(contains($x,'*')) then xs:decimal(substring-before($x,'*')) else xs:decimal($x))"/>
-                           <xsl:value-of select="if(contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*'))      then concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth,'*')) * 100 div $totalwidth, '#'),'*')      else concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'),'*')"/>
+                                         select="                                             sum(for $x in $colwidths                                             return                                                 if (contains($x, '*')) then                                                     xs:decimal(substring-before($x, '*'))                                                 else                                                     xs:decimal($x))"/>
+                           <xsl:value-of select="                                             if (contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) then                                                 concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) * 100 div $totalwidth, '#'), '*')                                             else                                                 concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'), '*')"/>
                         </xsl:when>
                         <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
                         <xsl:otherwise>
@@ -1843,7 +1915,7 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
                </xsl:if>
                <!-- Revathi: 22May2016 - Added the below condition check. As the entry PCDATA in commentary should be wrapped by the element p-limited-->
                <xsl:choose>
-                  <xsl:when test="$selectorID=('precedents','treatises')">
+                  <xsl:when test="$selectorID = ('precedents', 'treatises')">
                      <p-limited xsl:exclude-result-prefixes="#all">
                         <xsl:apply-templates select="node()"/>
                      </p-limited>
@@ -1940,9 +2012,9 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-   <!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy-->
-   <xsl:template match="footnote | fnbody">
-      <xsl:if test="fnbody=''">
+
+   <xsl:template match="footnote | fnbody"><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
+      <xsl:if test="fnbody/not(child::node())">
          <xsl:element name="footnote">
             <xsl:attribute name="fntoken" select="@fntoken"/>
             <xsl:element name="fnbody">
@@ -1982,8 +2054,16 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->
    <xsl:template match="node()[parent::fnbody]">
-      <footnote type="editorial" xsl:exclude-result-prefixes="#all">
-         <xsl:attribute name="fntoken" select="0"/>
+      <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
+         <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
+            <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
+         </xsl:if>
+         <xsl:if test="exists(parent::fnbody/parent::footnote/@fnrtokens)">
+            <xsl:attribute name="fnrtokens" select="parent::fnbody/parent::footnote/@fnrtokens"/>
+         </xsl:if>
+         <xsl:if test="exists(parent::fnbody/parent::footnote/@type)">
+            <xsl:attribute name="type" select="parent::fnbody/parent::footnote/@type"/>
+         </xsl:if>
          <!--<xsl:attribute name="fntoken">
                 <xsl:variable name="v_fnlabel">
                     <xsl:choose>
@@ -2039,14 +2119,24 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
             <xsl:if test="$fnrval!=''">
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
             </xsl:if>-->
-         <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
-                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
-         <xsl:choose>
-            <xsl:when test="self::p/text/*[1][name() = 'sup']">
+         <xsl:choose><!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
+            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">
+               <fnlabel xsl:exclude-result-prefixes="#all">
+                  <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
+               </fnlabel>
+            </xsl:when>
+            <xsl:when test="self::p/text/node()[1][name() = 'sup']">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                </fnlabel>
             </xsl:when>
+            <xsl:otherwise>
+               <fnlabel xsl:exclude-result-prefixes="#all">
+                  <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
+               </fnlabel>
+            </xsl:otherwise>
+            <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
+                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
             <!--<xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
                     <fnlabel xsl:exclude-result-prefixes="#all">
                         <!-\- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -\->
@@ -2086,6 +2176,18 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
          </fnbody>
       </footnote>
    </xsl:template>
+   <!-- Arun: 25May2018 - Added element fnr -->
+   <xsl:template match="fnr">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+   <!-- Arun: 25May2018 - Added element fnr's attributes -->
+   <xsl:template match="fnr/@*">
+      <xsl:copy/>
+   </xsl:template>
+   <!-- Revathi: suppressed the element fnlabel as this is handled while creating the footnote element in the template match of "node()[parent::fnbody]" -->
+   <xsl:template match="fnlabel"/>
    <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->   <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
     </xsl:template>-->   <!-- Revathi: Commented the below code and added the text as a condition in text.xsl -->   <!-- <xsl:template match="text[parent::p/parent::fnbody]">
@@ -2160,8 +2262,8 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
    <xsl:template match="edpnum[$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}"><!--<xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>-->
          <xsl:attribute name="value">
-            <xsl:call-template name="Normalize_id_string">
-               <xsl:with-param name="string" select="."/>
+            <xsl:call-template name="Normalize_id_string"><!-- Revathi: 25May2018 - Added the condition to replace hyphen entity with regular hyphen as its not a NMTOKEN value -->
+               <xsl:with-param name="string" select="replace(.,'‒','-')"/>
             </xsl:call-template>
          </xsl:attribute>
          <xsl:attribute name="inline" select="'false'"/>
@@ -2176,6 +2278,16 @@ Compiled:  2018-05-24T18:08:35.781+05:30-->
    </xsl:template>
 
    <xsl:template match="lnlink/@* | marker/@* | param/@*">
+      <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="clause | frm:body | form">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="clause/@* | frm:body/@* | form/@*">
       <xsl:copy/>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>
