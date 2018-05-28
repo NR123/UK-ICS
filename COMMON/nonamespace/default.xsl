@@ -14,9 +14,10 @@
             <RosettaNamespace>xmlns:leg="http://www.lexis-nexis.com/glp/leg"</RosettaNamespace>
             <RosettaNamespace>xmlns:ci="http://www.lexis-nexis.com/ci"</RosettaNamespace>
             <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
-            <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
-            <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
-            <RosettaNamesoace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamesoace>
+            <RosettaNamespace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamespace>
+            <RosettaNamespace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamespace>
+            <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
+            <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
         </RosettaNamepaces>
     </xsl:variable>
     
@@ -31,8 +32,9 @@
     <xsl:template match="text()" priority="20">
         <xsl:param name="text" select="."/>  
         <xsl:param name="usequote" select="$openquote"/>
-        <xsl:choose>            
-            <xsl:when test="contains($text,$quot)">
+        <xsl:choose>    
+            <!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion -->
+            <!--<xsl:when test="contains($text,$quot)">
                 <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
                 <xsl:choose>
                     <xsl:when test="matches(substring-after($text,$quot),'^\s')">
@@ -52,7 +54,7 @@
                     <xsl:with-param name="usequote"
                         select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
                 </xsl:call-template>
-            </xsl:when>
+            </xsl:when>-->
       
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
@@ -87,8 +89,9 @@
     <xsl:template name="replace">
         <xsl:param name="text" select="."/>           
         <xsl:param name="usequote" select="$openquote"/>
-        <xsl:choose>            
-            <xsl:when test="contains($text,$quot)">
+        <xsl:choose>    
+            <!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion -->
+            <!--<xsl:when test="contains($text,$quot)">
                 <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
                 <xsl:choose>
                     <xsl:when test="matches(substring-after($text,$quot),'^\s')">
@@ -108,7 +111,7 @@
                     <xsl:with-param name="usequote"
                         select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
                 </xsl:call-template>
-            </xsl:when>
+            </xsl:when>-->
             
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
@@ -152,7 +155,7 @@
             <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>
         </xsl:variable>
        
-        <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &quot;£&amp;-.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '______________________')"/>
+        <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &quot;£&amp;.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–«»…', '________________________________________')"/>
         
     </xsl:template>
   

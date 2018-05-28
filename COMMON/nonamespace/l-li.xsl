@@ -30,13 +30,16 @@
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
-                    
-                    <!-- If the following sibling li has only lilabel and l as child elements and lilabel is empty, then move then suppress the following sibling li and 
-                    move the content l here into this li.-->
-                    <!--<xsl:if test="self::li/following-sibling::li[1]/not(child::*[not(name()=('l')) and not(name()=('lilabel'))]) and self::li/following-sibling::li[1]/child::lilabel=' '">
-                        <xsl:apply-templates select="self::li/following-sibling::li" mode="child-li"/>
-                    </xsl:if>-->
                 </xsl:element>
+               <!-- <xsl:element name="{name()}">
+                    <xsl:apply-templates select="@* | node()"/>
+                    
+                    <!-\- If the following sibling li has only lilabel and l as child elements and lilabel is empty, then move then suppress the following sibling li and 
+                    move the content l here into this li.-\->
+                    <!-\-<xsl:if test="self::li/following-sibling::li[1]/not(child::*[not(name()=('l')) and not(name()=('lilabel'))]) and self::li/following-sibling::li[1]/child::lilabel=' '">
+                        <xsl:apply-templates select="self::li/following-sibling::li" mode="child-li"/>
+                    </xsl:if>-\->
+                </xsl:element>-->
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -64,11 +67,16 @@
     <xsl:template match="lilabel">        
         <xsl:element name="{name()}">
             <xsl:choose>
-                <xsl:when test="following-sibling::p">                    
+                <!-- Revathi: 24May2018 - Added the below condition to handle when lilabel has PCDATA  -->
+                <xsl:when test="self::lilabel/child::node() and matches(self::lilabel,'[^\s     ]')">
+                        <xsl:apply-templates/>                    
+                </xsl:when>
+                <xsl:when test="following-sibling::p[1]">                    
                     <xsl:choose>
-                        <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('">
+                        <!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
+                        <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]!='('">
                             <!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content and replaced multiple single quotes into single quote -->
-                            <xsl:analyze-string select="following-sibling::p/text/text()[1]" regex="(^●|^&#x25cf;|^&#x2022;|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
+                            <xsl:analyze-string select="following-sibling::p[1]/text/node()[1]" regex="(^●|^&#x25cf;|^&#x2022;|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s|&#160;){{1,}}">
                                 <xsl:matching-substring>
                                     <xsl:choose>
                                         <xsl:when test="$selectorID=('precedents','treatises','commentaryleghist')">
@@ -83,17 +91,18 @@
                                 </xsl:matching-substring>
                             </xsl:analyze-string> 
                         </xsl:when>
-                        <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]='(' and following-sibling::p/text/node()[2]/name()='emph' and following-sibling::p/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p/text/node()[3]/starts-with(.,')')">
+                        <!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
+                        <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]='(' and following-sibling::p[1]/text/node()[2]/name()='emph' and following-sibling::p[1]/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p[1]/text/node()[3]/starts-with(.,')')">
                             <!--<xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),')')"/>-->
                             <xsl:variable name="v-label">
-                                <xsl:analyze-string select="following-sibling::p/text/node()[3]"
+                                <xsl:analyze-string select="following-sibling::p[1]/text/node()[3]"
                                     regex="(^\)\.?[\s|&#160;]*)([\w\W]*)">
                                     <xsl:matching-substring>
                                         <xsl:value-of select="translate(regex-group(1),' &#160;','')"/>
                                     </xsl:matching-substring>
                                 </xsl:analyze-string>
                             </xsl:variable>
-                            <xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),$v-label)"/>                            
+                            <xsl:value-of select="concat(following-sibling::p[1]/text/node()[1],following-sibling::p[1]/text/node()[2]/node(),$v-label)"/>                            
                         </xsl:when>
                         <xsl:otherwise>                           
                             <xsl:apply-templates/>

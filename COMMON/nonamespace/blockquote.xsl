@@ -20,6 +20,10 @@
                 </xsl:element>
                 <xsl:apply-templates select="table"/>
             </xsl:when>
+            <!-- Revathi: Added the below condition when the child of a blockquote is only blockquote, then we need to suppress the parent blockquote -->
+            <xsl:when test="self::blockquote/not(child::node()[name()!='blockquote'])">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>

@@ -9,6 +9,10 @@
             <xsl:choose>
                 <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
                     <xsl:choose>
+                        <!-- Revathi: Added the below condition - when lilabel already has PCDATA then p/text should be handled as it is. -->
+                        <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[matches(.,'[^\s     ]')]">
+                            <xsl:apply-templates/>
+                        </xsl:when>
                         <xsl:when
                             test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('">
                             <!--<xsl:analyze-string select="self::text/text()[1]"

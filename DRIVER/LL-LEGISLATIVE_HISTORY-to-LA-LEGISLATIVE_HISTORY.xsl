@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T13:54:32.196+05:30-->
+Compiled:  2018-05-22T17:42:21.204+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -32,8 +32,8 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                 xmlns:xhtml="http://www.w3c.org/1999/xhtml"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
-                exclude-result-prefixes="xs xd">
-   <xsl:param name="selectorID" select="'precedents'"/>
+                exclude-result-prefixes="xs xd"><!--<xsl:param name="selectorID" select="'commentary'"/>-->
+   <xsl:param name="selectorID" select="'commentaryleghist'"/>
    <xsl:output encoding="utf-8" indent="no"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
    <xsl:strip-space elements="*"/>
@@ -42,7 +42,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="COMMENTARYDOC[$selectorID=('commentary','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
@@ -54,95 +54,47 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('commentary','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
-                <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
-                    <xsl:value-of select="'subsection'"/>
-                </xsl:when>
-                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
-                <xsl:when test="matches(@leveltype,'comm[0-9]+')">
-                    <xsl:value-of select="'section'"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="self::level/@leveltype"/>
-                </xsl:otherwise>
-            </xsl:choose>-->
-         <xsl:value-of select="self::level/@leveltype"/>
-      </xsl:variable>
-      <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('commentary','commentaryleghist')]">
       <xsl:choose>
-         <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
-            <xsl:choose><!-- Revathi: To check whether there are any ancestor level with @searchtype='LEGISLATION'.
-                    If present, then should create leg:level/leg:level-vrnt only corresponding to the level in the input-->
-               <xsl:when test="not(ancestor::level/child::heading/@searchtype='LEGISLATION')">
-                  <xsl:element name="{name()}">
-                     <bodytext xsl:exclude-result-prefixes="#all">
-                        <legfragment xsl:exclude-result-prefixes="#all">
-                           <leg:level xsl:exclude-result-prefixes="#all">
-                              <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
-                                 <xsl:apply-templates select="heading"/>
-                                 <leg:levelbody xsl:exclude-result-prefixes="#all">
-                                    <leg:bodytext xsl:exclude-result-prefixes="#all">
-                                       <xsl:apply-templates select="node() except (heading,level)"/>
-                                    </leg:bodytext>
-                                    <xsl:apply-templates select="level"/>
-                                 </leg:levelbody>
-                              </leg:level-vrnt>
-                           </leg:level>
-                        </legfragment>
-                     </bodytext>
-                  </xsl:element>
-               </xsl:when>
-               <!-- Otherwise, if there is no ancestor level with @searchtype='LEGISLATION', then create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
-               <xsl:otherwise>
-                  <leg:level xsl:exclude-result-prefixes="#all">
-                     <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
-                        <xsl:apply-templates select="heading"/>
-                        <leg:levelbody xsl:exclude-result-prefixes="#all">
-                           <leg:bodytext xsl:exclude-result-prefixes="#all">
-                              <xsl:apply-templates select="node() except (heading,level)"/>
-                           </leg:bodytext>
-                           <xsl:apply-templates select="level"/>
-                        </leg:levelbody>
-                     </leg:level-vrnt>
-                  </leg:level>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:when>
-         <xsl:otherwise>
+         <xsl:when test="self::level[@leveltype=('comm21','comm22')]">
             <xsl:element name="{name()}">
-               <xsl:attribute name="leveltype" select="$v_leveltype"/>
+               <xsl:attribute name="leveltype" select="'section'"/>
                <xsl:apply-templates/>
             </xsl:element>
-         </xsl:otherwise>
-      </xsl:choose>
-   </xsl:template>
-
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
-
-   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:choose>
-         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]"><!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors --><!--<leg:levelbody xsl:exclude-result-prefixes="#all">
-                    <leg:bodytext xsl:exclude-result-prefixes="#all">-->
-            <xsl:apply-templates select="@* | node()"/>
-            <!--</leg:bodytext>
-                </leg:levelbody>-->
          </xsl:when>
-         <xsl:otherwise>
+         <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
             <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
+               <xsl:attribute name="leveltype" select="'subsection'"/>
+               <xsl:apply-templates/>
             </xsl:element>
-         </xsl:otherwise>
+         </xsl:when>
+         <!-- DATE: 22 May, 2018 - Modified by Himanshu to handle element "level/@leveltype=comm11" in precedents_level_Chof_comm.body.xsl. -->
+         <xsl:when test="self::level[@leveltype=('comm10','comm11','comm20','comm30')]">
+            <xsl:element name="{name()}">
+               <xsl:attribute name="leveltype" select="'section'"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:when>
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('commentary','commentaryleghist')]/@*"/>
+
+   <xsl:template match="bodytext[parent::level][$selectorID=('commentary','commentaryleghist')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="bodytext[$selectorID=('commentary','commentaryleghist')]/@*">
+      <xsl:copy/>
+   </xsl:template>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:variable name="v_getDPSI">
@@ -292,7 +244,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       <xsl:copy/>
    </xsl:template>
 
-   <xsl:template match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal','precedents','treatises','commentaryleghist')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal','precedents','treatises','commentaryleghist')] | docinfo:assoc-links | docinfo:normcite"/>
+   <xsl:template match="docinfo:custom-metafields[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:custom-metafields/child::*[$selectorID = ('dictionary','index','journal','commentary','commentaryleghist')] | docinfo:assoc-links | docinfo:normcite"/>
 
    <xsl:template match="docinfo:custom-metafields[$selectorID = 'cases']">
       <xsl:element name="{name()}">
@@ -434,10 +386,9 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <RosettaNamespace>xmlns:leg="http://www.lexis-nexis.com/glp/leg"</RosettaNamespace>
          <RosettaNamespace>xmlns:ci="http://www.lexis-nexis.com/ci"</RosettaNamespace>
          <RosettaNamespace>xmlns:case="http://www.lexis-nexis.com/glp/case"</RosettaNamespace>
-         <RosettaNamespace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamespace>
-         <RosettaNamespace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamespace>
-         <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
-         <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
+         <RosettaNamesoace>xmlns:glp="http://www.lexis-nexis.com/glp"</RosettaNamesoace>
+         <RosettaNamesoace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamesoace>
+         <RosettaNamesoace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamesoace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -446,30 +397,38 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    <xsl:variable name="quot">'</xsl:variable>
    <xsl:variable name="openquote">‘</xsl:variable>
    <xsl:variable name="closequote">’</xsl:variable>
-   <xsl:template match="text()" priority="20">
-      <xsl:param name="text" select="."/>
+   <xsl:template match="text()" priority="20"><!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
+      <xsl:param name="text">
+         <xsl:choose>
+            <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+               <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="."/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:param>
       <xsl:param name="usequote" select="$openquote"/>
-      <xsl:choose><!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion --><!--<xsl:when test="contains($text,$quot)">
-                <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
-                <xsl:choose>
-                    <xsl:when test="matches(substring-after($text,$quot),'^\s')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    
-                    <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    <xsl:otherwise>  
-                        <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>                      
-                    </xsl:otherwise>
-                </xsl:choose>
-                
-                <xsl:call-template name="replace">
-                    <xsl:with-param name="text" select="substring-after($text,$quot)"/>
-                    <xsl:with-param name="usequote"
-                        select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
-                </xsl:call-template>
-            </xsl:when>-->
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
                                 regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
@@ -503,30 +462,38 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template name="replace">
-      <xsl:param name="text" select="."/>
+   <xsl:template name="replace"><!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
+      <xsl:param name="text">
+         <xsl:choose>
+            <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+               <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="."/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:param>
       <xsl:param name="usequote" select="$openquote"/>
-      <xsl:choose><!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion --><!--<xsl:when test="contains($text,$quot)">
-                <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
-                <xsl:choose>
-                    <xsl:when test="matches(substring-after($text,$quot),'^\s')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    
-                    <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
-                        <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
-                    </xsl:when>
-                    <xsl:otherwise>  
-                        <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>                      
-                    </xsl:otherwise>
-                </xsl:choose>
-                
-                <xsl:call-template name="replace">
-                    <xsl:with-param name="text" select="substring-after($text,$quot)"/>
-                    <xsl:with-param name="usequote"
-                        select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
-                </xsl:call-template>
-            </xsl:when>-->
+      <xsl:choose>
+         <xsl:when test="contains($text,$quot)">
+            <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
+            <xsl:choose>
+               <xsl:when test="matches(substring-after($text,$quot),'^\s')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:when test="substring-before($text,$quot)!='' and substring-after($text,$quot)!='' and matches(substring(substring-before($text,$quot),number($strlen),1),'[a-zA-Z]') and matches(substring(substring-after($text,$quot),1,1),'[a-zA-Z]')">
+                  <xsl:value-of select="concat(substring-before($text, $quot), $closequote)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(substring-before($text, $quot), $usequote)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text" select="substring-after($text,$quot)"/>
+               <xsl:with-param name="usequote"
+                               select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
+            </xsl:call-template>
+         </xsl:when>
          <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')"><!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
             <xsl:analyze-string select="$text"
                                 regex="([\w\W]*)([\(][0-9]{{4}}[\)])\s([0-9]+)\s([A-Z]+)\s([0-9]+)([,\s]*)">
@@ -570,7 +537,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       <xsl:variable name="Remove_apos">
          <xsl:value-of select="translate(replace($Remove_non_breaking_space,$apos,'_'),'(),','')"/>
       </xsl:variable>
-      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–«»…', '________________________________________')"/>
+      <xsl:value-of select="translate(normalize-space($Remove_apos) , ' &#34;£&amp;-.!#$%*+/:;=?@![]\^`|{}~’‘—“Â€ÂÃ¢–', '______________________')"/>
    </xsl:template>
    <xsl:variable name="document-uri" select="document-uri(.)"/>
    <xsl:variable name="filename"
@@ -592,22 +559,13 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    </xsl:template>
 
    <xsl:template match="heading">
-      <xsl:choose>
-         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
-            <leg:heading xsl:exclude-result-prefixes="#all">
-               <xsl:apply-templates select="@* | node()"/>
-            </leg:heading>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>
-         </xsl:otherwise>
-      </xsl:choose>
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
    </xsl:template>
    <!-- Arun- 18May2018 Updated the below code to handle heading attributes for commentary -->
-   <xsl:template match="heading/@*[$selectorID=('journal','precedents','treatises','commentaryleghist')]"/>
-
+   <xsl:template match="heading/@*[$selectorID=('journal','commentary','commentaryleghist')]"/>
+   <!--<xsl:include href="../COMMON/nonamespace/title.xsl"/>-->
    <xsl:template match="title[parent::heading/parent::dict:body][not(child::*[name()!='emph'])][$selectorID='dictionary']">
       <xsl:element name="desig" inherit-namespaces="no">
          <xsl:attribute name="value">
@@ -631,19 +589,15 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="title | desig | designum | desiglabel">
+   <xsl:template match="title">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
-   <!-- Arun 24May2018 Updated the below code for handling attributes of desig, designum, desiglabel -->
-   <xsl:template match="desig/@* | designum/@* | desiglabel/@*">
-      <xsl:copy/>
-   </xsl:template>
 
-   <xsl:template match="title[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:choose><!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-         <xsl:when test="self::title/node()[1]/name()='emph' and self::title/count(child::emph) &gt; 1">
+   <xsl:template match="title[ancestor::comm:body][$selectorID='commentary']">
+      <xsl:choose>
+         <xsl:when test="self::title/count(child::emph)=2">
             <desig xsl:exclude-result-prefixes="#all">
                <xsl:attribute name="value">
                   <xsl:call-template name="Normalize_id_string">
@@ -654,58 +608,28 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                   <xsl:value-of select="self::title/emph[1]//text()"/>
                </designum>
             </desig>
-            <title xsl:exclude-result-prefixes="#all"><!--<!-\- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -\->
-                    <xsl:apply-templates select="self::title/emph[position() > 1]"/>--><!-- Revathi: Commented the above code and added the below code to ensure that all the nodes inside title are captured. -->
-               <xsl:apply-templates select="self::title/node() except node()[1][name()='emph']"/>
-               <!--<xsl:call-template name="replace">
-                        <xsl:with-param name="text" select="self::title/emph[2]//text()"/>
-                    </xsl:call-template>-->
+            <title xsl:exclude-result-prefixes="#all">
+               <xsl:call-template name="replace">
+                  <xsl:with-param name="text" select="self::title/emph[2]//text()"/>
+               </xsl:call-template>
             </title>
          </xsl:when>
-         <!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
-         <xsl:when test="self::title/node()[1]/name()='emph' and  self::title/child::emph/count(child::emph) &gt; 1">
-            <xsl:choose>
-               <xsl:when test="self::title/emph/node()[1]/name()!='emph'">
-                  <xsl:element name="{name()}">
-                     <xsl:apply-templates select="self::title//text()"/>
-                  </xsl:element>
-               </xsl:when>
-               <xsl:otherwise>
-                  <desig xsl:exclude-result-prefixes="#all"><!-- DATE: 22 May, 2018 - Modified by Himanshu to resolve text of element <emph>/text() = "2 &amp; 3 Edw 6 c 13" for element <desig>/@value.
-                        Attribute @value value of type NMTOKEN must be a name token.
-                        Old Code: 
-                        <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
-                    -->
-                     <xsl:attribute name="value"><!--<xsl:choose>
-                            <xsl:when test="contains(self::title/emph/emph[1]//text(),' ') and contains(self::title/emph/emph[1]//text(),'&amp;')">
-                                <xsl:variable name="DESIGVALUE" select="tokenize(self::title/emph/emph[1]//text(),' ')"/>
-                                <xsl:value-of select="$DESIGVALUE[1]"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="self::title/emph/emph[1]//text()"/>
-                            </xsl:otherwise>
-                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value -->
-                        <xsl:call-template name="Normalize_id_string">
-                           <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
-                        </xsl:call-template>
-                     </xsl:attribute>
-                     <designum xsl:exclude-result-prefixes="#all">
-                        <xsl:value-of select="self::title/emph/emph[1]//text()"/>
-                     </designum>
-                  </desig>
-                  <title xsl:exclude-result-prefixes="#all"><!--<!-\- Revathi: 23May2018 - Modified the code as more than two emph are also appearing in input file  -\->
-                            <xsl:apply-templates select="self::title/emph/emph[position() > 1]"/>--><!-- Revathi: Commented the above code and added the below code to ensure that all the nodes inside title are captured. -->
-                     <xsl:apply-templates select="self::title/emph/child::node() except self::title/emph/child::node()[1][name()='emph']"/>
-                     <!--<xsl:call-template name="replace">
-                        <xsl:with-param name="text" select="self::title/emph/emph[2]//text()"/>
-                    </xsl:call-template>-->
-                  </title>
-               </xsl:otherwise>
-            </xsl:choose>
+         <xsl:when test="self::title/child::emph/count(child::emph)=2">
+            <desig xsl:exclude-result-prefixes="#all">
+               <xsl:attribute name="value" select="self::title/emph/emph[1]//text()"/>
+               <designum xsl:exclude-result-prefixes="#all">
+                  <xsl:value-of select="self::title/emph/emph[1]//text()"/>
+               </designum>
+            </desig>
+            <title xsl:exclude-result-prefixes="#all">
+               <xsl:call-template name="replace">
+                  <xsl:with-param name="text" select="self::title/emph/emph[2]//text()"/>
+               </xsl:call-template>
+            </title>
          </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
-               <xsl:apply-templates select="self::title/node()"/>
+               <xsl:apply-templates/>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
@@ -738,15 +662,14 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          </xsl:attribute>
       </xsl:element>
    </xsl:template>
-   <!--<xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">-->
-   <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
+
+   <xsl:template match="refpt[$selectorID=('commentary','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:attribute name="id">
             <xsl:call-template name="fn_refpt">
                <xsl:with-param name="id" select="./@id"/>
             </xsl:call-template>
          </xsl:attribute>
-         <xsl:attribute name="type" select="./@type"/>
       </xsl:element>
    </xsl:template>
 
@@ -758,10 +681,6 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                <xsl:matching-substring>
                   <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
                </xsl:matching-substring>
-               <!-- Dayanand singh, 22 May 2018, changed to fetch non-matcheing id attribute value. -->
-               <xsl:non-matching-substring>
-                  <xsl:value-of select="."/>
-               </xsl:non-matching-substring>
             </xsl:analyze-string>
          </xsl:when>
          <xsl:when test="self::refpt[$selectorID='index']"><!-- <xsl:choose>
@@ -822,7 +741,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
    <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
-   <xsl:template match="pgrp[$selectorID=('journal','precedents','treatises','commentaryleghist')]">
+   <xsl:template match="pgrp[$selectorID=('journal','commentary','commentaryleghist')]">
       <xsl:apply-templates/>
    </xsl:template>
 
@@ -879,15 +798,12 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <xsl:apply-templates select="@*"/>
          <xsl:choose>
             <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
-               <xsl:choose><!-- Revathi: Added the below condition - when lilabel already has PCDATA then p/text should be handled as it is. -->
-                  <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[matches(.,'[^\s     ]')]">
-                     <xsl:apply-templates/>
-                  </xsl:when>
+               <xsl:choose>
                   <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('"><!--<xsl:analyze-string select="self::text/text()[1]"
                                 regex="^(\(?[a-zA-Z0-9]+\)?\.?|●|&#x25cf;|&#x2022;)([\t ]*)">--><!--<xsl:analyze-string select="self::text/text()[1]"
-                                regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">--><!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content -->
+                                regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">--><!-- Arun- 18May2018 Updated the below code to handle special characters before lilabel content -->
                      <xsl:analyze-string select="self::text/text()[1]"
-                                         regex="(^●|^●|^•|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
+                                         regex="(^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
                         <xsl:non-matching-substring>
                            <xsl:call-template name="replace">
                               <xsl:with-param name="text"
@@ -1048,7 +964,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
 
    <xsl:template match="emph">
       <xsl:choose>
-         <xsl:when test="self::emph[ancestor::h] or self::emph[ancestor::title]">
+         <xsl:when test="self::emph[ancestor::h] or self::emph[parent::title]">
             <xsl:apply-templates select="node()"/>
          </xsl:when>
          <!-- Revathi: 04May2018 - Added the below condition check -->
@@ -1068,19 +984,14 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
             <xsl:apply-templates/>
          </xsl:when>
-         <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
+         <xsl:otherwise>
             <xsl:element name="{name()}">
-               <xsl:attribute name="typestyle" select="@typestyle"/>
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 22 May 2018 changed for dictionary selector-->
-   <xsl:template match="emph/@*[$selectorID = 'cases']">
-      <xsl:copy/>
-   </xsl:template>
-
+   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->
    <xsl:template match="emph/@*">
       <xsl:copy/>
    </xsl:template>
@@ -1092,7 +1003,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    <xsl:template match="remotelink">
       <xsl:choose><!-- Revathi: Added the below condition check to accomodate following changes. The generic code to handle remotelink, that is already present here is moved inside xsl:otherwise --><!-- Whenever, emph has only remotelink as child in commentary data, then the emph should be suppressed and the child remotelink is converted as ci:cite/@type='paragraph-ref'
             and the PCDATA of remotelink is mapped to ci:content.-->
-         <xsl:when test="(self::remotelink/parent::emph and parent::emph/not(child::node()[name()!='remotelink'])) and $selectorID=('precedents','treatises','commentaryleghist')">
+         <xsl:when test="(self::remotelink/parent::emph and parent::emph/not(child::node()[name()!='remotelink'])) and $selectorID=('commentary','commentaryleghist')">
             <ci:cite type="paragraph-ref" xsl:exclude-result-prefixes="#all">
                <ci:content xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates/>
@@ -1117,11 +1028,13 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    </xsl:template>
    <!-- DATE: 22 May, 2018 - Modified by Himanshu to handle attribute "remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi".
         Old Code: <xsl:template match="remotelink/@href|remotelink/@hrefclass">
-    -->   <!-- Revathi: commented the below code as it will be handled by generic template matching remotelink/@* -->   <!--<xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
-        <xsl:attribute name="{name()}">
-            <xsl:value-of select="."/>
-        </xsl:attribute>
-    </xsl:template>-->
+    -->
+   <xsl:template match="remotelink/@href|remotelink/@hrefclass|remotelink/@service|remotelink/@remotekey1|remotelink/@refpt|remotelink/@dpsi">
+      <xsl:attribute name="{name()}">
+         <xsl:value-of select="."/>
+      </xsl:attribute>
+   </xsl:template>
+
    <xsl:template match="remotelink/@refpt[$selectorID='index']"/>
 
    <xsl:template match="remotelink[$selectorID='journal']">
@@ -1142,14 +1055,16 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          </xsl:choose>
       </xsl:element>
    </xsl:template>
-   <!--<xsl:template match="remotelink/@*[$selectorID='journal']">
-        <xsl:copy/>
-    </xsl:template>-->   <!-- Revathi: modified as the below template is common for all content type -->
-   <xsl:template match="remotelink/@*[name()!='refpt']">
+
+   <xsl:template match="remotelink/@*[$selectorID='journal']">
       <xsl:copy/>
    </xsl:template>
-   <!-- Revathi: modified as the below template is common for all content type -->
-   <xsl:template match="remotelink/@refpt">
+
+   <xsl:template match="remotelink/@*[name()!='refpt'][$selectorID='index']">
+      <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="remotelink/@refpt [$selectorID='dictionary']">
       <xsl:variable name="id">
          <xsl:value-of select="."/>
       </xsl:variable>
@@ -1160,9 +1075,11 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:attribute>
       <xsl:attribute name="docidref" select="'TBD'"/>
    </xsl:template>
-   <!-- Revathi: Awaiting clarification from daya-->   <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+
+   <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+      <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="ci:*">
       <xsl:choose>
          <xsl:when test="self::ci:cite[matches(child::ci:content,'^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
@@ -1283,14 +1200,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
             </xsl:matching-substring>
          </xsl:analyze-string>
       </xsl:variable>
-      <xsl:choose>
-         <xsl:when test="$test = ''">
-            <xsl:value-of select="./@num"/>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:value-of select="$test"/>
-         </xsl:otherwise>
-      </xsl:choose>
+      <xsl:value-of select="$test"/>
    </xsl:template>
 
    <xsl:template match="ci:sesslaw[parent::ci:cite/@searchtype = 'LEG-REF' or parent::ci:cite/@searchtype = 'EU-REF']"/>
@@ -1361,27 +1271,15 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <xsl:when test="self::li//child::blockquote and $selectorID='dictionary'">
             <xsl:apply-templates select="node()"/>
          </xsl:when>
-         <!-- Revathi: 22May2018 - In commentary, whenever l is appearing as child of bodytext, it should be enclosed within blockquote -->
-         <!--<xsl:when test="self::l[parent::bodytext/parent::level] and $selectorID=('precedents','treatises')">
-                <blockquote xsl:exclude-result-prefixes="#all">
-                    <xsl:element name="{name()}">
-                        <xsl:apply-templates select="@* | node()"/>
-                    </xsl:element>
-                </blockquote>
-            </xsl:when>-->
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>
-            <!-- <xsl:element name="{name()}">
-                    <xsl:apply-templates select="@* | node()"/>
-                    
-                    <!-\- If the following sibling li has only lilabel and l as child elements and lilabel is empty, then move then suppress the following sibling li and 
-                    move the content l here into this li.-\->
-                    <!-\-<xsl:if test="self::li/following-sibling::li[1]/not(child::*[not(name()=('l')) and not(name()=('lilabel'))]) and self::li/following-sibling::li[1]/child::lilabel=' '">
+               <!-- If the following sibling li has only lilabel and l as child elements and lilabel is empty, then move then suppress the following sibling li and 
+                    move the content l here into this li.-->
+               <!--<xsl:if test="self::li/following-sibling::li[1]/not(child::*[not(name()=('l')) and not(name()=('lilabel'))]) and self::li/following-sibling::li[1]/child::lilabel=' '">
                         <xsl:apply-templates select="self::li/following-sibling::li" mode="child-li"/>
-                    </xsl:if>-\->
-                </xsl:element>-->
+                    </xsl:if>-->
+            </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
@@ -1408,21 +1306,16 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
 
    <xsl:template match="lilabel">
       <xsl:element name="{name()}">
-         <xsl:choose><!-- Revathi: 24May2018 - Added the below condition to handle when lilabel has PCDATA  -->
-            <xsl:when test="self::lilabel/child::node() and matches(self::lilabel,'[^\s     ]')">
-               <xsl:apply-templates/>
-            </xsl:when>
-            <xsl:when test="following-sibling::p[1]">
-               <xsl:choose><!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
-                  <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]!='('"><!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content and replaced multiple single quotes into single quote -->
-                     <xsl:analyze-string select="following-sibling::p[1]/text/node()[1]"
-                                         regex="(^●|^●|^•|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
+         <xsl:choose>
+            <xsl:when test="following-sibling::p">
+               <xsl:choose>
+                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]!='('"><!-- Arun- 18May2018 Updated the below code to handle special characters before lilabel content and replaced multiple single quotes into single quote -->
+                     <xsl:analyze-string select="following-sibling::p/text/text()[1]"
+                                         regex="(^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
                         <xsl:matching-substring>
                            <xsl:choose>
-                              <xsl:when test="$selectorID=('precedents','treatises','commentaryleghist')">
-                                 <xsl:call-template name="replace">
-                                    <xsl:with-param name="text" select="replace(regex-group(1),' | ','')"/>
-                                 </xsl:call-template>
+                              <xsl:when test="$selectorID=('commentary','commentaryleghist')">
+                                 <xsl:value-of select="replace(regex-group(1),'''''|''&#34;|&#34;''','''')"/>
                               </xsl:when>
                               <xsl:otherwise>
                                  <xsl:value-of select="regex-group(1)"/>
@@ -1431,17 +1324,16 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                         </xsl:matching-substring>
                      </xsl:analyze-string>
                   </xsl:when>
-                  <!-- Revathi: 25May2018 - Added p[1] as there may be more than one following sibling of lilabel and in that case run time error is occuring -->
-                  <xsl:when test="following-sibling::p[1]/text/node()[1]/name()='' and following-sibling::p[1]/text/node()[1]='(' and following-sibling::p[1]/text/node()[2]/name()='emph' and following-sibling::p[1]/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p[1]/text/node()[3]/starts-with(.,')')"><!--<xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),')')"/>-->
+                  <xsl:when test="following-sibling::p/text/node()[1]/name()='' and following-sibling::p/text/node()[1]='(' and following-sibling::p/text/node()[2]/name()='emph' and following-sibling::p/text/node()[3]/matches(.,'[a-zA-Z0-9]{1,}') and following-sibling::p/text/node()[3]/starts-with(.,')')"><!--<xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),')')"/>-->
                      <xsl:variable name="v-label">
-                        <xsl:analyze-string select="following-sibling::p[1]/text/node()[3]"
+                        <xsl:analyze-string select="following-sibling::p/text/node()[3]"
                                             regex="(^\)\.?[\s| ]*)([\w\W]*)">
                            <xsl:matching-substring>
                               <xsl:value-of select="translate(regex-group(1),'  ','')"/>
                            </xsl:matching-substring>
                         </xsl:analyze-string>
                      </xsl:variable>
-                     <xsl:value-of select="concat(following-sibling::p[1]/text/node()[1],following-sibling::p[1]/text/node()[2]/node(),$v-label)"/>
+                     <xsl:value-of select="concat(following-sibling::p/text/node()[1],following-sibling::p/text/node()[2]/node(),$v-label)"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:apply-templates/>
@@ -1470,10 +1362,6 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
             </xsl:element>
             <xsl:apply-templates select="table"/>
          </xsl:when>
-         <!-- Revathi: Added the below condition when the child of a blockquote is only blockquote, then we need to suppress the parent blockquote -->
-         <xsl:when test="self::blockquote/not(child::node()[name()!='blockquote'])">
-            <xsl:apply-templates/>
-         </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1483,14 +1371,9 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
    </xsl:template>
 
    <xsl:template match="sup">
-      <xsl:choose><!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-         <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/not(fnlabel) or ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
-         <xsl:otherwise>
-            <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>
-         </xsl:otherwise>
-      </xsl:choose>
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
    </xsl:template>
    <!--<xsl:template match="//case:content//text[ancestor::footnote]/sup" mode="fnrtoken">
         <xsl:value-of select="generate-id()"/>
@@ -1558,82 +1441,24 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
-   <!-- Arun 24May2018 Updated the below code for handling thead -->
-   <xsl:template match="table | tbody | thead">
+
+   <xsl:template match="table | tbody">
       <xsl:choose>
-         <xsl:when test="self::table/parent::fnbody"><!-- Revathi: 25May2018 - Commented creation of footnote element as it is handled in footnotegrp's template match - "node()[parent::fnbody]" --><!--<footnote fntoken="0" xsl:exclude-result-prefixes="#all">
-                    <fnbody xsl:exclude-result-prefixes="#all">-->
-            <p xsl:exclude-result-prefixes="#all">
-               <xsl:element name="{name()}">
-                  <xsl:apply-templates select="@* | node()"/>
-               </xsl:element>
-            </p>
-            <!--</fnbody>
-                </footnote>-->
+         <xsl:when test="self::table/parent::fnbody">
+            <footnote fntoken="0" xsl:exclude-result-prefixes="#all">
+               <fnbody xsl:exclude-result-prefixes="#all">
+                  <p xsl:exclude-result-prefixes="#all">
+                     <xsl:element name="{name()}">
+                        <xsl:apply-templates select="@* | node()"/>
+                     </xsl:element>
+                  </p>
+               </fnbody>
+            </footnote>
          </xsl:when>
-         <xsl:otherwise><!--<xsl:when test="self::tbody//entry/not(child::node())">
-                    
-                    <row xsl:exclude-result-prefixes="#all">
-                        <entry xsl:exclude-result-prefixes="#all"/>
-                    </row>
-                </xsl:when>--><!-- Revathi: Added the below code to handle when tbody's all the row/entry are self closing elements  -->
-            <xsl:choose>
-               <xsl:when test="self::tbody">
-                  <xsl:variable name="active_entries">
-                     <xsl:for-each-group select="self::tbody//row" group-adjacent="self::row">
-                        <xsl:for-each select="current-group()/entry">
-                           <xsl:if test="self::entry != ''">
-                              <xsl:value-of select="position()"/>
-                              <xsl:text>,</xsl:text>
-                           </xsl:if>
-                        </xsl:for-each>
-                     </xsl:for-each-group>
-                  </xsl:variable>
-                  <!-- To get the count of thead's active entries -->
-                  <xsl:variable name="thead_entries">
-                     <xsl:for-each-group select="ancestor::table//thead//row" group-adjacent="self::row">
-                        <xsl:for-each select="current-group()/entry">
-                           <xsl:if test="self::entry != ''">
-                              <xsl:value-of select="position()"/>
-                              <xsl:text>,</xsl:text>
-                           </xsl:if>
-                        </xsl:for-each>
-                     </xsl:for-each-group>
-                  </xsl:variable>
-                  <xsl:variable name="count_thead_entries" as="xs:integer"><!-- A empty space is created as the last content of $distinct_entries because of this we are getting the actual count + 1. so we are reducing the count by 1  -->
-                     <xsl:value-of select="count(tokenize($thead_entries, ',')) - 1"/>
-                  </xsl:variable>
-                  <xsl:choose><!-- When tbody doesnt have any active entry but thead has valid entry PCDATA -->
-                     <xsl:when test="$active_entries = '' and $thead_entries != ''">
-                        <xsl:element name="{name()}">
-                           <xsl:for-each select="1 to $count_thead_entries">
-                              <row xsl:exclude-result-prefixes="#all">
-                                 <entry xsl:exclude-result-prefixes="#all"/>
-                              </row>
-                           </xsl:for-each>
-                        </xsl:element>
-                     </xsl:when>
-                     <!-- When both thead and tbody doesnt have any active entry -->
-                     <xsl:when test="$active_entries = '' and $thead_entries = ''">
-                        <xsl:element name="{name()}">
-                           <row xsl:exclude-result-prefixes="#all">
-                              <entry xsl:exclude-result-prefixes="#all"/>
-                           </row>
-                        </xsl:element>
-                     </xsl:when>
-                     <xsl:otherwise>
-                        <xsl:element name="{name()}">
-                           <xsl:apply-templates select="@* | node()"/>
-                        </xsl:element>
-                     </xsl:otherwise>
-                  </xsl:choose>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:element name="{name()}">
-                     <xsl:apply-templates select="@* | node()"/>
-                  </xsl:element>
-               </xsl:otherwise>
-            </xsl:choose>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
       <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
@@ -1658,18 +1483,11 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>-->
-   <xsl:template match="thead/@*">
-      <xsl:copy/>
-   </xsl:template>
-
    <xsl:template match="table/@*[not(name() = 'frame')] | row/@*"/>
 
    <xsl:template match="table/@frame">
       <xsl:choose>
          <xsl:when test="$selectorID = 'dictionary'"/>
-         <xsl:when test="$selectorID = ('precedents', 'treatises')">
-            <xsl:attribute name="frame" select="'none'"/>
-         </xsl:when>
          <xsl:otherwise>
             <xsl:attribute name="frame" select="'all'"/>
          </xsl:otherwise>
@@ -1724,63 +1542,35 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
          <!-- In input, the colspec/@colwidth is in inches, to convert this into pixel, multiply the value with 1440 and append * in the end  -->
          <xsl:variable name="colspec"><!-- Revathi: 04-May-2018 - Added the condition to check $Maxcols is not less than 0-->
             <xsl:if test="$Maxcols &gt; 0">
-               <xsl:for-each select="self::tgroup/colspec">
-                  <xsl:if test="position() &lt;= $Maxcols">
-                     <xsl:variable name="count" select="position()" as="xs:integer"/>
-                     <!-- Revathi: 22May2018 - Incorporated the pixel to pixel conversion shared by Awntika -->
-                     <xsl:choose>
-                        <xsl:when test="$colspec_type = '*'">
-                           <xsl:variable name="colwidths" select="../colspec/@colwidth"/>
-                           <xsl:variable name="totalwidth"
-                                         select="                                             sum(for $x in $colwidths                                             return                                                 if (contains($x, '*')) then                                                     xs:decimal(substring-before($x, '*'))                                                 else                                                     xs:decimal($x))"/>
-                           <xsl:value-of select="                                             if (contains(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) then                                                 concat(format-number(xs:decimal(substring-before(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, '*')) * 100 div $totalwidth, '#'), '*')                                             else                                                 concat(format-number(xs:decimal(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth) * 100 div $totalwidth, '#'), '*')"/>
-                        </xsl:when>
-                        <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
-                        <xsl:otherwise>
-                           <xsl:value-of select="concat(ceiling(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', ''))) * 1440, '*')"/>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                     <!--<xsl:value-of
-                                select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>-->
-                     <xsl:text>,</xsl:text>
-                  </xsl:if>
-               </xsl:for-each>
-               <!--<xsl:choose>
-                        <xsl:when test="$selectorID = 'dictionary'">
-                            <xsl:for-each select="self::tgroup/colspec">
-                                <xsl:if test="position() &lt;= $Maxcols">
-                                    <xsl:variable name="count" select="position()" as="xs:integer"/>
-                                    <!-\- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -\->
-                                    <xsl:value-of
-                                        select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>
-                                    <xsl:text>,</xsl:text>
-                                </xsl:if>
-                            </xsl:for-each>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:for-each select="self::tgroup/colspec">
-                                <xsl:if test="position() &lt;= $Maxcols">
-                                    <xsl:variable name="count" select="position()" as="xs:integer"/>
-                                    <!-\- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -\->
-                                    <xsl:choose>
-                                        <xsl:when test="$colspec_type = '*'">
-                                            <xsl:value-of
-                                                select="parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth"
-                                            />
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <xsl:value-of
-                                                select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"
-                                            />
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-
-
-                                    <xsl:text>,</xsl:text>
-                                </xsl:if>
-                            </xsl:for-each>
-                        </xsl:otherwise>
-                    </xsl:choose>-->
+               <xsl:choose>
+                  <xsl:when test="$selectorID = 'dictionary'">
+                     <xsl:for-each select="self::tgroup/colspec">
+                        <xsl:if test="position() &lt;= $Maxcols">
+                           <xsl:variable name="count" select="position()" as="xs:integer"/>
+                           <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
+                           <xsl:value-of select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>
+                           <xsl:text>,</xsl:text>
+                        </xsl:if>
+                     </xsl:for-each>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:for-each select="self::tgroup/colspec">
+                        <xsl:if test="position() &lt;= $Maxcols">
+                           <xsl:variable name="count" select="position()" as="xs:integer"/>
+                           <!-- To calculate pixel value - Strip the 'in' in the end of colspec/@colwidth value and multiply it by 1440 and append * in the end -->
+                           <xsl:choose>
+                              <xsl:when test="$colspec_type = '*'">
+                                 <xsl:value-of select="parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="concat(number(replace(parent::tgroup/colspec[number(tokenize($distinct_entries, ' ')[$count])]/@colwidth, 'in', '')) * 1440, '*')"/>
+                              </xsl:otherwise>
+                           </xsl:choose>
+                           <xsl:text>,</xsl:text>
+                        </xsl:if>
+                     </xsl:for-each>
+                  </xsl:otherwise>
+               </xsl:choose>
             </xsl:if>
          </xsl:variable>
          <!-- To create colspec element based on the cols count -->
@@ -1913,18 +1703,7 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                   <xsl:attribute name="colsep" select="'0'"/>
                   <xsl:attribute name="rowsep" select="'0'"/>
                </xsl:if>
-               <!-- Revathi: 22May2016 - Added the below condition check. As the entry PCDATA in commentary should be wrapped by the element p-limited-->
-               <xsl:choose>
-                  <xsl:when test="$selectorID = ('precedents', 'treatises')">
-                     <p-limited xsl:exclude-result-prefixes="#all">
-                        <xsl:apply-templates select="node()"/>
-                     </p-limited>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates select="node()"/>
-                  </xsl:otherwise>
-               </xsl:choose>
-               <!--<xsl:apply-templates select="node()"/>-->
+               <xsl:apply-templates select="node()"/>
             </xsl:element>
          </xsl:when>
       </xsl:choose>
@@ -1932,19 +1711,18 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
 
    <xsl:template match="url">
       <xsl:choose>
-         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist')">
+         <xsl:when test="$selectorID='journal'">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
          </xsl:when>
-         <!-- Revathi: 22May2018 - Commented the above code and added the $selectorID 'cases' to the above xsl:when to avoid code redundancy -->
          <!-- added url element so choosed cases as selectorID by himanshu -->
          <!--   Dayanand singh 14 MAY 2018 Added for casse selector id -->
-         <!-- <xsl:when test="$selectorID='cases'">
-                <xsl:element name="{name()}">
-                    <xsl:apply-templates select="@* | node()"/>
-                </xsl:element>
-            </xsl:when>-->
+         <xsl:when test="$selectorID='cases'">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:when>
          <!-- end -->
          <xsl:otherwise>
             <xsl:apply-templates select="@* | node()"/>
@@ -2012,9 +1790,9 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-
-   <xsl:template match="footnote | fnbody"><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
-      <xsl:if test="fnbody/not(child::node())">
+   <!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy-->
+   <xsl:template match="footnote | fnbody">
+      <xsl:if test="fnbody=''">
          <xsl:element name="footnote">
             <xsl:attribute name="fntoken" select="@fntoken"/>
             <xsl:element name="fnbody">
@@ -2053,17 +1831,9 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->
-   <xsl:template match="node()[parent::fnbody]">
-      <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
-         <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
-            <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
-         </xsl:if>
-         <xsl:if test="exists(parent::fnbody/parent::footnote/@fnrtokens)">
-            <xsl:attribute name="fnrtokens" select="parent::fnbody/parent::footnote/@fnrtokens"/>
-         </xsl:if>
-         <xsl:if test="exists(parent::fnbody/parent::footnote/@type)">
-            <xsl:attribute name="type" select="parent::fnbody/parent::footnote/@type"/>
-         </xsl:if>
+   <xsl:template match="p[parent::fnbody]">
+      <footnote type="editorial" xsl:exclude-result-prefixes="#all">
+         <xsl:attribute name="fntoken" select="0"/>
          <!--<xsl:attribute name="fntoken">
                 <xsl:variable name="v_fnlabel">
                     <xsl:choose>
@@ -2119,24 +1889,14 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
             <xsl:if test="$fnrval!=''">
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
             </xsl:if>-->
-         <xsl:choose><!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
-            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">
-               <fnlabel xsl:exclude-result-prefixes="#all">
-                  <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
-               </fnlabel>
-            </xsl:when>
-            <xsl:when test="self::p/text/node()[1][name() = 'sup']">
+         <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
+                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
+         <xsl:choose>
+            <xsl:when test="self::p/text/*[1][name() = 'sup']">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                </fnlabel>
             </xsl:when>
-            <xsl:otherwise>
-               <fnlabel xsl:exclude-result-prefixes="#all">
-                  <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
-               </fnlabel>
-            </xsl:otherwise>
-            <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
-                But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
             <!--<xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
                     <fnlabel xsl:exclude-result-prefixes="#all">
                         <!-\- Revathi: 08May2018 - Replace &#160;(non-breaking-space) while capturing the fnlabel -\->
@@ -2164,45 +1924,32 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
                     <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                 </fnlabel>
             </xsl:if>-->
-         <fnbody xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
-            <xsl:element name="{name()}">
+         <fnbody xsl:exclude-result-prefixes="#all">
+            <p xsl:exclude-result-prefixes="#all">
                <xsl:apply-templates/>
-            </xsl:element>
-            <!--<p xsl:exclude-result-prefixes="#all">
-                    <xsl:apply-templates/>      
-                    <!-\- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -\->
-                    <!-\-<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-\->
-                </p>-->
+               <!-- Revathi - 7May2018 - When table is a sibling of p, then this table should be included inside the footnote created corresponding to it preceeding sibling p -->
+               <!--<xsl:apply-templates select="self::p/following-sibling::*[1][name()='table']" mode="footnote-table"/>-->
+            </p>
          </fnbody>
       </footnote>
    </xsl:template>
-   <!-- Arun: 25May2018 - Added element fnr -->
-   <xsl:template match="fnr">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-   <!-- Arun: 25May2018 - Added element fnr's attributes -->
-   <xsl:template match="fnr/@*">
-      <xsl:copy/>
-   </xsl:template>
-   <!-- Revathi: suppressed the element fnlabel as this is handled while creating the footnote element in the template match of "node()[parent::fnbody]" -->
-   <xsl:template match="fnlabel"/>
    <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->   <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
     </xsl:template>-->   <!-- Revathi: Commented the below code and added the text as a condition in text.xsl -->   <!-- <xsl:template match="text[parent::p/parent::fnbody]">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="node() except (sup[1], page)"/>
         </xsl:element>
-    </xsl:template>-->   <!-- Revathi: 23May2018 - Commented the below code as i have added the generic code to handle the child elements of fnbody irrespective of the element name in <xsl:template match="node()[parent::fnbody]"> -->   <!--    Dayanand singh 16 May 2018 added list under footnote-->   <!-- <xsl:template match="footnote/fnbody[child::l]">
-        <xsl:element name="footnote">
-            <xsl:attribute name="fntoken" select="0"/>
-            <xsl:element name="fnbody">
-                <xsl:apply-templates select="@* | node() except table"/>
-            </xsl:element>
-        </xsl:element>
-        <xsl:apply-templates select="child::table"/>
-    </xsl:template>-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+    </xsl:template>-->   <!--    Dayanand singh 16 May 2018 added list under footnote-->
+   <xsl:template match="footnote/fnbody[child::l]">
+      <xsl:element name="footnote">
+         <xsl:attribute name="fntoken" select="0"/>
+         <xsl:element name="fnbody">
+            <xsl:apply-templates select="@* | node() except table"/>
+         </xsl:element>
+      </xsl:element>
+      <xsl:apply-templates select="child::table"/>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
    <xsl:template match="person[$selectorID = ('cases','journal')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
@@ -2259,35 +2006,11 @@ Compiled:  2018-05-28T13:54:32.196+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="edpnum[$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:element name="{name()}"><!--<xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>-->
-         <xsl:attribute name="value">
-            <xsl:call-template name="Normalize_id_string"><!-- Revathi: 25May2018 - Added the condition to replace hyphen entity with regular hyphen as its not a NMTOKEN value -->
-               <xsl:with-param name="string" select="replace(.,'‒','-')"/>
-            </xsl:call-template>
-         </xsl:attribute>
+   <xsl:template match="edpnum[$selectorID=('commentary','commentaryleghist')]">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="value" select="translate(self::edpnum,'[]','')"/>
          <xsl:attribute name="inline" select="'false'"/>
          <xsl:apply-templates/>
       </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="lnlink | marker | api-params | param">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="lnlink/@* | marker/@* | param/@*">
-      <xsl:copy/>
-   </xsl:template>
-
-   <xsl:template match="clause | frm:body | form">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="clause/@* | frm:body/@* | form/@*">
-      <xsl:copy/>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>
