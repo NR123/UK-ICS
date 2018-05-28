@@ -1970,7 +1970,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
 
    <xsl:template match="url">
       <xsl:choose>
-         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist')">
+         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
