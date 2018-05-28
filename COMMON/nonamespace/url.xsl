@@ -7,9 +7,7 @@
     
     <xsl:template match="url">
         <xsl:choose>
-            <!--   Dayanand Singh 23 May 2018 to added [$selectorID='dictionary'] to retain url element in output xml-->
             <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
-
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
