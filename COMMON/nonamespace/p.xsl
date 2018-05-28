@@ -43,7 +43,7 @@
             <xsl:when test="self::p/node()[1]/name() = 'edpnum'">
                 <xsl:element name="{name()}">
                     <xsl:apply-templates/>
-                        <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/p[1]/text"/>
+                        <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
                 </xsl:element>
             </xsl:when>
             <xsl:when
