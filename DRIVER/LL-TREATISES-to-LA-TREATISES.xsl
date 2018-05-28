@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T16:52:21.688+05:30-->
+Compiled:  2018-05-28T12:39:13.724+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -20,6 +20,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
                 xmlns:ci="http://www.lexis-nexis.com/ci"
                 xmlns:glp="http://www.lexis-nexis.com/glp"
                 xmlns:case="http://www.lexis-nexis.com/glp/case"
+                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:comm="http://www.lexis-nexis.com/glp/comm"
                 xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
                 xmlns:dict="http://www.lexis-nexis.com/glp/dict"
@@ -29,91 +30,119 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
                 xmlns:in="http://www.lexis-nexis.com/glp/in"
                 xmlns:leg="http://www.lexis-nexis.com/glp/leg"
                 xmlns:xhtml="http://www.w3c.org/1999/xhtml"
-                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
                 exclude-result-prefixes="xs xd">
-   <xsl:param name="selectorID" select="'dictionary'"/>
+   <xsl:param name="selectorID" select="'treatises'"/>
+   <xsl:output encoding="utf-8" indent="no"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
-   <!--<xsl:output encoding="UTF-8" doctype-public="-//LEXISNEXIS//DTD GLP Casedoc v005//EN"
-        doctype-system="dictionarydoc-norm.dtd" indent="no"/>-->
-   <xsl:output encoding="UTF-8" indent="no"/>
+   <xsl:strip-space elements="*"/>
    <!-- START OF CONTENT SPECIFIC XSLS -->
    <!-- Please uncomment the below xsl:include while unit-testing -->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="DICTIONARYDOC">
+   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
             <xsl:namespace name="{substring-after(substring-before(., '='), ':')}"
                            select="substring-after(translate(., '&#34;', ''), '=')"/>
          </xsl:for-each>
-         <xsl:apply-templates select="@* | node()"/>
+         <!--<xsl:attribute name="type" select="'fulltext'"/>-->
+         <xsl:apply-templates select="node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:body">
+   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="dict:term-entry">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
+      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
+                <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
+                    <xsl:value-of select="'subsection'"/>
+                </xsl:when>
+                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
+                <xsl:when test="matches(@leveltype,'comm[0-9]+')">
+                    <xsl:value-of select="'section'"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="self::level/@leveltype"/>
+                </xsl:otherwise>
+            </xsl:choose>-->
+         <xsl:value-of select="self::level/@leveltype"/>
+      </xsl:variable>
+      <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
+      <xsl:choose>
+         <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
+            <xsl:choose><!-- Revathi: To check whether there are any ancestor level with @searchtype='LEGISLATION'.
+                    If present, then should create leg:level/leg:level-vrnt only corresponding to the level in the input-->
+               <xsl:when test="not(ancestor::level/child::heading/@searchtype='LEGISLATION')">
+                  <xsl:element name="{name()}">
+                     <bodytext xsl:exclude-result-prefixes="#all">
+                        <legfragment xsl:exclude-result-prefixes="#all">
+                           <leg:level xsl:exclude-result-prefixes="#all">
+                              <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
+                                 <xsl:apply-templates select="heading"/>
+                                 <leg:levelbody xsl:exclude-result-prefixes="#all">
+                                    <leg:bodytext xsl:exclude-result-prefixes="#all">
+                                       <xsl:apply-templates select="node() except (heading,level)"/>
+                                    </leg:bodytext>
+                                    <xsl:apply-templates select="level"/>
+                                 </leg:levelbody>
+                              </leg:level-vrnt>
+                           </leg:level>
+                        </legfragment>
+                     </bodytext>
+                  </xsl:element>
+               </xsl:when>
+               <!-- Otherwise, if there is no ancestor level with @searchtype='LEGISLATION', then create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
+               <xsl:otherwise>
+                  <leg:level xsl:exclude-result-prefixes="#all">
+                     <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
+                        <xsl:apply-templates select="heading"/>
+                        <leg:levelbody xsl:exclude-result-prefixes="#all">
+                           <leg:bodytext xsl:exclude-result-prefixes="#all">
+                              <xsl:apply-templates select="node() except (heading,level)"/>
+                           </leg:bodytext>
+                           <xsl:apply-templates select="level"/>
+                        </leg:levelbody>
+                     </leg:level-vrnt>
+                  </leg:level>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:attribute name="leveltype" select="$v_leveltype"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="defterm[parent::dict:term-entry]">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
+
+   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
+      <xsl:choose>
+         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]"><!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors --><!--<leg:levelbody xsl:exclude-result-prefixes="#all">
+                    <leg:bodytext xsl:exclude-result-prefixes="#all">-->
+            <xsl:apply-templates select="@* | node()"/>
+            <!--</leg:bodytext>
+                </leg:levelbody>-->
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="dict:definition">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-   <!-- DAYANAND SINGH: 22May2018 changed and added new element as per need-->
-   <xsl:template match="dict:subtopic">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="id" select="@id"/>
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="dict:topicname">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="dict:short-definition">
-      <xsl:element name="dict:short-definition">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="dict:detailed-definition">
-      <xsl:element name="dict:detailed-definition">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="dict:equivalent-term">
-      <xsl:element name="dict:equivalent-term">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="dict:note">
-      <xsl:element name="dict:note">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
+   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:variable name="v_getDPSI">
@@ -681,18 +710,6 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- DAYANAND SINGH: 22May2018-->
-   <xsl:template match="index">
-      <xsl:element name="index">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-   <!-- DAYANAND SINGH: 22May2018-->
-   <xsl:template match="see-also">
-      <xsl:element name="see-also">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
 
    <xsl:template match="refpt[$selectorID='dictionary']">
       <xsl:element name="{name()}" inherit-namespaces="no">
@@ -801,6 +818,14 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
       </xsl:choose>
    </xsl:template>
 
+   <xsl:template match="pgrp[$selectorID='cases']">
+      <xsl:apply-templates select="@* | node()"/>
+   </xsl:template>
+   <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
+   <xsl:template match="pgrp[$selectorID=('journal','precedents','treatises','commentaryleghist')]">
+      <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="p">
       <xsl:choose>
          <xsl:when test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
@@ -835,7 +860,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          <xsl:when test="self::p/node()[1]/name() = 'edpnum'">
             <xsl:element name="{name()}">
                <xsl:apply-templates/>
-               <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
+               <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/p[1]/text"/>
             </xsl:element>
          </xsl:when>
          <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
@@ -1063,17 +1088,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
         <xsl:element name="emph">
             <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
-    </xsl:template>-->   <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle link element -->
-   <xsl:template match="link[not(parent::docinfo:alt-rendition)]">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="link[not(parent::docinfo:alt-rendition)]/@*">
-      <xsl:copy/>
-   </xsl:template>
-
+    </xsl:template>-->   <!-- Revathi: 11May2018 - Commented out the above code as whenever emph is occuring inside h element, we need to suppress the emph tag and retain its PCDATA inside h-->
    <xsl:template match="remotelink">
       <xsl:choose><!-- Revathi: Added the below condition check to accomodate following changes. The generic code to handle remotelink, that is already present here is moved inside xsl:otherwise --><!-- Whenever, emph has only remotelink as child in commentary data, then the emph should be suppressed and the child remotelink is converted as ci:cite/@type='paragraph-ref'
             and the PCDATA of remotelink is mapped to ci:content.-->
@@ -1315,60 +1330,6 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- DAYANAND SINGH: 22May2018-->
-   <xsl:template match="in:lev1">
-      <xsl:element name="in:lev1">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev2">
-      <xsl:element name="in:lev2">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev3">
-      <xsl:element name="in:lev3">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev4">
-      <xsl:element name="in:lev4">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev5">
-      <xsl:element name="in:lev5">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev6">
-      <xsl:element name="in:lev6">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:entry">
-      <xsl:element name="in:entry">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:entry-text">
-      <xsl:element name="in:entry-text">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:index-ref">
-      <xsl:element name="in:index-ref">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
 
    <xsl:template match="h">
       <xsl:choose>
@@ -1523,7 +1484,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
 
    <xsl:template match="sup">
       <xsl:choose><!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-         <xsl:when test="self::sup=parent::text/node()[1] and ancestor::footnote/@fntoken and ancestor::footnote/not(@fnrtokens) and (ancestor::footnote/not(fnlabel) or ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
+         <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -2000,6 +1961,50 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
    <xsl:template match="inlineobject/@*">
       <xsl:copy/>
    </xsl:template>
+   <!-- Changed by Dayanand as per DTD 10 May 2018-->   <!--<xsl:template match="nl[ancestor::searchhit|ancestor::emph|ancestor::alias|ancestor::glp:note|ancestor::note|ancestor::page|ancestor::fnr]">-->   <!-- Revathi: 11May2018 - Commented out the above nl template and added the below generic nl template-->
+   <xsl:template match="nl">
+      <xsl:apply-templates/>
+      <!-- Added by Dayanand -->
+      <!-- Revathi: 10May2018 - Commented the below code as whenever nl element occurs we need to suppress the element and retain the child contents-->
+      <!--<xsl:if test="contains(.,'')">
+                    <xsl:element name="nl"/>
+                   
+                    
+            </xsl:if>-->
+   </xsl:template>
+
+   <xsl:template match="page[$selectorID = 'cases']">
+      <xsl:choose>
+         <xsl:when test="self::page[parent::catchphrase]">
+            <xsl:element name="page" inherit-namespaces="no">
+               <xsl:apply-templates select="@*"/>
+            </xsl:element>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:attribute name="text" select="normalize-space(./@text)"/>
+               <xsl:attribute name="reporter" select="./@reporter"/>
+               <xsl:attribute name="count" select="./@count"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="page[$selectorID = 'journal']">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="text" select="./@count"/>
+         <xsl:attribute name="count" select="./@count"/>
+         <xsl:attribute name="reporter" select="./@reporter"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+   <!--<xsl:template match="page[parent::catchphrase]">
+        <xsl:element name="page" inherit-namespaces="no">
+            <xsl:apply-templates select="@*"/>
+        </xsl:element>
+    </xsl:template>-->
+   <xsl:template match="page/@*"/>
 
    <xsl:template match="footnotegrp">
       <xsl:element name="{name()}">
@@ -2007,26 +2012,17 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-   <!--<xsl:template match="footnote | fnbody">-->
-   <xsl:template match="footnote | fnbody | fnlabel">
-      <xsl:choose><!-- Revathi: 28May2018 - Based on the clarification received on footnote, when @fntoken and @fnrtokens is present in the input, the footnote should be retained as such in the input -->
-         <xsl:when test="(self::footnote/@fntoken!='0' and self::footnote/@fnrtokens) or self::fnbody[parent::footnote/@fntoken!='0' and parent::footnote/@fnrtokens] or self::fnlabel[parent::footnote/@fntoken!='0' and parent::footnote/@fnrtokens]">
-            <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
+
+   <xsl:template match="footnote | fnbody"><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
+      <xsl:if test="fnbody/not(child::node())">
+         <xsl:element name="footnote">
+            <xsl:attribute name="fntoken" select="@fntoken"/>
+            <xsl:element name="fnbody">
+               <xsl:apply-templates/>
             </xsl:element>
-         </xsl:when>
-         <xsl:otherwise><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
-            <xsl:if test="fnbody/not(child::node())">
-               <xsl:element name="footnote">
-                  <xsl:attribute name="fntoken" select="@fntoken"/>
-                  <xsl:element name="fnbody">
-                     <xsl:apply-templates/>
-                  </xsl:element>
-               </xsl:element>
-            </xsl:if>
-            <xsl:apply-templates/>
-         </xsl:otherwise>
-      </xsl:choose>
+         </xsl:element>
+      </xsl:if>
+      <xsl:apply-templates/>
    </xsl:template>
    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -2056,8 +2052,8 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
         <xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][not(ancestor::fnbody)]" mode="footnote"/>        
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
-    </xsl:template>-->   <!--<xsl:template match="node()[parent::fnbody]">-->
-   <xsl:template match="node()[parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]">
+    </xsl:template>-->
+   <xsl:template match="node()[parent::fnbody]">
       <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
          <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
             <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
@@ -2124,7 +2120,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
             </xsl:if>-->
          <xsl:choose><!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
-            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel, '[^\s     ]')]">
+            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
                </fnlabel>
@@ -2187,11 +2183,11 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
       </xsl:element>
    </xsl:template>
    <!-- Arun: 25May2018 - Added element fnr's attributes -->
-   <xsl:template match="fnr/@* | footnote/@*">
+   <xsl:template match="fnr/@*">
       <xsl:copy/>
    </xsl:template>
    <!-- Revathi: suppressed the element fnlabel as this is handled while creating the footnote element in the template match of "node()[parent::fnbody]" -->
-   <xsl:template match="fnlabel[parent::footnote/@fntoken and parent::footnote/not(@fnrtokens)]"/>
+   <xsl:template match="fnlabel"/>
    <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->   <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
     </xsl:template>-->   <!-- Revathi: Commented the below code and added the text as a condition in text.xsl -->   <!-- <xsl:template match="text[parent::p/parent::fnbody]">
@@ -2206,15 +2202,92 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
             </xsl:element>
         </xsl:element>
         <xsl:apply-templates select="child::table"/>
-    </xsl:template>-->   <!-- Changed by Dayanand as per DTD 10 May 2018-->   <!--<xsl:template match="nl[ancestor::searchhit|ancestor::emph|ancestor::alias|ancestor::glp:note|ancestor::note|ancestor::page|ancestor::fnr]">-->   <!-- Revathi: 11May2018 - Commented out the above nl template and added the below generic nl template-->
-   <xsl:template match="nl">
-      <xsl:apply-templates/>
-      <!-- Added by Dayanand -->
-      <!-- Revathi: 10May2018 - Commented the below code as whenever nl element occurs we need to suppress the element and retain the child contents-->
-      <!--<xsl:if test="contains(.,'')">
-                    <xsl:element name="nl"/>
-                   
-                    
-            </xsl:if>-->
+    </xsl:template>-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
+   <xsl:template match="person[$selectorID = ('cases','journal')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="name.text[parent::person][$selectorID = ('cases','journal')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="person/@searchtype">
+      <xsl:attribute name="{name()}">
+         <xsl:value-of select="."/>
+      </xsl:attribute>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
+   <xsl:template match="glp:note">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle date element -->
+   <xsl:template match="date">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="date/@*">
+      <xsl:copy/>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle link element -->
+   <xsl:template match="link[not(parent::docinfo:alt-rendition)]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="link[not(parent::docinfo:alt-rendition)]/@*">
+      <xsl:copy/>
+   </xsl:template>
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle strike element -->
+   <xsl:template match="strike">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="edpnum">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="edpnum[$selectorID=('precedents','treatises','commentaryleghist')]">
+      <xsl:element name="{name()}"><!--<xsl:attribute name="value" select="replace(translate(self::edpnum,'[]',''),'–','-')"/>-->
+         <xsl:attribute name="value">
+            <xsl:call-template name="Normalize_id_string"><!-- Revathi: 25May2018 - Added the condition to replace hyphen entity with regular hyphen as its not a NMTOKEN value -->
+               <xsl:with-param name="string" select="replace(.,'‒','-')"/>
+            </xsl:call-template>
+         </xsl:attribute>
+         <xsl:attribute name="inline" select="'false'"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="lnlink | marker | api-params | param">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="lnlink/@* | marker/@* | param/@*">
+      <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="clause | frm:body | form">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="clause/@* | frm:body/@* | form/@*">
+      <xsl:copy/>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>
