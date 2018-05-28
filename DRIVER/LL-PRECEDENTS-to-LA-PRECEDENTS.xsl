@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-25T17:44:51.208+05:30-->
+Compiled:  2018-05-28T09:58:20.376+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -1483,7 +1483,7 @@ Compiled:  2018-05-25T17:44:51.208+05:30-->
 
    <xsl:template match="sup">
       <xsl:choose><!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-         <xsl:when test="self::sup=parent::text/node()[1] and ancestor::fnbody"/>
+         <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -2058,10 +2058,10 @@ Compiled:  2018-05-25T17:44:51.208+05:30-->
             <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
          </xsl:if>
          <xsl:if test="exists(parent::fnbody/parent::footnote/@fnrtokens)">
-            <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fnrtokens"/>
+            <xsl:attribute name="fnrtokens" select="parent::fnbody/parent::footnote/@fnrtokens"/>
          </xsl:if>
          <xsl:if test="exists(parent::fnbody/parent::footnote/@type)">
-            <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@type"/>
+            <xsl:attribute name="type" select="parent::fnbody/parent::footnote/@type"/>
          </xsl:if>
          <!--<xsl:attribute name="fntoken">
                 <xsl:variable name="v_fnlabel">
@@ -2119,7 +2119,7 @@ Compiled:  2018-05-25T17:44:51.208+05:30-->
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
             </xsl:if>-->
          <xsl:choose><!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
-            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel">
+            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')] and parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/@fnrtokens">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
                </fnlabel>

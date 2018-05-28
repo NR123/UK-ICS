@@ -7,7 +7,7 @@
     <xsl:template match="sup">
         <xsl:choose>
             <!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-            <xsl:when test="self::sup=parent::text/node()[1] and ancestor::fnbody"/>
+            <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
