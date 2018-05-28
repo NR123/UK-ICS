@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T15:31:56.459+05:30-->
+Compiled:  2018-05-28T20:21:27.928+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -1081,7 +1081,7 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
       <xsl:copy/>
    </xsl:template>
 
-   <xsl:template match="emph/@*">
+   <xsl:template match="emph/@*[not($selectorID = 'cases')]">
       <xsl:copy/>
    </xsl:template>
    <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
@@ -1460,10 +1460,10 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
-         <!--Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -->
-         <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
-            <xsl:apply-templates/>
-         </xsl:when>
+         <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
+            <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
+                <xsl:apply-templates/>
+            </xsl:when>-->
          <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except(table)"/>
@@ -1991,7 +1991,7 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="page[$selectorID = 'journal']">
+   <xsl:template match="page[not($selectorID = 'cases')]">
       <xsl:element name="{name()}">
          <xsl:attribute name="text" select="./@count"/>
          <xsl:attribute name="count" select="./@count"/>
@@ -2004,7 +2004,11 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
             <xsl:apply-templates select="@*"/>
         </xsl:element>
     </xsl:template>-->
-   <xsl:template match="page/@*"/>
+   <xsl:template match="page/@*[not(ancestor::footnote)][$selectorID = 'cases']"/>
+
+   <xsl:template match="page/@*">
+      <xsl:copy/>
+   </xsl:template>
 
    <xsl:template match="footnotegrp">
       <xsl:element name="{name()}">
@@ -2062,7 +2066,8 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->   <!--<xsl:template match="node()[parent::fnbody]">-->
-   <xsl:template match="node()[parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]">
+   <xsl:template match="node()[not(name()='page')][parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]"
+                 priority="1">
       <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
          <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
             <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
@@ -2175,7 +2180,7 @@ Compiled:  2018-05-28T15:31:56.459+05:30-->
             </xsl:if>-->
          <fnbody xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
             <xsl:element name="{name()}">
-               <xsl:apply-templates/>
+               <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
             <!--<p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      

@@ -118,7 +118,7 @@
     </xsl:template>
 
 
-    <xsl:template match="emph/@*">
+    <xsl:template match="emph/@*[not($selectorID = 'cases')]">
         <xsl:copy/>
     </xsl:template>
     

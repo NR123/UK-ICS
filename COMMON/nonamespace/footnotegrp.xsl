@@ -78,7 +78,7 @@
     </xsl:template>-->
 
     <!--<xsl:template match="node()[parent::fnbody]">-->
-    <xsl:template match="node()[parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]">
+    <xsl:template match="node()[not(name()='page')][parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]" priority="1">
         <footnote type="editorial" xsl:exclude-result-prefixes="#all">
             <!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
             <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
@@ -202,7 +202,7 @@
             <fnbody xsl:exclude-result-prefixes="#all">
                 <!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
                 <xsl:element name="{name()}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
                 <!--<p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      
