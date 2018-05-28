@@ -18,29 +18,28 @@
     xmlns:frm="http://www.lexis-nexis.com/glp/frm" xmlns:in="http://www.lexis-nexis.com/glp/in"
     xmlns:leg="http://www.lexis-nexis.com/glp/leg" xmlns:xhtml="http://www.w3c.org/1999/xhtml"
     exclude-result-prefixes="xs" version="2.0">
-    
-    
-    <!--<xsl:param name="selectorID" select="'commentary'"/>-->
-    <xsl:param name="selectorID" select="'commentaryleghist'"/>  
-    
+
+
+    <xsl:param name="selectorID" select="'precedents'"/>
+
     <xsl:output encoding="utf-8" indent="yes"/>
-    
+
     <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
-    
+
     <xsl:strip-space elements="*"/>
-    
+
     <!-- START OF CONTENT SPECIFIC XSLS -->
-    
+
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_introduction.xsl"/>
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_comm.body_Chof_commentarydoc.xsl"/>
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_level_Chof_comm.body.xsl"/>
     <xsl:include href="../STREAM_SPECIFIC/precedents/precedents_bodytext_chof_level.xsl"/>
     
-    
+
     <!-- END OF CONTENT SPECIFIC XSLS -->
-    
-    
-    
+
+
+
     <!-- START OF GENERIC XSLS -->
     
     <xsl:include href="../COMMON/withnamespace/docinfo-child-elements.xsl"/>
@@ -51,8 +50,7 @@
     
     <xsl:include href="../COMMON/nonamespace/heading.xsl"/>
     
-    <!--<xsl:include href="../COMMON/nonamespace/title.xsl"/>-->
-    <xsl:include href="title.xsl"/>
+    <xsl:include href="../COMMON/nonamespace/title.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
     
@@ -101,6 +99,8 @@
     <xsl:include href="../COMMON/nonamespace/strike.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/edpnum.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/lnlink.xsl"/>
     
     <!-- END OF GENERIC XSLS -->
     

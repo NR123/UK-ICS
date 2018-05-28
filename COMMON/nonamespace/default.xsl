@@ -29,20 +29,11 @@
     <xsl:variable name="closequote">&#8217;</xsl:variable>
     
     <xsl:template match="text()" priority="20">
-        <!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
-        <xsl:param name="text">
-            <xsl:choose>
-                <xsl:when test="$selectorID=('commentary','commentaryleghist')">
-                    <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>  
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:param>
+        <xsl:param name="text" select="."/>  
         <xsl:param name="usequote" select="$openquote"/>
-        <xsl:choose>            
-            <xsl:when test="contains($text,$quot)">
+        <xsl:choose>    
+            <!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion -->
+            <!--<xsl:when test="contains($text,$quot)">
                 <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
                 <xsl:choose>
                     <xsl:when test="matches(substring-after($text,$quot),'^\s')">
@@ -62,7 +53,7 @@
                     <xsl:with-param name="usequote"
                         select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
                 </xsl:call-template>
-            </xsl:when>
+            </xsl:when>-->
       
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$') and self::text()/not(ancestor::ci:cite) and self::text()/not(ancestor::docinfo)">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->
@@ -95,20 +86,11 @@
     </xsl:template>
     
     <xsl:template name="replace">
-        <!-- Arun- 21May2018 Updated the below code to handle the replacement of multiple single quotes into single quote -->
-        <xsl:param name="text">
-            <xsl:choose>
-                <xsl:when test="$selectorID=('commentary','commentaryleghist')">
-                    <xsl:value-of select="replace(.,'''''|''&#34;|&#34;''','''')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>  
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:param>
+        <xsl:param name="text" select="."/>           
         <xsl:param name="usequote" select="$openquote"/>
-        <xsl:choose>            
-            <xsl:when test="contains($text,$quot)">
+        <xsl:choose>    
+            <!-- Revathi: Commented the below code as per the clarification received from Awntika regarding smart quote conversion -->
+            <!--<xsl:when test="contains($text,$quot)">
                 <xsl:variable name="strlen" select="string-length(substring-before($text,$quot))"/>
                 <xsl:choose>
                     <xsl:when test="matches(substring-after($text,$quot),'^\s')">
@@ -128,7 +110,7 @@
                     <xsl:with-param name="usequote"
                         select="substring(concat($openquote, $closequote), 2 - number($usequote=$closequote), 1)"/>
                 </xsl:call-template>
-            </xsl:when>
+            </xsl:when>-->
             
             <xsl:when test="matches($text,'\([0-9]{4}\)\s[0-9]+\s[A-Z]+\s[0-9]+[,\s]*$')">
                 <!-- Revathi: changed the regex to text drop of the content occuring before the citation like content -->

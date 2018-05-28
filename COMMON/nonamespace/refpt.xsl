@@ -35,7 +35,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="refpt[$selectorID=('commentary','commentaryleghist')]">
+    <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:element name="{name()}">
             <xsl:attribute name="id">
                 <xsl:call-template name="fn_refpt">
@@ -53,6 +53,10 @@
                     <xsl:matching-substring>
                         <xsl:value-of select="concat('acronym:WPLD::term:', regex-group(2))"/>
                     </xsl:matching-substring>
+<!-- Dayanand singh, 22 May 2018, changed to fetch non-matcheing id attribute value. -->
+                    <xsl:non-matching-substring>
+                        <xsl:value-of select="."/>
+                    </xsl:non-matching-substring>
                 </xsl:analyze-string>
             </xsl:when>
             <xsl:when test="self::refpt[$selectorID='index']">

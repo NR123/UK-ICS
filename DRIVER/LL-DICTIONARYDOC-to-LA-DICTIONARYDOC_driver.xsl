@@ -11,7 +11,7 @@
     xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:glp="http://www.lexis-nexis.com/glp"
     xmlns:case="http://www.lexis-nexis.com/glp/case"
     xmlns:comm="http://www.lexis-nexis.com/glp/comm"
-    xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+    xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"    
     xmlns:dict="http://www.lexis-nexis.com/glp/dict" xmlns:dig="http://www.lexis-nexis.com/glp/dig"
     xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
     xmlns:frm="http://www.lexis-nexis.com/glp/frm" xmlns:in="http://www.lexis-nexis.com/glp/in"
@@ -55,6 +55,10 @@
     <xsl:include href="../COMMON/nonamespace/heading.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/title.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/index.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/see-also.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
 
@@ -63,10 +67,14 @@
     <xsl:include href="../COMMON/nonamespace/text.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/emph.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/link.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/remotelink.xsl"/>
 
     <xsl:include href="../COMMON/withnamespace/ci.cite-child-elements.xsl"/>
+    
+    <xsl:include href="../COMMON/withnamespace/in.lev-child-elements.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/h.xsl"/>
 
