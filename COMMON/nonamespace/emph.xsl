@@ -92,7 +92,8 @@
                 
             </xsl:when>
             <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
-            <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+            <!-- Revathi: 29May2018 : Updated below condition to suppress emph tag whenever parent of emph is <text> -->
+            <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) and self::emph/not(child::node()[not(name()='remotelink')]) and self::emph/parent::text">
                 <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>

@@ -11,7 +11,19 @@
 
     <xsl:template match="catchwords[parent::catchwordgrp/parent::case:headnote]">
         <xsl:element name="{name()}">
-            <xsl:apply-templates select="@* | node()"/>
+            <!-- Revathi: 29May2018 - Added the below condition check as per the CR from Awntika
+                When catchphrase is not present as the child of catchwords and catchwords is having PCDATA or other nodes as child, then create catchphrase -->
+            <xsl:choose>
+                <xsl:when test="self::catchwords/not(child::catchphrase) and self::catchwords/exists(child::node())">
+                    <catchphrase xsl:exclude-result-prefixes="#all">
+                        <xsl:apply-templates select="@* | node()"/>
+                    </catchphrase>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            <!--<xsl:apply-templates select="@* | node()"/>-->
         </xsl:element>
     </xsl:template>
 
