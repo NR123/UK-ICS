@@ -50,8 +50,13 @@
             <xsl:when test="self::title/node()[1]/name()='emph' and self::title/count(child::emph) > 1">
                 <desig xsl:exclude-result-prefixes="#all">
                     <xsl:attribute name="value">
+                        <!-- Revathi: 29May2018 - (FOR 0PV8) Added the below variable to capture the desig content as the direct passing of parameter to the template "Normalize_id_string" was creating conflicts. -->
+                        <xsl:variable name="v_desig" as="xs:string">
+                            <xsl:value-of select="self::title/emph[1]//text()"/>
+                        </xsl:variable>
                         <xsl:call-template name="Normalize_id_string">
-                            <xsl:with-param name="string" select="self::title/emph[1]//text()"/>
+                            <!--<xsl:with-param name="string" select="self::title/emph[1]//text()"/>-->
+                            <xsl:with-param name="string" select="$v_desig"/>
                         </xsl:call-template>
                     </xsl:attribute>
                     <designum xsl:exclude-result-prefixes="#all">

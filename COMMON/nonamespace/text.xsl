@@ -4,7 +4,13 @@
 
 
     <xsl:template match="text" name="text">
-        <xsl:element name="{name()}">
+        <xsl:choose>
+            <!-- Revathi: 29May2018 - code change for CR by Awntika -->
+            <xsl:when test="ancestor::name.text">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
             <xsl:apply-templates select="@*"/>
             <xsl:choose>
                 <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
@@ -121,6 +127,9 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
+        
     </xsl:template>
     
     <xsl:template match="text/@align">
