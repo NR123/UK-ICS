@@ -9,10 +9,10 @@
             <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
                 <xsl:apply-templates select="@* | node()"/>
             </xsl:when>
-            <!--Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -->
+            <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
             <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
                 <xsl:apply-templates/>
-            </xsl:when>
+            </xsl:when>-->
             
             <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
                 <xsl:element name="{name()}">
