@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T20:21:27.928+05:30-->
+Compiled:  2018-05-29T10:13:18.31+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -1076,15 +1076,13 @@ Compiled:  2018-05-28T20:21:27.928+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 22 May 2018 changed for dictionary selector-->
-   <xsl:template match="emph/@*[$selectorID = 'cases']">
+   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 26 May 2018 changed for dictionary selector-->
+   <xsl:template match="emph/@*[not($selectorID = 'dictionary')]">
       <xsl:copy/>
    </xsl:template>
-
-   <xsl:template match="emph/@*[not($selectorID = 'cases')]">
-      <xsl:copy/>
-   </xsl:template>
-   <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
+   <!-- DAYANAND SINGH: 23 May 2018 comment for dictionary selector-->   <!--<xsl:template match="emph/@*">
+        <xsl:copy/>
+    </xsl:template>-->   <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
         <xsl:element name="emph">
             <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
@@ -1160,9 +1158,13 @@ Compiled:  2018-05-28T20:21:27.928+05:30-->
       </xsl:attribute>
       <xsl:attribute name="docidref" select="'TBD'"/>
    </xsl:template>
-   <!-- Revathi: Awaiting clarification from daya-->   <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+   <!-- Dayanand sing: Updated 28 may 2018-->
+   <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+      <xsl:element name="remotelink">
+         <xsl:apply-templates select="node()|@*"/>
+      </xsl:element>
+   </xsl:template>
+
    <xsl:template match="ci:*">
       <xsl:choose>
          <xsl:when test="self::ci:cite[matches(child::ci:content,'^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
@@ -1932,7 +1934,7 @@ Compiled:  2018-05-28T20:21:27.928+05:30-->
 
    <xsl:template match="url">
       <xsl:choose>
-         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist')">
+         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>

@@ -91,9 +91,11 @@
         <xsl:attribute name="docidref" select="'TBD'"/>
     </xsl:template>
     
-        <!-- Revathi: Awaiting clarification from daya-->
-    <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+        <!-- Dayanand sing: Updated 28 may 2018-->
+    <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+        <xsl:element name="remotelink">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+    </xsl:template>
     
 </xsl:stylesheet>

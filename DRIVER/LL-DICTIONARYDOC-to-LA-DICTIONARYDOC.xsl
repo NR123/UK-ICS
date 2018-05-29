@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T16:52:21.688+05:30-->
+Compiled:  2018-05-29T10:13:02.811+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -1051,15 +1051,13 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 22 May 2018 changed for dictionary selector-->
-   <xsl:template match="emph/@*[$selectorID = 'cases']">
+   <!-- Revathi: 04May2018 - Commented out the below code and added this as a condition in generic emph template -->   <!-- <xsl:template match="emph[parent::text/node()[1]=self::emph] [matches(self::emph,'^(\([a-zA-Z0-9]+\)|&#x25cf;|&#x2022;)([\t&#160;]*)')]"/>-->   <!-- DAYANAND SINGH: 26 May 2018 changed for dictionary selector-->
+   <xsl:template match="emph/@*[not($selectorID = 'dictionary')]">
       <xsl:copy/>
    </xsl:template>
-
-   <xsl:template match="emph/@*">
-      <xsl:copy/>
-   </xsl:template>
-   <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
+   <!-- DAYANAND SINGH: 23 May 2018 comment for dictionary selector-->   <!--<xsl:template match="emph/@*">
+        <xsl:copy/>
+    </xsl:template>-->   <!-- DAYANAND SINGH: 10May2018-->   <!--<xsl:template match="emph[parent::h]">
         <xsl:element name="emph">
             <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
@@ -1145,9 +1143,13 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
       </xsl:attribute>
       <xsl:attribute name="docidref" select="'TBD'"/>
    </xsl:template>
-   <!-- Revathi: Awaiting clarification from daya-->   <!--<xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
+   <!-- Dayanand sing: Updated 28 may 2018-->
+   <xsl:template match="remotelink[parent::url][$selectorID='dictionary']">
+      <xsl:element name="remotelink">
+         <xsl:apply-templates select="node()|@*"/>
+      </xsl:element>
+   </xsl:template>
+
    <xsl:template match="ci:*">
       <xsl:choose>
          <xsl:when test="self::ci:cite[matches(child::ci:content,'^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
@@ -1315,57 +1317,15 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- DAYANAND SINGH: 22May2018-->
-   <xsl:template match="in:lev1">
-      <xsl:element name="in:lev1">
+   <!-- DAYANAND SINGH: 23May2018-->
+   <xsl:template match="in:lev1 | in:lev2 | in:lev3 | in:lev4 | in:lev5 | in:lev6">
+      <xsl:element name="{name()}">
          <xsl:apply-templates select="@*|node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="in:lev2">
-      <xsl:element name="in:lev2">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev3">
-      <xsl:element name="in:lev3">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev4">
-      <xsl:element name="in:lev4">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev5">
-      <xsl:element name="in:lev5">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:lev6">
-      <xsl:element name="in:lev6">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:entry">
-      <xsl:element name="in:entry">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:entry-text">
-      <xsl:element name="in:entry-text">
-         <xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-   </xsl:template>
-
-   <xsl:template match="in:index-ref">
-      <xsl:element name="in:index-ref">
+   <xsl:template match="in:entry|in:entry-text|in:index-ref">
+      <xsl:element name="{name()}">
          <xsl:apply-templates select="@*|node()"/>
       </xsl:element>
    </xsl:template>
@@ -1499,10 +1459,10 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
-         <!--Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -->
-         <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
-            <xsl:apply-templates/>
-         </xsl:when>
+         <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
+            <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
+                <xsl:apply-templates/>
+            </xsl:when>-->
          <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except(table)"/>
@@ -1971,7 +1931,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
 
    <xsl:template match="url">
       <xsl:choose>
-         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist')">
+         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
@@ -2057,7 +2017,8 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
     </xsl:template>-->   <!--<xsl:template match="node()[parent::fnbody]">-->
-   <xsl:template match="node()[parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]">
+   <xsl:template match="node()[not(name()='page')][parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]"
+                 priority="1">
       <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
          <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
             <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
@@ -2170,7 +2131,7 @@ Compiled:  2018-05-28T16:52:21.688+05:30-->
             </xsl:if>-->
          <fnbody xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
             <xsl:element name="{name()}">
-               <xsl:apply-templates/>
+               <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
             <!--<p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      

@@ -7,7 +7,7 @@
     
     <xsl:template match="url">
         <xsl:choose>
-            <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist')">
+            <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
