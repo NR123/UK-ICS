@@ -35,13 +35,15 @@
         </xsl:element>
     </xsl:template>
     
+    <!--<xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">-->
     <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:element name="{name()}">
             <xsl:attribute name="id">
                 <xsl:call-template name="fn_refpt">
                     <xsl:with-param name="id" select="./@id"/>
                 </xsl:call-template>
-            </xsl:attribute>            
+            </xsl:attribute>   
+            <xsl:attribute name="type" select="./@type"/>
         </xsl:element>
     </xsl:template>
 
