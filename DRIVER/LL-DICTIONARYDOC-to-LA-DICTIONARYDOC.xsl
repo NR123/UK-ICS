@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-28T23:42:03.468+05:30-->
+Compiled:  2018-05-29T13:03:11.731+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -721,7 +721,7 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
          </xsl:attribute>
       </xsl:element>
    </xsl:template>
-
+   <!--<xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">-->
    <xsl:template match="refpt[$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:attribute name="id">
@@ -729,6 +729,7 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
                <xsl:with-param name="id" select="./@id"/>
             </xsl:call-template>
          </xsl:attribute>
+         <xsl:attribute name="type" select="./@type"/>
       </xsl:element>
    </xsl:template>
 
@@ -834,7 +835,7 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
          <xsl:when test="self::p/node()[1]/name() = 'edpnum'">
             <xsl:element name="{name()}">
                <xsl:apply-templates/>
-               <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/p[1]/text"/>
+               <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
             </xsl:element>
          </xsl:when>
          <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
@@ -1458,10 +1459,10 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
-         <!--Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -->
-         <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
-            <xsl:apply-templates/>
-         </xsl:when>
+         <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
+            <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
+                <xsl:apply-templates/>
+            </xsl:when>-->
          <xsl:when test="self::blockquote[child::table][$selectorID='cases'][$docinfo.selector = ('Transcript')]">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node() except(table)"/>
@@ -1482,7 +1483,7 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
 
    <xsl:template match="sup">
       <xsl:choose><!-- Revathi: 22May2018 - Suppressed the element sup from occuring inside fnbody/p/text as this sup should be moved inside the element footnote/fnlabel. -->
-         <xsl:when test="self::sup=parent::text/node()[1] and (ancestor::footnote/not(fnlabel) or ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
+         <xsl:when test="self::sup=parent::text/node()[1] and ancestor::footnote/@fntoken and ancestor::footnote/not(@fnrtokens) and (ancestor::footnote/not(fnlabel) or ancestor::footnote/matches(fnlabel,'[\s     ]+') or ancestor::footnote/fnlabel/not(child::node()))"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1966,17 +1967,26 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
       </xsl:element>
       <xsl:apply-templates select="self::footnotegrp//fnbody/page"/>
    </xsl:template>
-
-   <xsl:template match="footnote | fnbody"><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
-      <xsl:if test="fnbody/not(child::node())">
-         <xsl:element name="footnote">
-            <xsl:attribute name="fntoken" select="@fntoken"/>
-            <xsl:element name="fnbody">
-               <xsl:apply-templates/>
+   <!--<xsl:template match="footnote | fnbody">-->
+   <xsl:template match="footnote | fnbody | fnlabel">
+      <xsl:choose><!-- Revathi: 28May2018 - Based on the clarification received on footnote, when @fntoken and @fnrtokens is present in the input, the footnote should be retained as such in the input -->
+         <xsl:when test="(self::footnote/@fntoken!='0' and self::footnote/@fnrtokens) or self::fnbody[parent::footnote/@fntoken!='0' and parent::footnote/@fnrtokens] or self::fnlabel[parent::footnote/@fntoken!='0' and parent::footnote/@fnrtokens]">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
-         </xsl:element>
-      </xsl:if>
-      <xsl:apply-templates/>
+         </xsl:when>
+         <xsl:otherwise><!-- Dayanand Singh 16 May 2018 for handling of footnote where fnbody is dummy--><!--<xsl:if test="fnbody=''">--><!-- Revathi: 25May 2018 - Modified the fnbody check as it is causing validation errors when fnbody/p/text has sequence of spaces.-->
+            <xsl:if test="fnbody/not(child::node())">
+               <xsl:element name="footnote">
+                  <xsl:attribute name="fntoken" select="@fntoken"/>
+                  <xsl:element name="fnbody">
+                     <xsl:apply-templates/>
+                  </xsl:element>
+               </xsl:element>
+            </xsl:if>
+            <xsl:apply-templates/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
    <!-- Revathi: 10May2018 - Commented the below code as per the clarification got for the footnote handling.
     Clarification got from Awntika: Need not generate @fntoken and @fnrtoken for the footnote handling and find the relevant fnr by identifying the element sup.
@@ -2006,8 +2016,9 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
         <xsl:apply-templates select="//sup[self::sup/text()=$fnlabel_footnote][not(ancestor::fnbody)]" mode="footnote"/>        
     </xsl:template>-->   <!-- Revathi: 04May2018 - Added a condition check -->   <!--<xsl:template match="//sup | //fnbody/p/text" mode="footnote">
         <xsl:value-of select="generate-id()"/>
-    </xsl:template>-->
-   <xsl:template match="node()[parent::fnbody]">
+    </xsl:template>-->   <!--<xsl:template match="node()[parent::fnbody]">-->
+   <xsl:template match="node()[not(name()='page')][parent::fnbody][parent::fnbody/parent::footnote/@fntoken and parent::fnbody/parent::footnote/not(@fnrtokens)]"
+                 priority="1">
       <footnote type="editorial" xsl:exclude-result-prefixes="#all"><!-- Revathi: 25May2018 - Updated the list of attributes appearing in footnote element. -->
          <xsl:if test="exists(parent::fnbody/parent::footnote/@fntoken)">
             <xsl:attribute name="fntoken" select="parent::fnbody/parent::footnote/@fntoken"/>
@@ -2074,16 +2085,21 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
                 <xsl:attribute name="fnrtokens" select="$fnrval"/>
             </xsl:if>-->
          <xsl:choose><!-- Revathi: 25May2018 - Added the below condition when fnlabel is appearing in the input file itself, need to capture that -->
-            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel,'[^\s     ]')]">
+            <xsl:when test="parent::fnbody/parent::footnote/child::fnlabel[matches(self::fnlabel, '[^\s     ]')]">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
                </fnlabel>
             </xsl:when>
-            <xsl:when test="self::p/text/*[1][name() = 'sup']">
+            <xsl:when test="self::p/text/node()[1][name() = 'sup']">
                <fnlabel xsl:exclude-result-prefixes="#all">
                   <xsl:apply-templates select="self::p/text/sup[1]/node()"/>
                </fnlabel>
             </xsl:when>
+            <xsl:otherwise>
+               <fnlabel xsl:exclude-result-prefixes="#all">
+                  <xsl:apply-templates select="parent::fnbody/parent::footnote/child::fnlabel/node()"/>
+               </fnlabel>
+            </xsl:otherwise>
             <!-- Revathi: 04May2018 - Ususally fnlabel is identified by the element sup being first child of footnote//p/text.
                 But in some files fnlabel content is present as starting content of the p/text PCDATA. So added below condition to capture it correctly -->
             <!--<xsl:when test="matches(substring-before(self::p/text/node()[1],' '),'^[0-9]+')">
@@ -2115,7 +2131,7 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
             </xsl:if>-->
          <fnbody xsl:exclude-result-prefixes="#all"><!-- Revathi: 23May2018 - Modified to accomodate generic element as the child of fnbody -->
             <xsl:element name="{name()}">
-               <xsl:apply-templates/>
+               <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
             <!--<p xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates/>      
@@ -2132,11 +2148,11 @@ Compiled:  2018-05-28T23:42:03.468+05:30-->
       </xsl:element>
    </xsl:template>
    <!-- Arun: 25May2018 - Added element fnr's attributes -->
-   <xsl:template match="fnr/@*">
+   <xsl:template match="fnr/@* | footnote/@*">
       <xsl:copy/>
    </xsl:template>
    <!-- Revathi: suppressed the element fnlabel as this is handled while creating the footnote element in the template match of "node()[parent::fnbody]" -->
-   <xsl:template match="fnlabel"/>
+   <xsl:template match="fnlabel[parent::footnote/@fntoken and parent::footnote/not(@fnrtokens)]"/>
    <!-- Revathi: Commented the below code and added the text as a condition in sup.xsl -->   <!--<xsl:template match="sup[preceding-sibling::sup][parent::text/parent::p/parent::fnbody]">
         <xsl:apply-templates/>
     </xsl:template>-->   <!-- Revathi: Commented the below code and added the text as a condition in text.xsl -->   <!-- <xsl:template match="text[parent::p/parent::fnbody]">
