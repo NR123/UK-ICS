@@ -4,6 +4,10 @@
 
     <xsl:template match="p">
         <xsl:choose>
+            <!-- Revathi: 29May2018 - code change for CR by Awntika -->
+            <xsl:when test="ancestor::name.text">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:when
                 test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
 
