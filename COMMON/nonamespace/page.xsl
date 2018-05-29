@@ -20,7 +20,7 @@
         </xsl:choose>
     </xsl:template>
     
-    <xsl:template match="page[$selectorID = 'journal']">
+    <xsl:template match="page[not($selectorID = 'cases')]">
         <xsl:element name="{name()}">
             <xsl:attribute name="text" select="./@count"/>
             <xsl:attribute name="count" select="./@count"/>
@@ -35,6 +35,9 @@
         </xsl:element>
     </xsl:template>-->
 
-    <xsl:template match="page/@*"/>
-
+    <xsl:template match="page/@*[not(ancestor::footnote)][$selectorID = 'cases']"/>
+    
+    <xsl:template match="page/@*">
+        <xsl:copy/>
+    </xsl:template>
 </xsl:stylesheet>
