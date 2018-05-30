@@ -12,9 +12,17 @@
     <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
     
     <xsl:template match="glp:note">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates/>
-        </xsl:element>
+        <xsl:choose>
+            <!-- Revathi: 29May2018 - code change for CR by Awntika -->
+            <xsl:when test="ancestor::name.text">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>       
     </xsl:template>
   
 </xsl:stylesheet>
