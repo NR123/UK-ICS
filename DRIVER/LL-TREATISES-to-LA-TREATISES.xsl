@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-29T18:31:35.272+05:30-->
+Compiled:  2018-05-30T11:05:21.08+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -61,20 +61,19 @@ Compiled:  2018-05-29T18:31:35.272+05:30-->
    </xsl:template>
 
    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. -->
-         <xsl:choose>
-            <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
-               <xsl:value-of select="'subsection'"/>
-            </xsl:when>
-            <!-- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -->
-            <xsl:when test="matches(@leveltype,'comm[0-9]+')">
-               <xsl:value-of select="'section'"/>
-            </xsl:when>
-            <xsl:otherwise>
-               <xsl:value-of select="self::level/@leveltype"/>
-            </xsl:otherwise>
-         </xsl:choose>
-         <!--<xsl:value-of select="self::level/@leveltype"/>-->
+      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
+                <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
+                    <xsl:value-of select="'subsection'"/>
+                </xsl:when>
+                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
+                <xsl:when test="matches(@leveltype,'comm[0-9]+')">
+                    <xsl:value-of select="'section'"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="self::level/@leveltype"/>
+                </xsl:otherwise>
+            </xsl:choose>-->
+         <xsl:value-of select="self::level/@leveltype"/>
       </xsl:variable>
       <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
       <xsl:choose>
