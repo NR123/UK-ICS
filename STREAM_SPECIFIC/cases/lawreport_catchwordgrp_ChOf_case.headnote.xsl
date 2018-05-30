@@ -70,7 +70,7 @@
         <xsl:apply-templates select="self::catchphrase/page"/>
             </xsl:otherwise>
         </xsl:choose>    
-        <!--END: Revathi: 30May2018
+        <!--END: Revathi: 30May2018-->
     </xsl:template>
 
     <xsl:template name="catchphrase_split">
