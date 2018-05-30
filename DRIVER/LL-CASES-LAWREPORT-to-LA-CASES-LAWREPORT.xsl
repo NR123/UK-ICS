@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-29T18:31:28.147+05:30-->
+Compiled:  2018-05-30T13:10:40.514+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -979,8 +979,8 @@ Compiled:  2018-05-29T18:31:28.147+05:30-->
    </xsl:template>
 
    <xsl:template match="heading">
-      <xsl:choose>
-         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
+      <xsl:choose><!-- Revathi: 30May2018 - Changed as per the clarification got from Awntika as legfragment element is not handled in rocket xslt, need to drop this change for precedents. --><!--<xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">-->
+         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]">
             <leg:heading xsl:exclude-result-prefixes="#all">
                <xsl:apply-templates select="@* | node()"/>
             </leg:heading>
@@ -1074,9 +1074,12 @@ Compiled:  2018-05-29T18:31:28.147+05:30-->
                             <xsl:otherwise>
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
-                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value -->
-                        <xsl:call-template name="Normalize_id_string">
-                           <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value --><!-- Revathi: 29May2018 - (FOR 0PV8) Added the below variable to capture the desig content as the direct passing of parameter to the template "Normalize_id_string" was creating conflicts. -->
+                        <xsl:variable name="v_desig" as="xs:string">
+                           <xsl:value-of select="self::title/emph/emph[1]//text()"/>
+                        </xsl:variable>
+                        <xsl:call-template name="Normalize_id_string"><!--<xsl:with-param name="string" select="self::title/emph[1]//text()"/>-->
+                           <xsl:with-param name="string" select="$v_desig"/>
                         </xsl:call-template>
                      </xsl:attribute>
                      <designum xsl:exclude-result-prefixes="#all">
@@ -1867,6 +1870,7 @@ Compiled:  2018-05-29T18:31:28.147+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
+         <!-- Revathi: 26May2018 - As suggested by Amita - Commented the below code as it is creating issues in rocket conversion. -->
          <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
             <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
                 <xsl:apply-templates/>
