@@ -98,4 +98,23 @@
         </xsl:element>
     </xsl:template>
     
+    <!-- Dayanand Singh: Updated 30 May 2018-->
+    
+    <xsl:template match="remotelink[$selectorID='digest']">
+        <xsl:choose>
+            <xsl:when test="remotelink[parent::url]">
+                <xsl:element name="remotelink">
+                    <xsl:attribute name="hrefclass" select="@hrefclass"/>
+                    <xsl:apply-templates/>    
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="remotelink">
+                    <xsl:attribute name="href" select="@href"/>
+                    <xsl:apply-templates/>    
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
 </xsl:stylesheet>

@@ -7,11 +7,12 @@
     
     <xsl:template match="url">
         <xsl:choose>
-            <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
+            <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary','digest')">
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:element>
             </xsl:when>
+            <!--   Dayanand singh 30 MAY 2018 Added digest selector id -->
             <!-- Revathi: 22May2018 - Commented the above code and added the $selectorID 'cases' to the above xsl:when to avoid code redundancy -->
             <!-- added url element so choosed cases as selectorID by himanshu -->   
             <!--   Dayanand singh 14 MAY 2018 Added for casse selector id -->
