@@ -3,9 +3,13 @@
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
 <<<<<<< HEAD
+<<<<<<< HEAD
 Compiled:  2018-05-29T10:13:02.811+05:30-->
 =======
 Compiled:  2018-05-29T13:03:11.731+05:30-->
+>>>>>>> development
+=======
+Compiled:  2018-05-29T18:31:38.097+05:30-->
 >>>>>>> development
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -620,9 +624,12 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
       <xsl:choose><!-- Revathi: 23May2018 - Modified the count check as more than two emph are also appearing in input file  -->
          <xsl:when test="self::title/node()[1]/name()='emph' and self::title/count(child::emph) &gt; 1">
             <desig xsl:exclude-result-prefixes="#all">
-               <xsl:attribute name="value">
-                  <xsl:call-template name="Normalize_id_string">
-                     <xsl:with-param name="string" select="self::title/emph[1]//text()"/>
+               <xsl:attribute name="value"><!-- Revathi: 29May2018 - (FOR 0PV8) Added the below variable to capture the desig content as the direct passing of parameter to the template "Normalize_id_string" was creating conflicts. -->
+                  <xsl:variable name="v_desig" as="xs:string">
+                     <xsl:value-of select="self::title/emph[1]//text()"/>
+                  </xsl:variable>
+                  <xsl:call-template name="Normalize_id_string"><!--<xsl:with-param name="string" select="self::title/emph[1]//text()"/>-->
+                     <xsl:with-param name="string" select="$v_desig"/>
                   </xsl:call-template>
                </xsl:attribute>
                <designum xsl:exclude-result-prefixes="#all">
@@ -806,7 +813,10 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
    </xsl:template>
 
    <xsl:template match="p">
-      <xsl:choose>
+      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika -->
+         <xsl:when test="ancestor::name.text">
+            <xsl:apply-templates/>
+         </xsl:when>
          <xsl:when test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
          <xsl:when test="self::p/not(child::node())[$selectorID = 'journal']"/>
          <xsl:when test="self::p[child::text[@align = 'center']] and $selectorID = 'journal'">
@@ -842,7 +852,9 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
                <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
             </xsl:element>
          </xsl:when>
-         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+         <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
+                In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
+         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -854,30 +866,35 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
    <xsl:template match="//p" mode="p_suppress"/>
 
    <xsl:template match="text" name="text">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@*"/>
-         <xsl:choose>
-            <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
-               <xsl:choose><!-- Revathi: Added the below condition - when lilabel already has PCDATA then p/text should be handled as it is. -->
-                  <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[matches(.,'[^\s     ]')]">
-                     <xsl:apply-templates/>
-                  </xsl:when>
-                  <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('"><!--<xsl:analyze-string select="self::text/text()[1]"
+      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika -->
+         <xsl:when test="ancestor::name.text">
+            <xsl:apply-templates/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="{name()}">
+               <xsl:apply-templates select="@*"/>
+               <xsl:choose>
+                  <xsl:when test="ancestor::li/child::*[1][name() != 'blockquote']">
+                     <xsl:choose><!-- Revathi: Added the below condition - when lilabel already has PCDATA then p/text should be handled as it is. -->
+                        <xsl:when test="ancestor::li/child::lilabel/child::node() and ancestor::li/child::lilabel[matches(.,'[^\s     ]')]">
+                           <xsl:apply-templates/>
+                        </xsl:when>
+                        <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] != '('"><!--<xsl:analyze-string select="self::text/text()[1]"
                                 regex="^(\(?[a-zA-Z0-9]+\)?\.?|●|&#x25cf;|&#x2022;)([\t ]*)">--><!--<xsl:analyze-string select="self::text/text()[1]"
                                 regex="(^\(?([0-9]*[a-zA-Z]{{1,2}}|[0-9]+)\.?\)?\.?)(\s|&#160;){{1,}}">--><!-- Arun- 22May2018 Updated the below code to handle ● and special characters before lilabel content -->
-                     <xsl:analyze-string select="self::text/text()[1]"
-                                         regex="(^●|^●|^•|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
-                        <xsl:non-matching-substring>
-                           <xsl:call-template name="replace">
-                              <xsl:with-param name="text"
-                                              select="replace(replace(., '^\s*(.+?)\s*$', '$1'), '^ .*$', '')"/>
-                           </xsl:call-template>
-                        </xsl:non-matching-substring>
-                     </xsl:analyze-string>
-                     <xsl:apply-templates select="node() except text()[1]"/>
-                  </xsl:when>
-                  <!-- Revathi: The below condition is to identify the lilabel content which is occuring in the pattern '(<emph typestyle="it">b</emph>)' inside li/p/text -->
-                  <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')"><!-- <xsl:analyze-string select="self::text/node()[3]"
+                           <xsl:analyze-string select="self::text/text()[1]"
+                                               regex="(^●|^●|^•|^\W*\(?([0-9\.]*[a-zA-Z]{{1,2}}[0-9\.]*|[0-9\.]+|XC|XL|L?X{{0,3}}|IX|IV|V?I{{0,3}}|xc|xl|l?x{{0,3}}|ix|iv|v?i{{0,3}})\.?\)?\.?)(\s| ){{1,}}">
+                              <xsl:non-matching-substring>
+                                 <xsl:call-template name="replace">
+                                    <xsl:with-param name="text"
+                                                    select="replace(replace(., '^\s*(.+?)\s*$', '$1'), '^ .*$', '')"/>
+                                 </xsl:call-template>
+                              </xsl:non-matching-substring>
+                           </xsl:analyze-string>
+                           <xsl:apply-templates select="node() except text()[1]"/>
+                        </xsl:when>
+                        <!-- Revathi: The below condition is to identify the lilabel content which is occuring in the pattern '(<emph typestyle="it">b</emph>)' inside li/p/text -->
+                        <xsl:when test="self::text/node()[1]/name() = '' and self::text/node()[1] = '(' and self::text/node()[2]/name() = 'emph' and self::text/node()[3]/matches(., '[a-zA-Z0-9]{1,}') and self::text/node()[3]/starts-with(., ')')"><!-- <xsl:analyze-string select="self::text/node()[3]"
                                 regex="(^\)[\s|&#160;]+)">
                                 <xsl:non-matching-substring>
                                     <xsl:call-template name="replace">
@@ -885,33 +902,33 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
                                     </xsl:call-template>
                                 </xsl:non-matching-substring>
                             </xsl:analyze-string>-->
-                     <xsl:analyze-string select="self::text/node()[3]" regex="(^\)\.?[\s| ]*)([\w\W]*)">
-                        <xsl:matching-substring>
-                           <xsl:call-template name="replace">
-                              <xsl:with-param name="text" select="regex-group(2)"/>
-                           </xsl:call-template>
-                        </xsl:matching-substring>
-                     </xsl:analyze-string>
-                     <!--Revathi: 08May2018 - To handle the remaining nodes except for the lilabel content -->
-                     <xsl:apply-templates select="node()[position()&gt;3]"/>
+                           <xsl:analyze-string select="self::text/node()[3]" regex="(^\)\.?[\s| ]*)([\w\W]*)">
+                              <xsl:matching-substring>
+                                 <xsl:call-template name="replace">
+                                    <xsl:with-param name="text" select="regex-group(2)"/>
+                                 </xsl:call-template>
+                              </xsl:matching-substring>
+                           </xsl:analyze-string>
+                           <!--Revathi: 08May2018 - To handle the remaining nodes except for the lilabel content -->
+                           <xsl:apply-templates select="node()[position()&gt;3]"/>
+                        </xsl:when>
+                        <xsl:when test="self::text/node()[1]/name() = ''">
+                           <xsl:analyze-string select="self::text/text()[1]" regex="^(\([a-zA-Z0-9]+\)|●)([\t ]*)">
+                              <xsl:non-matching-substring>
+                                 <xsl:call-template name="replace">
+                                    <xsl:with-param name="text"
+                                                    select="replace(replace(., '^\s*(.+?)\s*$', '$1'), '^ .*$', '')"/>
+                                 </xsl:call-template>
+                              </xsl:non-matching-substring>
+                           </xsl:analyze-string>
+                           <xsl:apply-templates select="node() except text()[1]"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:apply-templates/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:when>
-                  <xsl:when test="self::text/node()[1]/name() = ''">
-                     <xsl:analyze-string select="self::text/text()[1]" regex="^(\([a-zA-Z0-9]+\)|●)([\t ]*)">
-                        <xsl:non-matching-substring>
-                           <xsl:call-template name="replace">
-                              <xsl:with-param name="text"
-                                              select="replace(replace(., '^\s*(.+?)\s*$', '$1'), '^ .*$', '')"/>
-                           </xsl:call-template>
-                        </xsl:non-matching-substring>
-                     </xsl:analyze-string>
-                     <xsl:apply-templates select="node() except text()[1]"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates/>
-                  </xsl:otherwise>
-               </xsl:choose>
-            </xsl:when>
-            <!--<xsl:when test="self::text[parent::p/parent::fnbody]">
+                  <!--<xsl:when test="self::text[parent::p/parent::fnbody]">
                     <xsl:choose>
                         <!-\- Revathi: 08May2018 - Added &#160;(non-breaking-space) to the regex match -\->
                         <xsl:when
@@ -939,24 +956,26 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
 
 
                 </xsl:when>-->
-            <!-- Revathi: 04May2018 - Added the below code to handle the content apart from pnum content.-->
-            <xsl:when test="self::text/node()[1][name() = ''] and matches(self::text/node()[1], '^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)')  and $selectorID = 'journal'">
-               <xsl:element name="{name()}">
-                  <xsl:analyze-string select="self::text/node()[1]" regex="^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)">
-                     <xsl:non-matching-substring>
-                        <xsl:call-template name="replace">
-                           <xsl:with-param name="text" select="."/>
-                        </xsl:call-template>
-                     </xsl:non-matching-substring>
-                  </xsl:analyze-string>
-                  <xsl:apply-templates select="node() except node()[1]"/>
-               </xsl:element>
-            </xsl:when>
-            <xsl:otherwise>
-               <xsl:apply-templates/>
-            </xsl:otherwise>
-         </xsl:choose>
-      </xsl:element>
+                  <!-- Revathi: 04May2018 - Added the below code to handle the content apart from pnum content.-->
+                  <xsl:when test="self::text/node()[1][name() = ''] and matches(self::text/node()[1], '^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)')  and $selectorID = 'journal'">
+                     <xsl:element name="{name()}">
+                        <xsl:analyze-string select="self::text/node()[1]" regex="^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)">
+                           <xsl:non-matching-substring>
+                              <xsl:call-template name="replace">
+                                 <xsl:with-param name="text" select="."/>
+                              </xsl:call-template>
+                           </xsl:non-matching-substring>
+                        </xsl:analyze-string>
+                        <xsl:apply-templates select="node() except node()[1]"/>
+                     </xsl:element>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:apply-templates/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="text/@align">
@@ -1044,7 +1063,10 @@ Compiled:  2018-05-29T13:03:11.731+05:30-->
             </xsl:element>
          </xsl:when>
          <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
-         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+         <!-- Revathi: 29May2018 : The old code is for the emph having only child as ci:cite inside p/text. This is creating validation errors
+            when the emph/ci:cite is occuring with elements other than p/text. So added the condition 'self::emph/not(child::node()[not(name()='remotelink')])' to
+            make it work only for p/text-->
+         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) and self::emph/not(child::node()[not(name()='remotelink')]) and self::emph/parent::text">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->

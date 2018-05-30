@@ -3,9 +3,13 @@
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
 <<<<<<< HEAD
+<<<<<<< HEAD
 Compiled:  2018-05-28T12:39:13.724+05:30-->
 =======
 Compiled:  2018-05-29T14:22:57.037+05:30-->
+>>>>>>> development
+=======
+Compiled:  2018-05-30T11:05:21.08+05:30-->
 >>>>>>> development
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -66,6 +70,9 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
 
    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> development
       <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
                 <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
                     <xsl:value-of select="'subsection'"/>
@@ -79,6 +86,7 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
                 </xsl:otherwise>
             </xsl:choose>-->
          <xsl:value-of select="self::level/@leveltype"/>
+<<<<<<< HEAD
 =======
       <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. -->
          <xsl:choose>
@@ -94,6 +102,8 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
             </xsl:otherwise>
          </xsl:choose>
          <!--<xsl:value-of select="self::level/@leveltype"/>-->
+>>>>>>> development
+=======
 >>>>>>> development
       </xsl:variable>
       <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
@@ -904,7 +914,9 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
 >>>>>>> development
             </xsl:element>
          </xsl:when>
-         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+         <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
+                In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
+         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1191,7 +1203,10 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
             </xsl:element>
          </xsl:when>
          <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
-         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+         <!-- Revathi: 29May2018 : The old code is for the emph having only child as ci:cite inside p/text. This is creating validation errors
+            when the emph/ci:cite is occuring with elements other than p/text. So added the condition 'self::emph/not(child::node()[not(name()='remotelink')])' to
+            make it work only for p/text-->
+         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) and self::emph/not(child::node()[not(name()='remotelink')]) and self::emph/parent::text">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
@@ -2520,5 +2535,11 @@ Compiled:  2018-05-29T14:22:57.037+05:30-->
 
    <xsl:template match="clause/@* | frm:body/@* | form/@*">
       <xsl:copy/>
+   </xsl:template>
+   <!-- Arun: 29May2018 - Added below template to handle email element -->
+   <xsl:template match="email">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@*|node()"/>
+      </xsl:element>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>

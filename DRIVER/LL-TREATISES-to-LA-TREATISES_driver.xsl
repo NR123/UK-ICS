@@ -104,7 +104,7 @@
 
     <xsl:include href="../COMMON/nonamespace/form.xsl"/>
 
-
+    <xsl:include href="../COMMON/nonamespace/email.xsl"/>
 
     <!-- END OF GENERIC XSLS -->
 

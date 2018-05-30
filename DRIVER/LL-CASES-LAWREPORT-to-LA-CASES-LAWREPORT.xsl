@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-29T14:03:17.374+05:30-->
+Compiled:  2018-05-29T18:31:28.147+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -148,8 +148,19 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
    </xsl:template>
 
    <xsl:template match="catchwords[parent::catchwordgrp/parent::case:headnote]">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
+      <xsl:element name="{name()}"><!-- Revathi: 29May2018 - Added the below condition check as per the CR from Awntika
+                When catchphrase is not present as the child of catchwords and catchwords is having PCDATA or other nodes as child, then create catchphrase -->
+         <xsl:choose>
+            <xsl:when test="self::catchwords/not(child::catchphrase) and self::catchwords/exists(child::node())">
+               <catchphrase xsl:exclude-result-prefixes="#all">
+                  <xsl:apply-templates select="@* | node()"/>
+               </catchphrase>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
+         <!--<xsl:apply-templates select="@* | node()"/>-->
       </xsl:element>
    </xsl:template>
 
@@ -1245,7 +1256,9 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
                <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
             </xsl:element>
          </xsl:when>
-         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+         <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
+                In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
+         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1454,7 +1467,10 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
             </xsl:element>
          </xsl:when>
          <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
-         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+         <!-- Revathi: 29May2018 : The old code is for the emph having only child as ci:cite inside p/text. This is creating validation errors
+            when the emph/ci:cite is occuring with elements other than p/text. So added the condition 'self::emph/not(child::node()[not(name()='remotelink')])' to
+            make it work only for p/text-->
+         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) and self::emph/not(child::node()[not(name()='remotelink')]) and self::emph/parent::text">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
