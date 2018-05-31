@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-31T12:46:21.076+05:30-->
+Compiled:  2018-05-31T16:14:26.475+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -78,6 +78,113 @@ Compiled:  2018-05-31T12:46:21.076+05:30-->
 
    <xsl:template match="dig:subject/@*">
       <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="case:info|case:casename|case:courtinfo|case:courtcode|case:courtname|case:dates|case:decisiondate|case:judges|case:juris|case:decisiontype|case:importance|case:reportercite">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="case:casename/@*|case:judges/@*|case:reportercite/@*">
+      <xsl:copy/>
+   </xsl:template>
+
+   <xsl:template match="catchwordgrp[parent::dig:info]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="catchwords">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="catchphrase">
+      <xsl:variable name="text_to_process" select="."/>
+      <xsl:call-template name="catchphrase_split">
+         <xsl:with-param name="text" select="$text_to_process"/>
+         <!-- Revathi: 04May2018 - Added below to choose from the type of delimiter present in the input file -->
+         <xsl:with-param name="delimiter">
+            <xsl:choose>
+               <xsl:when test="contains($text_to_process,'—')">
+                  <xsl:text>—</xsl:text>
+               </xsl:when>
+               <xsl:when test="contains($text_to_process,'–')">
+                  <xsl:text>–</xsl:text>
+               </xsl:when>
+               <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
+               <xsl:when test="contains($text_to_process,'-')">
+                  <xsl:text>-</xsl:text>
+               </xsl:when>
+            </xsl:choose>
+         </xsl:with-param>
+      </xsl:call-template>
+      <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
+      <xsl:apply-templates select="self::catchphrase/page"/>
+   </xsl:template>
+
+   <xsl:template name="catchphrase_split">
+      <xsl:param name="text" select="."/>
+      <!--<xsl:param name="delimiter">&#x2014;</xsl:param>-->
+      <!-- Revathi: 04May2018 - Commented the above code and added below code as i have included the delimiter selection in the template call itself.  -->
+      <xsl:param name="delimiter" select="."/>
+      <!-- Revathi - 07May2018 - Added the below check to identify if the delimiter is present in cathphrase. -->
+      <xsl:choose>
+         <xsl:when test="$delimiter!=''"><!-- To check whether the end of catchphrase has been reached. As the end content is not ended with the same delimiter, we need to handle it. -->
+            <xsl:variable name="test_for_last_value">
+               <xsl:choose>
+                  <xsl:when test="contains(substring-after($text, $delimiter), $delimiter)"><!-- It is not the last delimiter -->
+                     <xsl:value-of select="'no'"/>
+                  </xsl:when>
+                  <xsl:otherwise><!-- End of the delimiter series has been reached -->
+                     <xsl:value-of select="'yes'"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:variable>
+            <xsl:if test="normalize-space(substring-before($text, $delimiter)) != ''">
+               <xsl:choose><!-- When more delimiter is present, process the text before the delimiter -->
+                  <xsl:when test="$test_for_last_value = 'no'">
+                     <catchphrase xsl:exclude-result-prefixes="#all">
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-before($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                  </xsl:when>
+                  <!-- When it is the last delimiter and no more delimiter is present, then process both before and after contents of delimiter -->
+                  <xsl:when test="$test_for_last_value = 'yes'">
+                     <catchphrase xsl:exclude-result-prefixes="#all">
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-before($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                     <catchphrase xsl:exclude-result-prefixes="#all">
+                        <xsl:call-template name="replace">
+                           <xsl:with-param name="text"
+                                           select="normalize-space(substring-after($text, $delimiter))"/>
+                        </xsl:call-template>
+                     </catchphrase>
+                  </xsl:when>
+               </xsl:choose>
+            </xsl:if>
+            <xsl:if test="normalize-space(substring-after($text, $delimiter)) != ''">
+               <xsl:call-template name="catchphrase_split">
+                  <xsl:with-param name="text" select="substring-after($text, $delimiter)"/>
+                  <xsl:with-param name="delimiter" select="$delimiter"/>
+               </xsl:call-template>
+            </xsl:if>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="replace">
+               <xsl:with-param name="text"
+                               select="normalize-space(substring-after($text, $delimiter))"/>
+            </xsl:call-template>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
    <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
@@ -1422,8 +1529,9 @@ Compiled:  2018-05-31T12:46:21.076+05:30-->
                   <xsl:when test="not(@*)">
                      <xsl:analyze-string select="." regex="([0-9]+)\s+([a-zA-Z]+)\s+([0-9]+)">
                         <xsl:matching-substring>
-                           <xsl:attribute name="day" select="$DATE[1]"/>
-                           <xsl:attribute name="month" select="index-of($month,$DATE[2])"/>
+                           <xsl:variable name="DAY" select="number($DATE[1])"/>
+                           <xsl:attribute name="day" select="format-number($DAY, '00')"/>
+                           <xsl:attribute name="month" select="format-number(index-of($month,$DATE[2]),'00')"/>
                            <xsl:attribute name="year" select="$DATE[3]"/>
                         </xsl:matching-substring>
                         <xsl:non-matching-substring/>
