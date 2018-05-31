@@ -79,10 +79,7 @@
                             <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
                         </ci:cite><xsl:value-of select="regex-group(6)"/>
                     </xsl:matching-substring>
-<!--                    Dayanand-->
-                    <xsl:non-matching-substring>
-                        <xsl:value-of select="."/>
-                    </xsl:non-matching-substring>
+
                 </xsl:analyze-string>              
             </xsl:when>
             <xsl:otherwise>                
