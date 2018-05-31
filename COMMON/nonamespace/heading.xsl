@@ -7,7 +7,9 @@
     
     <xsl:template match="heading">
         <xsl:choose>
-            <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
+            <!-- Revathi: 30May2018 - Changed as per the clarification got from Awntika as legfragment element is not handled in rocket xslt, need to drop this change for precedents. -->
+            <!--<xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">-->
+            <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]">
                 <leg:heading xsl:exclude-result-prefixes="#all">
                     <xsl:apply-templates select="@* | node()"/>
                 </leg:heading>

@@ -23,7 +23,8 @@
         </xsl:variable>
         <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
         <xsl:choose>
-            <xsl:when test="self::level/heading/@searchtype='LEGISLATION'">
+            <!-- Revathi: 30May2018 - Changed as per the clarification got from Awntika as legfragment element is not handled in rocket xslt, need to drop this change for precedents. -->
+            <xsl:when test="self::level/heading/@searchtype='LEGISLATION' and not($selectorID = 'precedents')">
                 <xsl:choose>
                     <!-- Revathi: To check whether there are any ancestor level with @searchtype='LEGISLATION'.
                     If present, then should create leg:level/leg:level-vrnt only corresponding to the level in the input-->

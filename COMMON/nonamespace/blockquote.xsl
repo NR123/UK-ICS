@@ -9,6 +9,7 @@
             <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
                 <xsl:apply-templates select="@* | node()"/>
             </xsl:when>
+            <!-- Revathi: 26May2018 - As suggested by Amita - Commented the below code as it is creating issues in rocket conversion. -->
             <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
             <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
                 <xsl:apply-templates/>
