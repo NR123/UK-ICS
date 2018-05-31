@@ -31,8 +31,9 @@
                         <xsl:when test="not(@*)">
                             <xsl:analyze-string select="." regex="([0-9]+)\s+([a-zA-Z]+)\s+([0-9]+)">
                                 <xsl:matching-substring>
-                                    <xsl:attribute name="day" select="$DATE[1]"/>
-                                    <xsl:attribute name="month" select="index-of($month,$DATE[2])"/>
+                                    <xsl:variable name="DAY" select="number($DATE[1])"/>
+                                    <xsl:attribute name="day" select="format-number($DAY, '00')"/>
+                                    <xsl:attribute name="month" select="format-number(index-of($month,$DATE[2]),'00')"/>
                                     <xsl:attribute name="year" select="$DATE[3]"/>
                                 </xsl:matching-substring>
                                 <xsl:non-matching-substring/>
