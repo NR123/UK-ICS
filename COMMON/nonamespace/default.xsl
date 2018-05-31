@@ -5,7 +5,7 @@
     <xsl:template match="/">
         <xsl:apply-templates/>
     </xsl:template>
-       
+    <!--   Dayanand singh 30 MAY 2018 Added Digestdoc content type namespace -->
     <xsl:variable name="RosettaNamespaces" as="element()">
         <RosettaNamepaces>
             <RosettaNamespace>xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"</RosettaNamespace>
@@ -18,6 +18,7 @@
             <RosettaNamespace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamespace>
             <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
             <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
+            <RosettaNamespace>xmlns:dig="http://www.lexis-nexis.com/glp/dig"</RosettaNamespace>
         </RosettaNamepaces>
     </xsl:variable>
     
@@ -78,6 +79,7 @@
                             <ci:content xsl:exclude-result-prefixes="#all"><xsl:value-of select="concat(regex-group(2),' ',regex-group(3),' ',regex-group(4),' ',regex-group(5))"/></ci:content>                            
                         </ci:cite><xsl:value-of select="regex-group(6)"/>
                     </xsl:matching-substring>
+
                 </xsl:analyze-string>              
             </xsl:when>
             <xsl:otherwise>                

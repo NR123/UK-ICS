@@ -316,7 +316,19 @@
         </xsl:element>
     </xsl:template>
     
+    <!--Dayanand Singh 30-05-2018 for digestdoc -->
     
+    <xsl:template match="docinfo:custom-metafields|docinfo:custom-metafield">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>
+           </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="docinfo:lbu-indexing-terms|docinfo:lbu-subj">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:element>
+    </xsl:template>
 
     <xsl:template
         match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
