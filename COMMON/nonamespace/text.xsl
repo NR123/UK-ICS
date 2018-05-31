@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:glp="http://www.lexis-nexis.com/glp" exclude-result-prefixes="xs" version="2.0">
 
 
     <xsl:template match="text" name="text">
@@ -123,7 +123,18 @@
                     </xsl:element>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:apply-templates/>
+                    <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->                
+                    <xsl:choose>
+                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                            <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
+                                <xsl:apply-templates select="."/>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>
