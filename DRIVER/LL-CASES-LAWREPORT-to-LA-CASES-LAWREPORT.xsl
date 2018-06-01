@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-29T14:03:17.374+05:30-->
+Compiled:  2018-05-30T14:42:28.347+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -148,8 +148,19 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
    </xsl:template>
 
    <xsl:template match="catchwords[parent::catchwordgrp/parent::case:headnote]">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
+      <xsl:element name="{name()}"><!-- Revathi: 29May2018 - Added the below condition check as per the CR from Awntika
+                When catchphrase is not present as the child of catchwords and catchwords is having PCDATA or other nodes as child, then create catchphrase -->
+         <xsl:choose>
+            <xsl:when test="self::catchwords/not(child::catchphrase) and self::catchwords/exists(child::node())">
+               <catchphrase xsl:exclude-result-prefixes="#all">
+                  <xsl:apply-templates select="@* | node()"/>
+               </catchphrase>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
+         <!--<xsl:apply-templates select="@* | node()"/>-->
       </xsl:element>
    </xsl:template>
 
@@ -164,26 +175,39 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
             </xsl:otherwise>
          </xsl:choose>
       </xsl:variable>
-      <xsl:call-template name="catchphrase_split">
-         <xsl:with-param name="text" select="$text_to_process"/>
-         <!-- Revathi: 04May2018 - Added below to choose from the type of delimiter present in the input file -->
-         <xsl:with-param name="delimiter">
-            <xsl:choose>
-               <xsl:when test="contains($text_to_process,'—')">
-                  <xsl:text>—</xsl:text>
-               </xsl:when>
-               <xsl:when test="contains($text_to_process,'–')">
-                  <xsl:text>–</xsl:text>
-               </xsl:when>
-               <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
-               <xsl:when test="contains($text_to_process,'-')">
-                  <xsl:text>-</xsl:text>
-               </xsl:when>
-            </xsl:choose>
-         </xsl:with-param>
-      </xsl:call-template>
-      <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
-      <xsl:apply-templates select="self::catchphrase/page"/>
+      <!--START: Revathi: 30May2018 - When catchphrase is not having any delimiter in PCDATA then the tag catchphrase is not getting created as it is directly getting called to the named template catchphrase-split.
+        So to handle this the catchphrase element is created in this stage itself when the PCDATA doesnt have any delimiter present.-->
+      <xsl:variable name="v_delimiter">
+         <xsl:choose>
+            <xsl:when test="contains($text_to_process,'—')">
+               <xsl:text>—</xsl:text>
+            </xsl:when>
+            <xsl:when test="contains($text_to_process,'–')">
+               <xsl:text>–</xsl:text>
+            </xsl:when>
+            <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
+            <xsl:when test="contains($text_to_process,'-')">
+               <xsl:text>-</xsl:text>
+            </xsl:when>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:choose>
+         <xsl:when test="$v_delimiter=''">
+            <xsl:element name="{name()}">
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="catchphrase_split">
+               <xsl:with-param name="text" select="$text_to_process"/>
+               <!-- Revathi: 04May2018 - Added below to choose from the type of delimiter present in the input file -->
+               <xsl:with-param name="delimiter" select="$v_delimiter"/>
+            </xsl:call-template>
+            <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
+            <xsl:apply-templates select="self::catchphrase/page"/>
+         </xsl:otherwise>
+      </xsl:choose>
+      <!--END: Revathi: 30May2018-->
    </xsl:template>
 
    <xsl:template name="catchphrase_split">
@@ -968,8 +992,8 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
    </xsl:template>
 
    <xsl:template match="heading">
-      <xsl:choose>
-         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
+      <xsl:choose><!-- Revathi: 30May2018 - Changed as per the clarification got from Awntika as legfragment element is not handled in rocket xslt, need to drop this change for precedents. --><!--<xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">-->
+         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]">
             <leg:heading xsl:exclude-result-prefixes="#all">
                <xsl:apply-templates select="@* | node()"/>
             </leg:heading>
@@ -1063,9 +1087,12 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
                             <xsl:otherwise>
                                 <xsl:value-of select="self::title/emph/emph[1]//text()"/>
                             </xsl:otherwise>
-                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value -->
-                        <xsl:call-template name="Normalize_id_string">
-                           <xsl:with-param name="string" select="self::title/emph/emph[1]//text()"/>
+                        </xsl:choose>--><!-- Revathi: Commented the above code and added the below to normalise the value --><!-- Revathi: 29May2018 - (FOR 0PV8) Added the below variable to capture the desig content as the direct passing of parameter to the template "Normalize_id_string" was creating conflicts. -->
+                        <xsl:variable name="v_desig" as="xs:string">
+                           <xsl:value-of select="self::title/emph/emph[1]//text()"/>
+                        </xsl:variable>
+                        <xsl:call-template name="Normalize_id_string"><!--<xsl:with-param name="string" select="self::title/emph[1]//text()"/>-->
+                           <xsl:with-param name="string" select="$v_desig"/>
                         </xsl:call-template>
                      </xsl:attribute>
                      <designum xsl:exclude-result-prefixes="#all">
@@ -1245,7 +1272,9 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
                <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
             </xsl:element>
          </xsl:when>
-         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+         <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
+                In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
+         <xsl:when test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
@@ -1454,7 +1483,10 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
             </xsl:element>
          </xsl:when>
          <!-- Revathi: 21May2018 : Added below condition to suppress emph tag whenever the child is only ci:cite -->
-         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) or self::emph/not(child::node()[not(name()='remotelink')])">
+         <!-- Revathi: 29May2018 : The old code is for the emph having only child as ci:cite inside p/text. This is creating validation errors
+            when the emph/ci:cite is occuring with elements other than p/text. So added the condition 'self::emph/not(child::node()[not(name()='remotelink')])' to
+            make it work only for p/text-->
+         <xsl:when test="self::emph/not(child::node()[not(name()='ci:cite')]) and self::emph/not(child::node()[not(name()='remotelink')]) and self::emph/parent::text">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise><!--   Dayanand singh 22 May 2018,  Added attribute for emph  -->
@@ -1851,6 +1883,7 @@ Compiled:  2018-05-29T14:03:17.374+05:30-->
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
+         <!-- Revathi: 26May2018 - As suggested by Amita - Commented the below code as it is creating issues in rocket conversion. -->
          <!--<!-\-Dayanand singh 2018-05-02 updated in below when condition of parent::case:factsummary -\->
             <xsl:when test="self::blockquote[ancestor::case:appendix|parent::case:factsummary]/p/text/matches(text()[1],'^\(([a-z]+|[ivx]+)\)')[$selectorID = 'cases']">
                 <xsl:apply-templates/>

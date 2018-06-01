@@ -50,8 +50,10 @@
                         <xsl:apply-templates select="following-sibling::node()[1][name()='pgrp']/node()[1][name()='p']/text"/>
                 </xsl:element>
             </xsl:when>
+            <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
+                In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
             <xsl:when
-                test="self::p[parent::pgrp/node()[1]=self::p and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+                test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>

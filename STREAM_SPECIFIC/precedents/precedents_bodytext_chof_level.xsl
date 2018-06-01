@@ -5,7 +5,7 @@
 
     <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
-            <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('precedents','treatises','commentaryleghist')]">
+            <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]">
                 <!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors -->
                 <!--<leg:levelbody xsl:exclude-result-prefixes="#all">
                     <leg:bodytext xsl:exclude-result-prefixes="#all">-->

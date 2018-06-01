@@ -11,7 +11,19 @@
 
     <xsl:template match="catchwords[parent::catchwordgrp/parent::case:headnote]">
         <xsl:element name="{name()}">
-            <xsl:apply-templates select="@* | node()"/>
+            <!-- Revathi: 29May2018 - Added the below condition check as per the CR from Awntika
+                When catchphrase is not present as the child of catchwords and catchwords is having PCDATA or other nodes as child, then create catchphrase -->
+            <xsl:choose>
+                <xsl:when test="self::catchwords/not(child::catchphrase) and self::catchwords/exists(child::node())">
+                    <catchphrase xsl:exclude-result-prefixes="#all">
+                        <xsl:apply-templates select="@* | node()"/>
+                    </catchphrase>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            <!--<xsl:apply-templates select="@* | node()"/>-->
         </xsl:element>
     </xsl:template>
 
@@ -26,26 +38,39 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:call-template name="catchphrase_split">
+        <!--START: Revathi: 30May2018 - When catchphrase is not having any delimiter in PCDATA then the tag catchphrase is not getting created as it is directly getting called to the named template catchphrase-split.
+        So to handle this the catchphrase element is created in this stage itself when the PCDATA doesnt have any delimiter present.-->
+        <xsl:variable name="v_delimiter">
+            <xsl:choose>
+                <xsl:when test="contains($text_to_process,'&#x2014;')">
+                    <xsl:text>&#x2014;</xsl:text>
+                </xsl:when>
+                <xsl:when test="contains($text_to_process,'&#x2013;')">
+                    <xsl:text>&#x2013;</xsl:text>
+                </xsl:when>
+                <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
+                <xsl:when test="contains($text_to_process,'-')">
+                    <xsl:text>-</xsl:text>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="$v_delimiter=''">
+                <xsl:element name="{name()}">
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="catchphrase_split">
             <xsl:with-param name="text" select="$text_to_process"/>
             <!-- Revathi: 04May2018 - Added below to choose from the type of delimiter present in the input file -->
-            <xsl:with-param name="delimiter">
-                <xsl:choose>
-                    <xsl:when test="contains($text_to_process,'&#x2014;')">
-                        <xsl:text>&#x2014;</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="contains($text_to_process,'&#x2013;')">
-                        <xsl:text>&#x2013;</xsl:text>
-                    </xsl:when>
-                    <!-- Awantika: 2018-05-07: Added new delimeter to split the data in new data set -->
-                    <xsl:when test="contains($text_to_process,'-')">
-                        <xsl:text>-</xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:with-param>
+            <xsl:with-param name="delimiter" select="$v_delimiter"/>
         </xsl:call-template>
         <xsl:apply-templates select="self::catchphrase/ci:cite" mode="catchphrase"/>
         <xsl:apply-templates select="self::catchphrase/page"/>
+            </xsl:otherwise>
+        </xsl:choose>    
+        <!--END: Revathi: 30May2018-->
     </xsl:template>
 
     <xsl:template name="catchphrase_split">
@@ -108,7 +133,7 @@
                         <xsl:with-param name="delimiter" select="$delimiter"/>
                     </xsl:call-template>
                 </xsl:if> 
-            </xsl:when>
+            </xsl:when>            
             <xsl:otherwise>
                 <xsl:call-template name="replace">
                     <xsl:with-param name="text"
