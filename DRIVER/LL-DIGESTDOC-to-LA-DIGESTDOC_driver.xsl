@@ -59,6 +59,8 @@
 
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
     
+    <xsl:include href="../COMMON/nonamespace/catchwordgrp.xsl"/>
+    
     <xsl:include href="../COMMON/nonamespace/pgrp.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/p.xsl"/>
@@ -75,7 +77,11 @@
     
     <xsl:include href="../COMMON/withnamespace/leg.info-child-element.xsl"/>
     
+    <xsl:include href="../COMMON/withnamespace/digest_case.info.ChOf-dig.info.xsl"/>
+    
     <xsl:include href="../COMMON/nonamespace/h.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/references.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/level.xsl"/>
     
