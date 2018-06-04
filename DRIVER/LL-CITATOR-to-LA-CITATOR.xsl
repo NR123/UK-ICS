@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-06-04T18:23:50.535+05:30-->
+Compiled:  2018-06-04T18:30:22.64+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnci="http://www.lexis-nexis.com/lnci"
@@ -2354,19 +2354,12 @@ Compiled:  2018-06-04T18:23:50.535+05:30-->
    </xsl:template>
    <!-- Dayanand singh 30 May 2018 -->
    <xsl:template match="pubdate">
-      <xsl:element name="{name()}">
-         <xsl:attribute name="display-name" select="@display-name"/>
-         <xsl:apply-templates/>
-      </xsl:element>
-   </xsl:template>
-   <!-- Arun 04Jun2018 Added the below code to handle pubdate and its attributes for citator-->
-   <xsl:template match="pubdate[$selectorID = ('citator')]">
-      <xsl:element name="{name()}">
+      <xsl:element name="{name()}"><!--<xsl:attribute name="display-name" select="@display-name"/>--><!--<xsl:apply-templates/>--><!-- Arun 04Jun2018 Added the below code to handle pubdate and its attributes for citator-->
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="pubdate/@*[$selectorID = ('citator')]">
+   <xsl:template match="pubdate/@*">
       <xsl:copy/>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>
