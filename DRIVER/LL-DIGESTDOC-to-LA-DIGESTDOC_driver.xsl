@@ -59,8 +59,6 @@
 
     <xsl:include href="../COMMON/nonamespace/refpt.xsl"/>
     
-    <xsl:include href="../COMMON/nonamespace/catchwordgrp.xsl"/>
-    
     <xsl:include href="../COMMON/nonamespace/pgrp.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/p.xsl"/>
