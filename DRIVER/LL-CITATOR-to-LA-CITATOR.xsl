@@ -2,38 +2,38 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-06-01T10:14:05.739+05:30-->
+Compiled:  2018-06-04T18:23:50.535+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
-                xmlns:lnv="http://www.lexis-nexis.com/lnv"
-                xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
-                xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
-                xmlns:lncle="http://www.lexis-nexis.com/lncle"
-                xmlns:lndel="http://www.lexis-nexis.com/lndel"
-                xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
-                xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
-                xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
                 xmlns:lnci="http://www.lexis-nexis.com/lnci"
-                xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
-                xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
-                xmlns:ci="http://www.lexis-nexis.com/ci"
-                xmlns:glp="http://www.lexis-nexis.com/glp"
+                xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
                 xmlns:case="http://www.lexis-nexis.com/glp/case"
-                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
-                xmlns:comm="http://www.lexis-nexis.com/glp/comm"
-                xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
-                xmlns:dict="http://www.lexis-nexis.com/glp/dict"
-                xmlns:dig="http://www.lexis-nexis.com/glp/dig"
-                xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
-                xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+                xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
                 xmlns:in="http://www.lexis-nexis.com/glp/in"
-                xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+                xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+                xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+                xmlns:ci="http://www.lexis-nexis.com/ci"
                 xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+                xmlns:lncle="http://www.lexis-nexis.com/lncle"
+                xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+                xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
+                xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+                xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+                xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+                xmlns:lnv="http://www.lexis-nexis.com/lnv"
+                xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+                xmlns:lndel="http://www.lexis-nexis.com/lndel"
+                xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+                xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+                xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+                xmlns:glp="http://www.lexis-nexis.com/glp"
+                xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+                xmlns:frm="http://www.lexis-nexis.com/glp/frm"
                 xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
                 version="2.0"
                 exclude-result-prefixes="xs xd">
-   <xsl:param name="selectorID" select="'treatises'"/>
+   <xsl:param name="selectorID" select="'citator'"/>
    <xsl:output encoding="utf-8" indent="no"/>
    <xsl:variable name="docinfo.selector" select="//docinfo:selector//text()"/>
    <xsl:strip-space elements="*"/>
@@ -42,7 +42,7 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="CITATORDOC[$selectorID=('citator')]">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
@@ -54,95 +54,27 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="cttr:*[$selectorID=('citator')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
-                <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
-                    <xsl:value-of select="'subsection'"/>
-                </xsl:when>
-                <!-\- Revathi: This is the temporary code to match all the level types. Awaiting clarification on the @leveltype -\->
-                <xsl:when test="matches(@leveltype,'comm[0-9]+')">
-                    <xsl:value-of select="'section'"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="self::level/@leveltype"/>
-                </xsl:otherwise>
-            </xsl:choose>-->
-         <xsl:value-of select="self::level/@leveltype"/>
-      </xsl:variable>
-      <!-- Revathi: Whenever the level is having heading/@searchtype as LEGISLATION, then we need to create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
-      <xsl:choose><!-- Revathi: 30May2018 - Changed as per the clarification got from Awntika as legfragment element is not handled in rocket xslt, need to drop this change for precedents. -->
-         <xsl:when test="self::level/heading/@searchtype='LEGISLATION' and not($selectorID = 'precedents')">
-            <xsl:choose><!-- Revathi: To check whether there are any ancestor level with @searchtype='LEGISLATION'.
-                    If present, then should create leg:level/leg:level-vrnt only corresponding to the level in the input-->
-               <xsl:when test="not(ancestor::level/child::heading/@searchtype='LEGISLATION')">
-                  <xsl:element name="{name()}">
-                     <bodytext xsl:exclude-result-prefixes="#all">
-                        <legfragment xsl:exclude-result-prefixes="#all">
-                           <leg:level xsl:exclude-result-prefixes="#all">
-                              <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
-                                 <xsl:apply-templates select="heading"/>
-                                 <leg:levelbody xsl:exclude-result-prefixes="#all">
-                                    <leg:bodytext xsl:exclude-result-prefixes="#all">
-                                       <xsl:apply-templates select="node() except (heading,level)"/>
-                                    </leg:bodytext>
-                                    <xsl:apply-templates select="level"/>
-                                 </leg:levelbody>
-                              </leg:level-vrnt>
-                           </leg:level>
-                        </legfragment>
-                     </bodytext>
-                  </xsl:element>
-               </xsl:when>
-               <!-- Otherwise, if there is no ancestor level with @searchtype='LEGISLATION', then create level/bodytext/leg:level/leg:level-vrnt corresponding to the level in the input -->
-               <xsl:otherwise>
-                  <leg:level xsl:exclude-result-prefixes="#all">
-                     <leg:level-vrnt leveltype="{$v_leveltype}" xsl:exclude-result-prefixes="#all">
-                        <xsl:apply-templates select="heading"/>
-                        <leg:levelbody xsl:exclude-result-prefixes="#all">
-                           <leg:bodytext xsl:exclude-result-prefixes="#all">
-                              <xsl:apply-templates select="node() except (heading,level)"/>
-                           </leg:bodytext>
-                           <xsl:apply-templates select="level"/>
-                        </leg:levelbody>
-                     </leg:level-vrnt>
-                  </leg:level>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:element name="{name()}">
-               <xsl:attribute name="leveltype" select="$v_leveltype"/>
-               <xsl:apply-templates/>
-            </xsl:element>
-         </xsl:otherwise>
-      </xsl:choose>
+   <xsl:template match="dig:*[$selectorID=('citator')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
-
-   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
-      <xsl:choose>
-         <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]"><!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors --><!--<leg:levelbody xsl:exclude-result-prefixes="#all">
-                    <leg:bodytext xsl:exclude-result-prefixes="#all">-->
-            <xsl:apply-templates select="@* | node()"/>
-            <!--</leg:bodytext>
-                </leg:levelbody>-->
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:element name="{name()}">
-               <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>
-         </xsl:otherwise>
-      </xsl:choose>
+   <xsl:template match="leg:*[$selectorID = ('citator')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
    </xsl:template>
 
-   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
+   <xsl:template match="leg:*/@*[$selectorID = ('citator')]">
+      <xsl:copy/>
+   </xsl:template>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:variable name="v_getDPSI">
@@ -451,6 +383,7 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
          <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
          <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
          <RosettaNamespace>xmlns:dig="http://www.lexis-nexis.com/glp/dig"</RosettaNamespace>
+         <RosettaNamespace>xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"</RosettaNamespace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -836,8 +769,8 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-
-   <xsl:template match="pgrp[$selectorID='cases']">
+   <!-- Arun- 04Jun2018 Updated the below code to handle pgrp for Citator -->
+   <xsl:template match="pgrp[$selectorID=('cases','citator')]">
       <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
    <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
@@ -2408,5 +2341,32 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@*|node()"/>
       </xsl:element>
+   </xsl:template>
+   <!-- DAYANAND SINGH: 30May2018-->
+   <xsl:template match="abstract">
+      <xsl:element name="abstract">
+         <xsl:apply-templates select="node() | @*"/>
+      </xsl:element>
+   </xsl:template>
+   <!-- Arun 04Jun2018 Added the below code to handle abstract attributes -->
+   <xsl:template match="abstract/@*">
+      <xsl:copy/>
+   </xsl:template>
+   <!-- Dayanand singh 30 May 2018 -->
+   <xsl:template match="pubdate">
+      <xsl:element name="{name()}">
+         <xsl:attribute name="display-name" select="@display-name"/>
+         <xsl:apply-templates/>
+      </xsl:element>
+   </xsl:template>
+   <!-- Arun 04Jun2018 Added the below code to handle pubdate and its attributes for citator-->
+   <xsl:template match="pubdate[$selectorID = ('citator')]">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="pubdate/@*[$selectorID = ('citator')]">
+      <xsl:copy/>
    </xsl:template>
    <!-- END OF GENERIC XSLS --></xsl:stylesheet>
