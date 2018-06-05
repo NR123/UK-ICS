@@ -19,6 +19,7 @@
             <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
             <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
             <RosettaNamespace>xmlns:dig="http://www.lexis-nexis.com/glp/dig"</RosettaNamespace>
+            <RosettaNamespace>xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"</RosettaNamespace>
         </RosettaNamepaces>
     </xsl:variable>
     

@@ -4,8 +4,9 @@
     exclude-result-prefixes="xs"
     version="2.0">
 
+        <!-- Arun- 04Jun2018 Updated the below code to handle pgrp for Citator -->
     
-    <xsl:template match="pgrp[$selectorID='cases']">
+    <xsl:template match="pgrp[$selectorID=('cases','citator')]">
             <xsl:apply-templates select="@* | node()"/>        
     </xsl:template>
         

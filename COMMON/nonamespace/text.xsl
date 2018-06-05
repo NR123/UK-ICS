@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:glp="http://www.lexis-nexis.com/glp" exclude-result-prefixes="xs" version="2.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" 
+    xmlns:glp="http://www.lexis-nexis.com/glp" version="2.0">
 
 
     <xsl:template match="text" name="text">
-        <xsl:choose>
+       <!-- <xsl:choose>-->
             <!-- Revathi: 29May2018 - code change for CR by Awntika -->
-            <xsl:when test="ancestor::name.text">
+            <!-- Revathi: 05June2018 - Commenting the below code as the new requirement is,
+            When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).-->
+            <!--<xsl:when test="ancestor::name.text">
                 <xsl:apply-templates/>
-            </xsl:when>
-            <xsl:otherwise>
+            </xsl:when>-->
+            <!--<xsl:otherwise>-->
                 <xsl:element name="{name()}">
             <xsl:apply-templates select="@*"/>
             <xsl:choose>
@@ -74,7 +77,7 @@
                             <xsl:apply-templates select="node() except text()[1]"/>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:apply-templates/>
+                            <xsl:apply-templates/>                            
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
@@ -123,10 +126,11 @@
                     </xsl:element>
                 </xsl:when>
                 <xsl:otherwise>
+                    <!--<xsl:apply-templates/>-->
                     <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
                         Old Code: <xsl:apply-templates/> -->                
                     <xsl:choose>
-                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                        <xsl:when test="child::glp:note and ancestor::p/parent::pgrp and $selectorID = 'cases'">
                             <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
                                 <xsl:apply-templates select="."/>
                             </xsl:for-each>
@@ -138,8 +142,8 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>
-            </xsl:otherwise>
-        </xsl:choose>
+            <!--</xsl:otherwise>-->
+        <!--</xsl:choose>-->
         
     </xsl:template>
     
