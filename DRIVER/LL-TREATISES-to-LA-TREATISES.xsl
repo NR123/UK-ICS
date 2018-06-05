@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-06-01T10:14:05.739+05:30-->
+Compiled:  2018-06-05T14:27:52.015+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -451,6 +451,7 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
          <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
          <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
          <RosettaNamespace>xmlns:dig="http://www.lexis-nexis.com/glp/dig"</RosettaNamespace>
+         <RosettaNamespace>xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"</RosettaNamespace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -836,8 +837,8 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-
-   <xsl:template match="pgrp[$selectorID='cases']">
+   <!-- Arun- 04Jun2018 Updated the below code to handle pgrp for Citator -->
+   <xsl:template match="pgrp[$selectorID=('cases','citator')]">
       <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
    <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
@@ -1002,8 +1003,18 @@ Compiled:  2018-06-01T10:14:05.739+05:30-->
                         <xsl:apply-templates select="node() except node()[1]"/>
                      </xsl:element>
                   </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates/>
+                  <xsl:otherwise><!--<xsl:apply-templates/>--><!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->
+                     <xsl:choose>
+                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                           <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
+                              <xsl:apply-templates select="."/>
+                           </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:apply-templates/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:element>
