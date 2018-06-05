@@ -5,12 +5,14 @@
 
 
     <xsl:template match="text" name="text">
-        <xsl:choose>
+       <!-- <xsl:choose>-->
             <!-- Revathi: 29May2018 - code change for CR by Awntika -->
-            <xsl:when test="ancestor::name.text">
+            <!-- Revathi: 05June2018 - Commenting the below code as the new requirement is,
+            When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).-->
+            <!--<xsl:when test="ancestor::name.text">
                 <xsl:apply-templates/>
-            </xsl:when>
-            <xsl:otherwise>
+            </xsl:when>-->
+            <!--<xsl:otherwise>-->
                 <xsl:element name="{name()}">
             <xsl:apply-templates select="@*"/>
             <xsl:choose>
@@ -140,8 +142,8 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>
-            </xsl:otherwise>
-        </xsl:choose>
+            <!--</xsl:otherwise>-->
+        <!--</xsl:choose>-->
         
     </xsl:template>
     
