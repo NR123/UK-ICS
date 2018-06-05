@@ -130,7 +130,7 @@
                     <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
                         Old Code: <xsl:apply-templates/> -->                
                     <xsl:choose>
-                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                        <xsl:when test="child::glp:note and ancestor::p/parent::pgrp and $selectorID = 'cases'">
                             <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
                                 <xsl:apply-templates select="."/>
                             </xsl:for-each>

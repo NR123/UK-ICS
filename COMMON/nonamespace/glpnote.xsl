@@ -15,7 +15,7 @@
         <xsl:choose>
             <!-- Revathi: 29May2018 - code change for CR by Awntika -->
             <!-- Revathi: 05June2018 - Included the parent condition check. -->
-            <xsl:when test="ancestor::name.text[parent::person/parent::case:constituent]">
+            <xsl:when test="parent::name.text[parent::person/parent::case:constituent]">
                 <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>
