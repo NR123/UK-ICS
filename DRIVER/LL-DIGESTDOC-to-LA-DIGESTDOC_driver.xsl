@@ -75,7 +75,11 @@
     
     <xsl:include href="../COMMON/withnamespace/leg.info-child-element.xsl"/>
     
+    <xsl:include href="../COMMON/withnamespace/digest_case.info.ChOf-dig.info.xsl"/>
+    
     <xsl:include href="../COMMON/nonamespace/h.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/catchwordgrp.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/level.xsl"/>
     
@@ -86,8 +90,8 @@
     <xsl:include href="../COMMON/nonamespace/l-li.xsl"/>
     
     <xsl:include href="../COMMON/nonamespace/bodytext.xsl"/>
-
-    <xsl:include href="../COMMON/nonamespace/blockquote.xsl"/>
+    
+    <xsl:include href="../COMMON/nonamespace/references.xsl"/>
 
     <xsl:include href="../COMMON/nonamespace/sup.xsl"/>
 
