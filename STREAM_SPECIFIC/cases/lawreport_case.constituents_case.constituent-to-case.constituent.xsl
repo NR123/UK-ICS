@@ -21,8 +21,16 @@
     </xsl:template>
     
     <xsl:template match="case:constituent[parent::case:constituents]">
-        <xsl:element name="{name()}">
-            <xsl:apply-templates/>
-        </xsl:element>
+        <!-- Revathi: 05June2018 - When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).-->
+        <xsl:choose>
+            <xsl:when test="self::case:constituent/child::person/child::name.text/not(child::node()[name()!='glp:note'])">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:element name="{name()}">
+                    <xsl:apply-templates/>
+                </xsl:element> 
+            </xsl:otherwise>
+        </xsl:choose>       
     </xsl:template>
 </xsl:stylesheet>

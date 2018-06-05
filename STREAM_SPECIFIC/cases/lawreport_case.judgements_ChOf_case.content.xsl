@@ -54,7 +54,7 @@
                     <xsl:apply-templates/>
                     <!-- New code from here -->
                     <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
-                        Old Code: <xsl:apply-templates/> -->  
+                        Old Code: <xsl:apply-templates/> -->
                     <xsl:if test="self::pgrp/p/text/glp:note">
                         <xsl:apply-templates select="self::pgrp/p/text/glp:note"/>
                     </xsl:if>
