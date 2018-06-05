@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-30T14:42:28.347+05:30-->
+Compiled:  2018-05-31T18:00:06.404+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -456,6 +456,19 @@ Compiled:  2018-05-30T14:42:28.347+05:30-->
                   <xsl:when test="self::emph"/>
                   <xsl:otherwise>
                      <xsl:apply-templates/>
+                     <!-- New code from here -->
+                     <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->
+                     <xsl:if test="self::pgrp/p/text/glp:note">
+                        <xsl:apply-templates select="self::pgrp/p/text/glp:note"/>
+                     </xsl:if>
+                     <xsl:for-each select="self::pgrp/p/text/node()[not(self::glp:note)][preceding-sibling::glp:note]">
+                        <p>
+                           <text>
+                              <xsl:apply-templates select="."/>
+                           </text>
+                        </p>
+                     </xsl:for-each>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:element>
@@ -1389,8 +1402,18 @@ Compiled:  2018-05-30T14:42:28.347+05:30-->
                         <xsl:apply-templates select="node() except node()[1]"/>
                      </xsl:element>
                   </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates/>
+                  <xsl:otherwise><!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->
+                     <xsl:choose>
+                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                           <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
+                              <xsl:apply-templates select="."/>
+                           </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:apply-templates/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:element>
