@@ -126,9 +126,10 @@
                     </xsl:element>
                 </xsl:when>
                 <xsl:otherwise>
-                    <!--<xsl:apply-templates/>-->
-                    <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
-                        Old Code: <xsl:apply-templates/> -->                
+                    <xsl:apply-templates/>
+                    <!-- Revathi: 05June2018 - Commenting the below code as it is creating data movement whenever the glp:note has some other nodes as following sibling. -->
+                    <!--<!-\- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -\->                
                     <xsl:choose>
                         <xsl:when test="child::glp:note and ancestor::p/parent::pgrp and $selectorID = 'cases'">
                             <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
@@ -138,7 +139,7 @@
                         <xsl:otherwise>
                             <xsl:apply-templates/>
                         </xsl:otherwise>
-                    </xsl:choose>
+                    </xsl:choose>-->
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>

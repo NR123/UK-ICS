@@ -12,18 +12,20 @@
     <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
     
     <xsl:template match="glp:note">
-        <xsl:choose>
+        <!--<xsl:choose>-->
+            <!-- Revathi: 06June2018 -Commenting the below code to maintain the content as it is in LL file as changing to accomodate current rocket code is causing incorrect data movements -->
             <!-- Revathi: 29May2018 - code change for CR by Awntika -->
-            <!-- Revathi: 05June2018 - Included the parent condition check. -->
-            <xsl:when test="parent::name.text[parent::person/parent::case:constituent]">
+            <!-- Revathi: 05June2018 - Included the parent condition check.
+            And wherever glp:note is appearing within p/text, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+            <!--<xsl:when test="parent::name.text[parent::person/parent::case:constituent] or self::glp:note/parent::text/parent::p">
                 <xsl:apply-templates/>
-            </xsl:when>
-            <xsl:otherwise>
+            </xsl:when>-->
+            <!--<xsl:otherwise>-->
                 <xsl:element name="{name()}">
                     <xsl:apply-templates/>
                 </xsl:element>
-            </xsl:otherwise>
-        </xsl:choose>       
+            <!--</xsl:otherwise>-->
+        <!--</xsl:choose>-->       
     </xsl:template>
   
 </xsl:stylesheet>
