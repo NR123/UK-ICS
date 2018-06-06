@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="ErrorMessage.xsl">
+    <x:scenario label="Scenario for testing template matching unmatched elements and attributes">
+        <x:context>
+            <emph typestyle="it">Re O’Hara</emph>
+        </x:context>
+
+        <x:expect label="Dont output anything when Unmatched element found, instead display message stating the element name and the value."/>
+    </x:scenario>
+</x:description>
