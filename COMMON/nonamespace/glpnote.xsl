@@ -24,7 +24,7 @@
                 <xsl:apply-templates/>
             </xsl:when>
             <!-- Himanshu: 05June2018 - code change for removing <glp:note> in O/P for CR by Awntika-->
-            <xsl:when test="ancestor::comm:body and parent::level">
+            <xsl:when test="ancestor::comm:body and parent::level and $selectorID='treatises'">
                 <xsl:apply-templates/>
             </xsl:when>
             <!-- end -->
