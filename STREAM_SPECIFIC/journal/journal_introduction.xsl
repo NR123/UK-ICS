@@ -8,7 +8,7 @@
     <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
     <!-- END: For unit-testing -->
 
-    <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+    <xsl:template match="JOURNALDOC[$selectorID='journal']">
         <xsl:element name="{name()}">
             <xsl:for-each select="$RosettaNamespaces/*">
                 <xsl:sort/>

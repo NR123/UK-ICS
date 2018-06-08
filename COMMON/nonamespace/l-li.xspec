@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="l-li.xsl">
+
+    <!-- Please uncomment the block marked as 'For unit-testing' in l-li.xsl before unit testing this xspec -->
+    <x:scenario label="Scenario for testing l and li elements when child is blockquote">
+        <x:context>
+            <l>
+                <li>
+                    <blockquote>
+                        <l>
+                            <li>
+                                <blockquote>
+                                    <p>
+                                        <text>16 The foundation of a bank's capital is made up of permanent shareholders' equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                                    </p>
+                                </blockquote>
+                            </li>
+                        </l>
+                    </blockquote>
+                </li>
+            </l>
+        </x:context>
+
+        <x:expect label="l/li/blockquote is changed as p/blockquote">
+            <p>
+                <blockquote>
+                    <p>
+                        <text>16 The foundation of a bank’s capital is made up of permanent shareholders’ equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                    </p>
+                </blockquote>
+            </p>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="Scenario 2: For testing l,li element when child is not blockquote. Instead it is p/text">
+        <x:context>
+            <l>
+                <li>
+                    <lilabel> </lilabel>
+                    <p>
+                        <text>(1)     You can<emph typestyle="it">deduct</emph> from your assessable income any loss or outgoing to the extent that:</text>
+                    </p>
+                </li>
+            </l>
+        </x:context>
+        <x:expect label="When element text's ancestor is l/li/p, and if the starting content of PCDATA matches &#x25cf; or ([a-zA-Z0-9]+) then move this content to lilabel and retain the remaining content in text">
+            <l>
+                <li>
+                    <lilabel>(1)</lilabel>
+                    <p>
+                        <text>You can<emph typestyle="it">deduct</emph> from your assessable income any loss or outgoing to the extent that:</text>
+                    </p>
+                </li>
+            </l>
+        </x:expect>
+    </x:scenario>
+</x:description>
