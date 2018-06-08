@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-05-30T13:10:50.097+05:30-->
+Compiled:  2018-06-05T14:27:54.236+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -419,6 +419,18 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          <xsl:value-of select="."/>
       </xsl:element>
    </xsl:template>
+   <!--Dayanand Singh 30-05-2018 for digestdoc -->
+   <xsl:template match="docinfo:custom-metafields|docinfo:custom-metafield">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
+
+   <xsl:template match="docinfo:lbu-indexing-terms|docinfo:lbu-subj">
+      <xsl:element name="{name()}">
+         <xsl:apply-templates select="@* | node()"/>
+      </xsl:element>
+   </xsl:template>
 
    <xsl:template match="docinfo:custom-metafield[$selectorID = 'cases'][./@name = ('court', 'juris', 'date', 'sh-version', 'rx-version', 'sg-version', 'ng-version', 'filterType', 'resultType')]"
                  priority="20"/>
@@ -426,7 +438,7 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
    <xsl:template match="/">
       <xsl:apply-templates/>
    </xsl:template>
-   <xsl:variable name="RosettaNamespaces" as="element()">
+   <!--   Dayanand singh 30 MAY 2018 Added Digestdoc content type namespace -->   <xsl:variable name="RosettaNamespaces" as="element()">
       <RosettaNamepaces>
          <RosettaNamespace>xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"</RosettaNamespace>
          <RosettaNamespace>xmlns:comm="http://www.lexis-nexis.com/glp/comm"</RosettaNamespace>
@@ -438,6 +450,8 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          <RosettaNamespace>xmlns:in="http://www.lexis-nexis.com/glp/in"</RosettaNamespace>
          <RosettaNamespace>xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"</RosettaNamespace>
          <RosettaNamespace>xmlns:frm="http://www.lexis-nexis.com/glp/frm"</RosettaNamespace>
+         <RosettaNamespace>xmlns:dig="http://www.lexis-nexis.com/glp/dig"</RosettaNamespace>
+         <RosettaNamespace>xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"</RosettaNamespace>
       </RosettaNamepaces>
    </xsl:variable>
    <xsl:template match="comment() | processing-instruction()">
@@ -823,12 +837,12 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-
-   <xsl:template match="pgrp[$selectorID='cases']">
+   <!-- Arun- 04Jun2018 Updated the below code to handle pgrp for Citator -->
+   <xsl:template match="pgrp[$selectorID=('cases','citator')]">
       <xsl:apply-templates select="@* | node()"/>
    </xsl:template>
    <!-- Arun- 18May2018 Updated the below code to handle pgrp for commentary -->
-   <xsl:template match="pgrp[$selectorID=('journal','precedents','treatises','commentaryleghist')]">
+   <xsl:template match="pgrp[$selectorID=('journal','precedents','treatises','commentaryleghist','digest')]">
       <xsl:apply-templates/>
    </xsl:template>
 
@@ -989,8 +1003,18 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
                         <xsl:apply-templates select="node() except node()[1]"/>
                      </xsl:element>
                   </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates/>
+                  <xsl:otherwise><!--<xsl:apply-templates/>--><!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->
+                     <xsl:choose>
+                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
+                           <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
+                              <xsl:apply-templates select="."/>
+                           </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:apply-templates/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:element>
@@ -1185,23 +1209,40 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          <xsl:apply-templates select="node()|@*"/>
       </xsl:element>
    </xsl:template>
+   <!-- Dayanand Singh: Updated 30 May 2018-->
+   <xsl:template match="remotelink[$selectorID='digest']">
+      <xsl:choose>
+         <xsl:when test="remotelink[parent::url]">
+            <xsl:element name="remotelink">
+               <xsl:attribute name="hrefclass" select="@hrefclass"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:element name="remotelink">
+               <xsl:attribute name="href" select="@href"/>
+               <xsl:apply-templates/>
+            </xsl:element>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
 
    <xsl:template match="ci:*">
       <xsl:choose>
-         <xsl:when test="self::ci:cite[matches(child::ci:content,'^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
+         <xsl:when test="self::ci:cite[matches(child::ci:content, '^–[0-9]+')][$selectorID='dictionary'] or self::ci:cite/ancestor::glp:note/preceding-sibling::*[1][name()='case:disposition'][$selectorID='cases' and $docinfo.selector='Transcript']">
             <xsl:value-of select="self::ci:cite//child::ci:content/node()"/>
          </xsl:when>
          <xsl:when test="self::ci:case[ancestor::case:parallelcite][$selectorID='cases' and $docinfo.selector='Transcript']"/>
-         <xsl:when test="self::ci:content and matches(self::ci:content,'(\[[0-9]{4}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)') and $selectorID='index'">
+         <xsl:when test="self::ci:content and matches(self::ci:content, '(\[[0-9]{4}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)') and $selectorID='index'">
             <xsl:analyze-string select="self::ci:content"
                                 regex="(\[[0-9]{{4}}\])\s([0-9]+)\s([a-zA-Z\s]+)\s([0-9]+)">
                <xsl:matching-substring>
                   <ci:content xsl:exclude-result-prefixes="#all">
-                     <xsl:value-of select="concat(regex-group(1),' ')"/>
+                     <xsl:value-of select="concat(regex-group(1), ' ')"/>
                      <emph typestyle="bf" xsl:exclude-result-prefixes="#all">
-                        <xsl:value-of select="regex-group(2),regex-group(3)" separator=" "/>
+                        <xsl:value-of select="regex-group(2), regex-group(3)" separator=" "/>
                      </emph>
-                     <xsl:value-of select="concat(' ',regex-group(4))"/>
+                     <xsl:value-of select="concat(' ', regex-group(4))"/>
                   </ci:content>
                </xsl:matching-substring>
             </xsl:analyze-string>
@@ -1217,13 +1258,13 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          <xsl:otherwise>
             <xsl:element name="{name()}">
                <xsl:choose>
-                  <xsl:when test="self::ci:cite/not(@*[name()!='status'])"/>
+                  <xsl:when test="self::ci:cite/not(@*[name() != 'status'])"/>
                   <xsl:otherwise><!-- <xsl:apply-templates select="@*|node()"/>--><!-- Arun: 02May2018 - Commented the above applu-templates as it is causing text repetition. Added the below code to handle it. -->
                      <xsl:apply-templates select="@*"/>
                   </xsl:otherwise>
                </xsl:choose>
                <!-- <xsl:apply-templates select="@*"/>-->
-               <xsl:if test="self::ci:cite[@searchtype = 'LEG-REF' or @searchtype = 'EU-REF']">
+               <xsl:if test="self::ci:cite[@searchtype='LEG-REF' or @searchtype='EU-REF']">
                   <xsl:variable name="normcite" as="xs:string*">
                      <xsl:apply-templates select="ci:sesslaw" mode="normcite"/>
                   </xsl:variable>
@@ -1241,13 +1282,13 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
       <xsl:variable name="ci_section_content">
          <xsl:choose>
             <xsl:when test="self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]">
-               <xsl:value-of select="concat(upper-case(substring(self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label,1,4)),' ',self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
+               <xsl:value-of select="concat(upper-case(substring(self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label, 1, 4)), ' ', self::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
             </xsl:when>
-            <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1],'^[\s]*s')">
+            <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1], '^[\s]*s')">
                <xsl:analyze-string select="ancestor::ci:cite/following-sibling::text()[1]"
                                    regex="^[\s]*s[\W]{{1}}([0-9]+)">
                   <xsl:matching-substring>
-                     <xsl:value-of select="concat('SECT ',regex-group(1))"/>
+                     <xsl:value-of select="concat('SECT ', regex-group(1))"/>
                   </xsl:matching-substring>
                </xsl:analyze-string>
             </xsl:when>
@@ -1276,13 +1317,13 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
       <xsl:variable name="ci_section_content">
          <xsl:choose>
             <xsl:when test="ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]">
-               <xsl:value-of select="concat(upper-case(substring(ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label,1,4)),' ',ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
+               <xsl:value-of select="concat(upper-case(substring(ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@label, 1, 4)), ' ', ancestor::ci:sesslaw//ci:hierpinpoint[1]/ci:hierlev[1]/@num)"/>
             </xsl:when>
-            <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1],'^[\s]*s')">
+            <xsl:when test="ancestor::ci:cite/following-sibling::node()[1]/name()='' and matches(ancestor::ci:cite/following-sibling::text()[1], '^[\s]*s')">
                <xsl:analyze-string select="ancestor::ci:cite/following-sibling::text()[1]"
                                    regex="^[\s]*s[\W]{{1}}([0-9]+)">
                   <xsl:matching-substring>
-                     <xsl:value-of select="concat('SECT ',regex-group(1))"/>
+                     <xsl:value-of select="concat('SECT ', regex-group(1))"/>
                   </xsl:matching-substring>
                </xsl:analyze-string>
             </xsl:when>
@@ -1295,11 +1336,11 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          <xsl:analyze-string select="$strip-space" regex="{$regex}" flags="i">
             <xsl:matching-substring>
                <xsl:choose>
-                  <xsl:when test="$ci_section_content!=''">
-                     <xsl:value-of select="(regex-group(1),regex-group(2))" separator=" "/>
+                  <xsl:when test="$ci_section_content != ''">
+                     <xsl:value-of select="(regex-group(1), regex-group(2))" separator=" "/>
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:value-of select="(regex-group(1),regex-group(2), (if (regex-group(4)) then regex-group(4) else ()))"
+                     <xsl:value-of select="                                     (regex-group(1), regex-group(2),                                     (if (regex-group(4)) then                                         regex-group(4)                                     else                                         ()))"
                                    separator=" "/>
                   </xsl:otherwise>
                </xsl:choose>
@@ -1307,7 +1348,7 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          </xsl:analyze-string>
       </xsl:variable>
       <xsl:choose>
-         <xsl:when test="$test = ''">
+         <xsl:when test="$test=''">
             <xsl:value-of select="./@num"/>
          </xsl:when>
          <xsl:otherwise>
@@ -1316,17 +1357,17 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="ci:sesslaw[parent::ci:cite/@searchtype = 'LEG-REF' or parent::ci:cite/@searchtype = 'EU-REF']"/>
+   <xsl:template match="ci:sesslaw[parent::ci:cite/@searchtype='LEG-REF' or parent::ci:cite/@searchtype='EU-REF']"/>
 
    <xsl:template match="ci:*/@*">
       <xsl:choose>
-         <xsl:when test="parent::ci:cite/@searchtype = 'EU-REF'">
+         <xsl:when test="parent::ci:cite/@searchtype='EU-REF'">
             <xsl:attribute name="searchtype" select="'LEG-REF'"/>
          </xsl:when>
          <xsl:when test="parent::ci:cite/parent::case:parallelcite and $selectorID='dictionary'">
             <xsl:attribute name="searchtype" select="'CASE-REF'"/>
          </xsl:when>
-         <xsl:when test="parent::ci:cite/parent::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+         <xsl:when test="parent::ci:cite/parent::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport', 'PracticeDirection')">
             <xsl:attribute name="searchtype" select="'CASE-REF'"/>
          </xsl:when>
          <xsl:otherwise>
@@ -1335,14 +1376,14 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="ci:cite[@searchtype = 'CASE-REF']/@status" priority="20"/>
+   <xsl:template match="ci:cite[@searchtype='CASE-REF']/@status" priority="20"/>
 
    <xsl:template match="citefragment">
       <xsl:choose>
          <xsl:when test="ancestor::case:parallelcite and $selectorID='dictionary'">
             <xsl:apply-templates/>
          </xsl:when>
-         <xsl:when test="ancestor::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport','PracticeDirection')">
+         <xsl:when test="ancestor::case:parallelcite and $selectorID='cases' and $docinfo.selector=('LawReport', 'PracticeDirection')">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise>
@@ -1352,6 +1393,12 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:template>
+   <!--Dayanand singh 30 may 2018 -->
+   <xsl:template match="ci:cite[$selectorID='digest']">
+      <xsl:element name="{name()}">
+         <xsl:copy-of select="@*|node()" copy-namespaces="no"/>
+      </xsl:element>
    </xsl:template>
 
    <xsl:template match="h">
@@ -1956,11 +2003,12 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
 
    <xsl:template match="url">
       <xsl:choose>
-         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary')">
+         <xsl:when test="$selectorID=('journal','cases','precedents','treatises','commentaryleghist','dictionary','digest')">
             <xsl:element name="{name()}">
                <xsl:apply-templates select="@* | node()"/>
             </xsl:element>
          </xsl:when>
+         <!--   Dayanand singh 30 MAY 2018 Added digest selector id -->
          <!-- Revathi: 22May2018 - Commented the above code and added the $selectorID 'cases' to the above xsl:when to avoid code redundancy -->
          <!-- added url element so choosed cases as selectorID by himanshu -->
          <!--   Dayanand singh 14 MAY 2018 Added for casse selector id -->
@@ -2271,10 +2319,41 @@ Compiled:  2018-05-30T13:10:50.097+05:30-->
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle date element -->
+   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle date element -->   <!-- Dayanand: 31May2018 - changed below template to handle date element for digestdoc-->
    <xsl:template match="date">
-      <xsl:element name="{name()}">
-         <xsl:apply-templates select="@* | node()"/>
+      <xsl:element name="{name()}"><!--
+                Old code: <xsl:apply-templates select="@* | node()"/>
+            -->
+         <xsl:choose>
+            <xsl:when test="parent::pubdate">
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:when>
+            <xsl:when test="parent::leg:assentdate|parent::leg:enactdate">
+               <xsl:variable name="month"
+                             select="'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'"/>
+               <xsl:variable name="DATE" select="tokenize(.,' ')"/>
+               <xsl:choose>
+                  <xsl:when test="not(@*)">
+                     <xsl:analyze-string select="." regex="([0-9]+)\s+([a-zA-Z]+)\s+([0-9]+)">
+                        <xsl:matching-substring>
+                           <xsl:variable name="DAY" select="number($DATE[1])"/>
+                           <xsl:attribute name="day" select="format-number($DAY, '00')"/>
+                           <xsl:attribute name="month" select="format-number(index-of($month,$DATE[2]),'00')"/>
+                           <xsl:attribute name="year" select="$DATE[3]"/>
+                        </xsl:matching-substring>
+                        <xsl:non-matching-substring/>
+                     </xsl:analyze-string>
+                     <xsl:apply-templates select="node()"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:apply-templates select="@* | node()"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:apply-templates select="@* | node()"/>
+            </xsl:otherwise>
+         </xsl:choose>
       </xsl:element>
    </xsl:template>
 

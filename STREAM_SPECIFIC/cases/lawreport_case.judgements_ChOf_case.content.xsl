@@ -52,6 +52,19 @@
                 <xsl:when test="self::emph"/>
                 <xsl:otherwise>
                     <xsl:apply-templates/>
+                    <!-- New code from here -->
+                    <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -->
+                    <xsl:if test="self::pgrp/p/text/glp:note">
+                        <xsl:apply-templates select="self::pgrp/p/text/glp:note"/>
+                    </xsl:if>
+                    <xsl:for-each select="self::pgrp/p/text/node()[not(self::glp:note)][preceding-sibling::glp:note]">
+                        <p>
+                            <text>
+                                <xsl:apply-templates select="."/>
+                            </text>
+                        </p>
+                    </xsl:for-each>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>

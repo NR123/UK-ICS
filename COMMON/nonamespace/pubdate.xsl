@@ -7,9 +7,15 @@
     
     <xsl:template match="pubdate">
         <xsl:element name="{name()}">
-            <xsl:attribute name="display-name" select="@display-name"/>
-            <xsl:apply-templates/>
+            <!--<xsl:attribute name="display-name" select="@display-name"/>-->
+            <!--<xsl:apply-templates/>-->
+            <!-- Arun 04Jun2018 Added the below code to handle pubdate and its attributes for citator-->
+            <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
-         
+    
+    <xsl:template match="pubdate/@*">
+        <xsl:copy/>
+    </xsl:template>
+    
 </xsl:stylesheet>
