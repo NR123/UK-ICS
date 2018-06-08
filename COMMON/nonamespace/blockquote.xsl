@@ -6,6 +6,10 @@
     
     <xsl:template match="blockquote">
         <xsl:choose>
+            <!-- Revathi: 08Jun2018 - wherever blockquote is appearing within p/text/glp:note, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+            <xsl:when test="self::blockquote[parent::glp:note[ancestor::p]][$selectorID='cases']">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
                 <xsl:apply-templates select="@* | node()"/>
             </xsl:when>
