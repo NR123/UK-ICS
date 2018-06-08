@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" 
-    xmlns:glp="http://www.lexis-nexis.com/glp" version="2.0">
+    xmlns:glp="http://www.lexis-nexis.com/glp" xmlns:case="http://www.lexis-nexis.com/glp/case" version="2.0">
 
 
     <xsl:template match="text" name="text">
@@ -15,7 +15,7 @@
             <!--<xsl:otherwise>-->
         <xsl:choose>
             <!-- Revathi: 08Jun2018 - Suppress blockquote's child elements p/text whenever blockquote is having parent as glp:note:- as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
-            <xsl:when test="self::text/parent::p/parent::blockquote/ancestor::glp:note[parent::text/parent::p]">
+            <xsl:when test="self::text/parent::p/parent::blockquote/parent::glp:note[not(parent::case:*)][not(parent::name.text)][$selectorID='cases']">
                 <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>

@@ -18,7 +18,7 @@
             <!-- Revathi: 05June2018 - Included the parent condition check.
             And wherever glp:note is appearing within p/text, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
             <!--<xsl:when test="parent::name.text[parent::person/parent::case:constituent] or self::glp:note/parent::text/parent::p">-->
-            <xsl:when test="self::glp:note[not(child::table)]/ancestor::p and $selectorID='cases'">
+            <xsl:when test="self::glp:note[not(child::table)][not(parent::case:*)][not(parent::name.text)] and $selectorID='cases'">
                 <xsl:apply-templates/>
             </xsl:when>
             <xsl:otherwise>
