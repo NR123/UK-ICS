@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-06-05T14:27:54.236+05:30-->
+Compiled:  2018-06-08T14:26:41.461+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -847,8 +847,11 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
    </xsl:template>
 
    <xsl:template match="p">
-      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika -->
-         <xsl:when test="ancestor::name.text">
+      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika --><!-- Revathi: 05June2018 - Commenting the below code as the new requirement is,
+            When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).--><!--<xsl:when test="ancestor::name.text">
+                <xsl:apply-templates/>
+            </xsl:when>--><!-- Revathi: 08Jun2018 - Suppress blockquote's child elements p/text whenever blockquote is having parent as glp:note:- as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+         <xsl:when test="self::p/parent::blockquote/parent::glp:note[not(parent::case:*)][not(parent::name.text)][$selectorID='cases']">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:when test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
@@ -899,9 +902,12 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
 
    <xsl:template match="//p" mode="p_suppress"/>
 
-   <xsl:template match="text" name="text">
-      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika -->
-         <xsl:when test="ancestor::name.text">
+   <xsl:template match="text" name="text"><!-- <xsl:choose>--><!-- Revathi: 29May2018 - code change for CR by Awntika --><!-- Revathi: 05June2018 - Commenting the below code as the new requirement is,
+            When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).--><!--<xsl:when test="ancestor::name.text">
+                <xsl:apply-templates/>
+            </xsl:when>--><!--<xsl:otherwise>-->
+      <xsl:choose><!-- Revathi: 08Jun2018 - Suppress blockquote's child elements p/text whenever blockquote is having parent as glp:note:- as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+         <xsl:when test="self::text/parent::p/parent::blockquote/parent::glp:note[not(parent::case:*)][not(parent::name.text)][$selectorID='cases']">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise>
@@ -987,8 +993,8 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
                             <xsl:apply-templates select="node() except (sup[1], page)"/>
                         </xsl:otherwise>
                     </xsl:choose>
-
-
+                    
+                    
                 </xsl:when>-->
                   <!-- Revathi: 04May2018 - Added the below code to handle the content apart from pnum content.-->
                   <xsl:when test="self::text/node()[1][name() = ''] and matches(self::text/node()[1], '^(\([a-zA-Z0-9]+\)|●|•)([\t ]*)')  and $selectorID = 'journal'">
@@ -1003,23 +1009,28 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
                         <xsl:apply-templates select="node() except node()[1]"/>
                      </xsl:element>
                   </xsl:when>
-                  <xsl:otherwise><!--<xsl:apply-templates/>--><!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
-                        Old Code: <xsl:apply-templates/> -->
-                     <xsl:choose>
-                        <xsl:when test="child::glp:note and $selectorID = 'cases'">
-                           <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
-                              <xsl:apply-templates select="."/>
-                           </xsl:for-each>
+                  <xsl:otherwise>
+                     <xsl:apply-templates/>
+                     <!-- Revathi: 05June2018 - Commenting the below code as it is creating data movement whenever the glp:note has some other nodes as following sibling. -->
+                     <!--<!-\- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
+                        Old Code: <xsl:apply-templates/> -\->                
+                    <xsl:choose>
+                        <xsl:when test="child::glp:note and ancestor::p/parent::pgrp and $selectorID = 'cases'">
+                            <xsl:for-each select="child::node()[not(self::glp:note)][following-sibling::glp:note]">
+                                <xsl:apply-templates select="."/>
+                            </xsl:for-each>
                         </xsl:when>
                         <xsl:otherwise>
-                           <xsl:apply-templates/>
+                            <xsl:apply-templates/>
                         </xsl:otherwise>
-                     </xsl:choose>
+                    </xsl:choose>-->
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:element>
          </xsl:otherwise>
       </xsl:choose>
+      <!--</xsl:otherwise>-->
+      <!--</xsl:choose>-->
    </xsl:template>
 
    <xsl:template match="text/@align">
@@ -1526,7 +1537,10 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
    </xsl:template>
 
    <xsl:template match="blockquote">
-      <xsl:choose>
+      <xsl:choose><!-- Revathi: 08Jun2018 - wherever blockquote is appearing within p/text/glp:note, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+         <xsl:when test="self::blockquote[parent::glp:note[not(parent::case:*)][not(parent::name.text)]][$selectorID='cases']">
+            <xsl:apply-templates/>
+         </xsl:when>
          <xsl:when test="self::blockquote/child::*[1][name()='l'] and $selectorID = 'dictionary'">
             <xsl:apply-templates select="@* | node()"/>
          </xsl:when>
@@ -2289,16 +2303,28 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
         </xsl:element>
         <xsl:apply-templates select="child::table"/>
     </xsl:template>-->   <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->
-   <xsl:template match="person[$selectorID = ('cases','journal')]">
+   <xsl:template match="person[$selectorID = ('cases','journal')]"><!-- Revathi: 06Jun2018 - Commenting the below code as it is creating incorrect data movement/validation errors. --><!-- Revathi: 05June2018 - When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).--><!--<xsl:choose>
+            <xsl:when test="self::person[parent::case:constituent]/child::name.text/not(child::node()[name()!='glp:note'])">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>-->
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
+      <!--</xsl:otherwise>
+        </xsl:choose>-->
    </xsl:template>
 
-   <xsl:template match="name.text[parent::person][$selectorID = ('cases','journal')]">
+   <xsl:template match="name.text[parent::person][$selectorID = ('cases','journal')]"><!-- Revathi: 06Jun2018 - Commenting the below code as it is creating incorrect data movement/validation errors. --><!-- Revathi: 05June2018 - When glp:note is the only child of case:constituent/person/name.text, then move glp:note outside of case:constituent (as the child of case:constituents) and suppress person/name.text (as we have moved the only child glp:note outside, it will be just empty elements).--><!--<xsl:choose>
+            <xsl:when test="self::name.text[parent::person/parent::case:constituent]/not(child::node()[name()!='glp:note'])">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>-->
       <xsl:element name="{name()}">
          <xsl:apply-templates/>
       </xsl:element>
+      <!--</xsl:otherwise>
+        </xsl:choose>-->
    </xsl:template>
 
    <xsl:template match="person/@searchtype">
@@ -2308,8 +2334,9 @@ Compiled:  2018-06-05T14:27:54.236+05:30-->
    </xsl:template>
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
    <xsl:template match="glp:note">
-      <xsl:choose><!-- Revathi: 29May2018 - code change for CR by Awntika -->
-         <xsl:when test="ancestor::name.text">
+      <xsl:choose><!-- Revathi: 06June2018 -Commenting the below code to maintain the content as it is in LL file as changing to accomodate current rocket code is causing incorrect data movements --><!-- Revathi: 29May2018 - code change for CR by Awntika --><!-- Revathi: 05June2018 - Included the parent condition check.
+            And wherever glp:note is appearing within p/text, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket--><!--<xsl:when test="parent::name.text[parent::person/parent::case:constituent] or self::glp:note/parent::text/parent::p">-->
+         <xsl:when test="self::glp:note[not(child::table)][not(parent::case:*)][not(parent::name.text)] and $selectorID='cases'">
             <xsl:apply-templates/>
          </xsl:when>
          <xsl:otherwise>
