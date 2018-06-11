@@ -42,7 +42,7 @@ Compiled:  2018-06-11T15:29:37.183+05:30-->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
@@ -54,13 +54,13 @@ Compiled:  2018-06-11T15:29:37.183+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
                 <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
                     <xsl:value-of select="'subsection'"/>
@@ -124,9 +124,9 @@ Compiled:  2018-06-11T15:29:37.183+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
 
-   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
       <xsl:choose>
          <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]"><!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors --><!--<leg:levelbody xsl:exclude-result-prefixes="#all">
                     <leg:bodytext xsl:exclude-result-prefixes="#all">-->
@@ -142,7 +142,7 @@ Compiled:  2018-06-11T15:29:37.183+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
+   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:variable name="v_getDPSI">

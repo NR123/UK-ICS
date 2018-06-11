@@ -3,7 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:case="http://www.lexis-nexis.com/glp/case"
     xmlns:comm="http://www.lexis-nexis.com/glp/comm" xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl" xmlns:leg="http://www.lexis-nexis.com/glp/leg" exclude-result-prefixes="xs" version="2.0">
 
-    <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+    <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:choose>
             <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]">
                 <!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors -->
@@ -21,7 +21,7 @@
         </xsl:choose>           
     </xsl:template>   
     
-    <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
+    <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
     
     
 </xsl:stylesheet>

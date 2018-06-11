@@ -4,7 +4,7 @@
     xmlns:comm="http://www.lexis-nexis.com/glp/comm" xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl" 
     xmlns:leg="http://www.lexis-nexis.com/glp/leg" exclude-result-prefixes="xs" version="2.0">
 
-    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
+    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
         <xsl:variable name="v_leveltype">
             <!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. -->
             <!--<xsl:choose>               
@@ -73,6 +73,6 @@
         </xsl:choose>
     </xsl:template>   
     
-    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
+    <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
     
 </xsl:stylesheet>
