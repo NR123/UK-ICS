@@ -52,19 +52,21 @@
                 <xsl:when test="self::emph"/>
                 <xsl:otherwise>
                     <xsl:apply-templates/>
+                    <!-- Revathi: 05June2018 - Commenting the below code as it is creating data movement whenever the glp:note has some other nodes as following sibling.
+                    Maintaining the content as it is in LL file as changing to accomodate current rocket code is causing incorrect data movements -->
                     <!-- New code from here -->
                     <!-- 31-May-2018 Modified by Himanshu for <pgrp>/<p>/<text><glp:note> placed outside <pgrp>/<p> and inside <pgrp>.
-                        Old Code: <xsl:apply-templates/> -->
-                    <xsl:if test="self::pgrp/p/text/glp:note">
+                        Old Code: <xsl:apply-templates/> -->                   
+                    <!--<xsl:if test="self::pgrp/p/text/glp:note">
                         <xsl:apply-templates select="self::pgrp/p/text/glp:note"/>
                     </xsl:if>
                     <xsl:for-each select="self::pgrp/p/text/node()[not(self::glp:note)][preceding-sibling::glp:note]">
-                        <p>
-                            <text>
+                        <p xsl:exclude-result-prefixes="#all">
+                            <text  xsl:exclude-result-prefixes="#all">
                                 <xsl:apply-templates select="."/>
                             </text>
                         </p>
-                    </xsl:for-each>
+                    </xsl:for-each>-->
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:element>

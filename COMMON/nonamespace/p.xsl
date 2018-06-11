@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:glp="http://www.lexis-nexis.com/glp" xmlns:case="http://www.lexis-nexis.com/glp/case" exclude-result-prefixes="xs" version="2.0">
 
     <xsl:template match="p">
         <xsl:choose>
@@ -10,6 +10,10 @@
             <!--<xsl:when test="ancestor::name.text">
                 <xsl:apply-templates/>
             </xsl:when>-->
+            <!-- Revathi: 08Jun2018 - Suppress blockquote's child elements p/text whenever blockquote is having parent as glp:note:- as per the discussion with Awntika as it is creating validation errors/text drops in rocket-->
+            <xsl:when test="self::p/parent::blockquote/parent::glp:note[not(parent::case:*)][not(parent::name.text)][$selectorID='cases']">
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:when
                 test="self::p/child::text/not(child::node())[$selectorID = 'cases' and $docinfo.selector = 'PracticeDirection']"/>
 
@@ -55,7 +59,7 @@
             <!-- Revathi: 29May2018 - Added the condition self::p/not(preceding-sibling::node()) as in some cases the first p of pgrp and following siblings p has same PCDATA. 
                 In that case text drop is happening. So this condition is added to ensure that the current p is the first node of pgrp-->
             <xsl:when
-                test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>
+                test="self::p[parent::pgrp/node()[1]=self::p and self::p/not(preceding-sibling::node()) and parent::pgrp/preceding-sibling::node()[1][name()='p']/child::edpnum]"/>            
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@* | node()"/>
