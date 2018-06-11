@@ -2,7 +2,7 @@
 <!--  ***This XSLT conversion file is a stand-alone, generated release created from a module based source code.  Any changes to this conversion must be propagated to its original source. ***
 This file is not intended to be edited directly, except in a time critical situation such as a  "sev1" webstar.
 Please contact Content Architecture for support and for ensuring the source code is updated as needed and a new stand-alone delivery is released.
-Compiled:  2018-06-08T14:26:43.755+05:30-->
+Compiled:  2018-06-11T15:29:37.183+05:30-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
@@ -42,7 +42,7 @@ Compiled:  2018-06-08T14:26:43.755+05:30-->
    <!-- START: For unit-testing -->
    <!--<xsl:include href="../COMMON/nonamespace/default.xsl"/>-->
    <!-- END: For unit-testing -->
-   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="COMMENTARYDOC[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
       <xsl:element name="{name()}">
          <xsl:for-each select="$RosettaNamespaces/*">
             <xsl:sort/>
@@ -54,13 +54,13 @@ Compiled:  2018-06-08T14:26:43.755+05:30-->
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="comm:body[parent::COMMENTARYDOC][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
       <xsl:element name="{name()}">
          <xsl:apply-templates select="@* | node()"/>
       </xsl:element>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
       <xsl:variable name="v_leveltype"><!-- Revathi: Commented the below code as per the clarification received on 28May2018 - We need to retain the @leveltype as it is in LL input files. --><!--<xsl:choose>               
                 <xsl:when test="self::level[@leveltype=('comm32','comm33')]">
                     <xsl:value-of select="'subsection'"/>
@@ -124,9 +124,9 @@ Compiled:  2018-06-08T14:26:43.755+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
+   <xsl:template match="level[ancestor::comm:body][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
 
-   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist')]">
+   <xsl:template match="bodytext[parent::level][$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]">
       <xsl:choose>
          <xsl:when test="ancestor::level/child::heading/@searchtype='LEGISLATION'[$selectorID=('treatises','commentaryleghist')]"><!-- Revathi: Commented the below tags as this handling has been moved to precedents_level_Chof_comm.body.xsl to avoid validation errors --><!--<leg:levelbody xsl:exclude-result-prefixes="#all">
                     <leg:bodytext xsl:exclude-result-prefixes="#all">-->
@@ -142,7 +142,7 @@ Compiled:  2018-06-08T14:26:43.755+05:30-->
       </xsl:choose>
    </xsl:template>
 
-   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist')]/@*"/>
+   <xsl:template match="bodytext[$selectorID=('precedents','treatises','commentaryleghist','FormsAndPrecedents')]/@*"/>
    <!-- END OF CONTENT SPECIFIC XSLS -->   <!-- START OF GENERIC XSLS -->   <xsl:variable name="path"
                  select="substring-before($document-uri, tokenize($document-uri, '/')[last()])"/>
    <xsl:variable name="v_getDPSI">
@@ -2335,9 +2335,15 @@ Compiled:  2018-06-08T14:26:43.755+05:30-->
    <!-- Uncomment the below xsl:param while unit testing -->   <!-- Start: For unit-testing -->   <!--<xsl:include href="../nonamespace/emph.xsl"/>-->   <!-- End: For unit-testing -->   <!-- Arun: 03May2018 - Added below template to handle glp:note element -->
    <xsl:template match="glp:note">
       <xsl:choose><!-- Revathi: 06June2018 -Commenting the below code to maintain the content as it is in LL file as changing to accomodate current rocket code is causing incorrect data movements --><!-- Revathi: 29May2018 - code change for CR by Awntika --><!-- Revathi: 05June2018 - Included the parent condition check.
-            And wherever glp:note is appearing within p/text, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket--><!--<xsl:when test="parent::name.text[parent::person/parent::case:constituent] or self::glp:note/parent::text/parent::p">-->
+            And wherever glp:note is appearing within p/text, removing the glp:note as per the discussion with Awntika as it is creating validation errors/text drops in rocket--><!-- Sunil Kukreti: 11June2018 - Included the parent condition check.
+            And wherever footnotegrp is Parent of glp:note then replacing the glp:note to note as per the discussion with Amita as it is creating validation errors/text drops in rocket--><!--<xsl:when test="parent::name.text[parent::person/parent::case:constituent] or self::glp:note/parent::text/parent::p">-->
          <xsl:when test="self::glp:note[not(child::table)][not(parent::case:*)][not(parent::name.text)] and $selectorID='cases'">
             <xsl:apply-templates/>
+         </xsl:when>
+         <xsl:when test="self::glp:note[parent::footnotegrp] and $selectorID='treatises'">
+            <note xsl:exclude-result-prefixes="#all">
+               <xsl:apply-templates/>
+            </note>
          </xsl:when>
          <xsl:otherwise>
             <xsl:element name="{name()}">
