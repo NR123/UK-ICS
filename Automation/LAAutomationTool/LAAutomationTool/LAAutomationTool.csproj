@@ -56,8 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigManager.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\TestUtility.cs" />
     <Compile Include="Modal\ComparisonReportDetails.cs" />
+    <Compile Include="Modal\HTMLFileInfo.cs" />
+    <Compile Include="Modal\ReadHTMLContentInfo.cs" />
+    <Compile Include="Modal\ReadXMLContentInfo.cs" />
     <Compile Include="Modal\XMLFileInfo.cs" />
     <Compile Include="Pages\TestLAPage.cs" />
     <Compile Include="Program.cs" />

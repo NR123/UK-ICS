@@ -17,7 +17,7 @@ namespace LAAutomationTool
         private const string ENVIRONMENT = "Environment";
         private const string DEV4URL = "Dev4URL";
         private const string DEV8URL = "Dev8URL"; 
-
+        private const string INPUT_EXCEL_FILENAME = "InputExcelFileName";
         /// <constructor>
         /// Constructor
         /// </constructor>
@@ -34,6 +34,7 @@ namespace LAAutomationTool
             Environment = GetConfigValue(ENVIRONMENT);
             Dev4URL = GetConfigValue(DEV4URL).Replace("http://", "http://" + UserName + ":" + Password + "@");
             Dev8URL = GetConfigValue(DEV8URL).Replace("http://", "http://" + UserName + ":" + Password + "@");
+            InputExcelFileName = GetConfigValue(INPUT_EXCEL_FILENAME);
         }
 
         public string BaseURL { get; }
@@ -44,7 +45,7 @@ namespace LAAutomationTool
 
         public string Password { get; }
 
-        public string InputXMLFilesPath { get; }
+        public string InputXMLFilesPath { get; }        
 
         public string Mintimeout { get; }
 
@@ -55,6 +56,8 @@ namespace LAAutomationTool
         public string Dev4URL { get; }
 
         public string Dev8URL { get; }
+
+        public string InputExcelFileName { get; }
 
         /// <method>
         /// Get app key value
