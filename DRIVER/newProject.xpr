@@ -4,5 +4,7 @@
         <filters directoryPatterns="" filePatterns="newProject.xpr" positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
-    <projectTree name="newProject.xpr"/>
+    <projectTree name="newProject.xpr">
+        <folder path="."/>
+    </projectTree>
 </project>
