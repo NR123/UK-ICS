@@ -28,6 +28,14 @@
                     <xsl:apply-templates/>    
                 </note>
             </xsl:when>
+            <!-- Himanshu: 13-June-18 - glp:note is converted to note & attribute notetype="commentary" will be added  if note comes in headnote in source -->
+            <xsl:when test="(parent::case:headnote or ancestor::case:headnote) and $selectorID='cases'">
+                <note xsl:exclude-result-prefixes="#all">
+                    <xsl:attribute name="notetype" select="'commentary'"/>
+                    <xsl:apply-templates/>    
+                </note>
+            </xsl:when>
+            <!-- end -->
             <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <xsl:apply-templates/>
