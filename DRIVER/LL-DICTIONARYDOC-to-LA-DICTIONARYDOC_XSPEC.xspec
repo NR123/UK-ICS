@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe" xmlns:lnv="http://www.lexis-nexis.com/lnv"
+    xmlns:lnvni="http://www.lexis-nexis.com/lnvni" xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+    xmlns:lncle="http://www.lexis-nexis.com/lncle" xmlns:lndel="http://www.lexis-nexis.com/lndel"
+    xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+    xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+    xmlns:lnlit="http://www.lexis-nexis.com/lnlit" xmlns:lnci="http://www.lexis-nexis.com/lnci"
+    xmlns:nitf="urn:nitf:iptc.org.20010418.NITF" xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+    xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:glp="http://www.lexis-nexis.com/glp"
+    xmlns:case="http://www.lexis-nexis.com/glp/case"
+    xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+    xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+    xmlns:dict="http://www.lexis-nexis.com/glp/dict" xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+    xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+    xmlns:frm="http://www.lexis-nexis.com/glp/frm" xmlns:in="http://www.lexis-nexis.com/glp/in"
+    xmlns:leg="http://www.lexis-nexis.com/glp/leg" xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+    stylesheet="LL-DICTIONARYDOC-to-LA-DICTIONARYDOC.xsl">
+
+
+    <!-- For unit-testing pls comment the <xsl:output encoding="UTF-8" doctype-public="-//LEXISNEXIS//DTD GLP Casedoc v005//EN"
+        doctype-system="dictionarydoc-norm.dtd" indent="no"/> declaration in the monolithic file as it is throwing dtd error when running xspec -->
+    
+    <x:scenario label="Creating root element DICTIONARYDOC">
+        <x:context>
+            <DICTIONARYDOC xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+                xmlns:lnv="http://www.lexis-nexis.com/lnv"
+                xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+                xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+                xmlns:lncle="http://www.lexis-nexis.com/lncle"
+                xmlns:lndel="http://www.lexis-nexis.com/lndel"
+                xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+                xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+                xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+                xmlns:lnci="http://www.lexis-nexis.com/lnci"
+                xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+                xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+                xmlns:ci="http://www.lexis-nexis.com/ci" xmlns:glp="http://www.lexis-nexis.com/glp"
+                xmlns:case="http://www.lexis-nexis.com/glp/case"
+                xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
+                xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+                xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+                xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+                xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+                xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+                xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+                xmlns:in="http://www.lexis-nexis.com/glp/in"
+                xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+                xmlns:xhtml="http://www.w3c.org/1999/xhtml"> </DICTIONARYDOC>
+        </x:context>
+
+        <x:expect label="Change namespaces and create DICTIONARYDOC in output">
+            <DICTIONARYDOC xmlns:case="http://www.lexis-nexis.com/glp/case"
+                xmlns:ci="http://www.lexis-nexis.com/ci"
+                xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+                xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+                xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+                xmlns:glp="http://www.lexis-nexis.com/glp"
+                xmlns:leg="http://www.lexis-nexis.com/glp/leg"> </DICTIONARYDOC>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing docinfo and its child elements">
+        <x:context>
+            <docinfo partitionnum="1" browseprev="false" browsenext="true">
+                <docinfo:doc-heading>Abandon</docinfo:doc-heading>
+                <docinfo:doc-id>5741505F315F41</docinfo:doc-id>
+                <docinfo:doc-lang lang="en"/>
+                <docinfo:doc-country iso-cc="GB"/>
+                <docinfo:hier>
+                    <docinfo:hierlev role="ancestor">
+                        <heading>
+                            <title>Words and Phrases Legally Defined</title>
+                        </heading>
+                        <docinfo:hierlev role="ancestor">
+                            <heading>
+                                <title>A</title>
+                            </heading>
+                            <docinfo:hierlev role="me">
+                                <heading>
+                                    <title>Abandon</title>
+                                </heading>
+                            </docinfo:hierlev>
+                        </docinfo:hierlev>
+                    </docinfo:hierlev>
+                </docinfo:hier>
+                <docinfo:bookseqnum>0</docinfo:bookseqnum>
+                <docinfo:lbu-meta>
+                    <docinfo:metaitem name="lbu-sourcename"
+                        value="Words and Phrases Legally Defined"/>
+                </docinfo:lbu-meta>
+                <docinfo:selector>dictionary</docinfo:selector>
+                <docinfo:custom-metafields>
+                    <docinfo:custom-metafield name="sh-version">8.0.0.5</docinfo:custom-metafield>
+                    <docinfo:custom-metafield name="rx-version">5.0.0.2</docinfo:custom-metafield>
+                    <docinfo:custom-metafield name="sg-version">3.1.0.2</docinfo:custom-metafield>
+                    <docinfo:custom-metafield name="ng-version">4.1.0.0</docinfo:custom-metafield>
+                </docinfo:custom-metafields>
+            </docinfo>
+        </x:context>
+
+        <x:expect label="docinfo and its child elements are transformed">
+            <docinfo>
+                <docinfo:dpsi id-string="000D"/>
+                <docinfo:doc-heading>Abandon</docinfo:doc-heading>
+                <docinfo:doc-id>5741505F315F41</docinfo:doc-id>
+                <docinfo:doc-lang lang="en"/>
+                <docinfo:doc-country iso-cc="GB"/>
+                <docinfo:hier>
+                    <docinfo:hierlev role="ancestor">
+                        <heading>
+                            <title>Words and Phrases Legally Defined</title>
+                        </heading>
+                        <docinfo:hierlev role="ancestor">
+                            <heading>
+                                <title>A</title>
+                            </heading>
+                            <docinfo:hierlev role="me">
+                                <heading>
+                                    <title>Abandon</title>
+                                </heading>
+                            </docinfo:hierlev>
+                        </docinfo:hierlev>
+                    </docinfo:hierlev>
+                </docinfo:hier>
+                <docinfo:bookseqnum>0</docinfo:bookseqnum>
+                <docinfo:lbu-meta>
+                    <docinfo:metaitem name="lbu-sourcename"
+                        value="Words and Phrases Legally Defined"/>
+                </docinfo:lbu-meta>
+                <docinfo:selector>dictionary</docinfo:selector>
+            </docinfo>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing dict:body/defterm">
+        <x:context>
+            <dict:body>
+                <dict:term-entry>
+                    <defterm>
+                        <refpt id="0KMN_2_A_ACCIDENT:HTDICT-TERM" type="ext"/>
+                        <emph typestyle="bf">
+                            <emph typestyle="caps">Accident</emph>
+                        </emph>
+                    </defterm>
+                </dict:term-entry>
+            </dict:body>
+        </x:context>
+
+        <x:expect label="The element defterm is retained and child elements are converted">
+            <dict:body>
+                <dict:term-entry>
+                    <defterm>
+                        <refpt type="ext" id="acronym:WPLD::term:ACCIDENT"/>Accident</defterm>
+                </dict:term-entry>
+            </dict:body>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing dict:definition/dict:subtopic/dict:topicname">
+        <x:context>
+            <dict:definition>
+                <dict:subtopic>
+                    <dict:topicname>
+                        <emph typestyle="it">Air accident</emph>
+                    </dict:topicname>
+                </dict:subtopic>
+            </dict:definition>
+        </x:context>
+
+        <x:expect label="The dict:topicname is retained in output file">
+            <dict:definition>
+                <dict:subtopic>
+                    <dict:topicname>Air accident</dict:topicname>
+                </dict:subtopic>
+            </dict:definition>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing blockquote">
+        <x:context>
+            <l>
+                <li>
+                    <blockquote>
+                        <l>
+                            <li>
+                                <blockquote>
+                                    <p>
+                                        <text>16 The foundation of a bank's capital is made up of permanent shareholders' equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                                    </p>
+                                </blockquote>
+                            </li>
+                        </l>
+                    </blockquote>
+                </li>
+            </l>
+        </x:context>
+
+        <x:expect label="l/li/blockquote is changed as p/blockquote">
+            <p>
+                <blockquote>
+                    <p>
+                        <text>16 The foundation of a bank’s capital is made up of permanent shareholders’ equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                    </p>
+                </blockquote>
+            </p>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario 1: for testing a text content">
+        <x:context>
+            <text>'Whatever be the distinction between the terms &#x201c;abandon&#x201d; and &#x201c;desert&#x201d; when applied to a parent in connection with his child, both words imply in ordinary language a disregard of parental duty, and carry with them the idea of moral blame.' <emph typestyle="it">Re O'Hara</emph></text>
+        </x:context>
+
+        <x:expect label="The apostropies in the input is transformed to smart quote in LA output">
+            <text>‘Whatever be the distinction between the terms “abandon” and “desert” when applied to a parent in connection with his child, both words imply in ordinary language a disregard of parental duty, and carry with them the idea of moral blame.’ <emph typestyle="it">Re O’Hara</emph></text>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario 2: for testing a text content">
+        <x:context>'The word &#x201c;abandoned&#x201d; is not given any definition in the Act [Wife's Protection Act, RSBC 1948, c 364 (repealed; see now RSBC 1960, c 407)] but the dictionary meaning of the word indicates that it has a connotation of finality. It means the relinquishment or extinguishment of a right, the giving up of something absolutely.' </x:context>
+        <x:expect label="The apostropies in the input is transformed to smart quote in LA output">‘The word “abandoned” is not given any definition in the Act [Wife’s Protection Act, RSBC 1948, c 364 (repealed; see now RSBC 1960, c 407)] but the dictionary meaning of the word indicates that it has a connotation of finality. It means the relinquishment or extinguishment of a right, the giving up of something absolutely.’ </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario 2: for testing emph child of h">
+        <x:context>
+            <h>
+                <emph typestyle="caps">Capital</emph>
+            </h>
+        </x:context>
+
+        <x:expect label="When emph is child of 'h' suppress the tag emph and retain its content"
+                ><h>Capital</h></x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario 3: for testing emph child of dict:topicname">
+        <x:context>
+            <dict:topicname>
+                <emph typestyle="caps">Capital</emph>
+            </dict:topicname>
+        </x:context>
+
+        <x:expect
+            label="When emph is child of 'dict:topicname' suppress the tag emph and retain its content"
+                ><dict:topicname>Capital</dict:topicname></x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing h">
+        <x:context>
+            <h>
+                <emph typestyle="bf">Australia</emph>
+            </h></x:context>
+
+        <x:expect label="Element h is retained and the child emph is suppressed">
+            <h>Australia</h>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing dict:body/heading/title">
+        <x:context>
+            <dict:body>
+                <heading>
+                    <title>
+                        <emph typestyle="bf">
+                            <emph typestyle="caps">A</emph>
+                        </emph>
+                    </title>
+                </heading>
+            </dict:body>
+        </x:context>
+
+        <x:expect
+            label="When title appears inside dict:body/heading, suppress title tag and the child emph tags and create desig/@value and populate @value with the PCDATA and create child designum and populate it with the PCDATA">
+            <dict:body>
+                <heading>
+                    <desig value="A">
+                        <designum>A</designum>
+                    </desig>
+                </heading>
+            </dict:body>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing inlineobject">
+        <x:context>
+            <inlineobject type="image" mimetype="image/gif" filename="img6b1a.gif"/>
+        </x:context>
+
+        <x:expect label="element inlineobject is retained as it is ">
+            <inlineobject type="image" mimetype="image/gif" filename="img6b1a.gif"/>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing l and li elements when child is blockquote">
+        <x:context>
+            <l>
+                <li>
+                    <blockquote>
+                        <l>
+                            <li>
+                                <blockquote>
+                                    <p>
+                                        <text>16 The foundation of a bank's capital is made up of permanent shareholders' equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                                    </p>
+                                </blockquote>
+                            </li>
+                        </l>
+                    </blockquote>
+                </li>
+            </l>
+        </x:context>
+
+        <x:expect label="l/li/blockquote is changed as p/blockquote">
+            <p>
+                <blockquote>
+                    <p>
+                        <text>16 The foundation of a bank’s capital is made up of permanent shareholders’ equity and disclosed reserves (created or increased by the appropriation of retained earnings or other surplus).</text>
+                    </p>
+                </blockquote>
+            </p>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario
+        label="Scenario 2: For testing l,li element when child is not blockquote. Instead it is p/text">
+        <x:context>
+            <l>
+                <li>
+                    <lilabel> </lilabel>
+                    <p>
+                        <text>(1)     You can<emph typestyle="it">deduct</emph> from your assessable income any loss or outgoing to the extent that:</text>
+                    </p>
+                </li>
+            </l>
+        </x:context>
+        <x:expect
+            label="When element text's ancestor is l/li/p, and if the starting content of PCDATA matches &#x25cf; or ([a-zA-Z0-9]+) then move this content to lilabel and retain the remaining content in text">
+            <l>
+                <li>
+                    <lilabel>(1)</lilabel>
+                    <p>
+                        <text>You can<emph typestyle="it">deduct</emph> from your assessable income any loss or outgoing to the extent that:</text>
+                    </p>
+                </li>
+            </l>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario
+        label="Scenario 3: For testing l,li element when child is not blockquote. Instead it is p/text">
+        <x:context>
+            <l>
+                <li>
+                    <lilabel> </lilabel>
+                    <p>
+                        <text>(<emph typestyle="it">a</emph>)     it is incurred in gaining or producing your assessable income; or</text>
+                    </p>
+                </li>
+            </l>
+        </x:context>
+
+        <x:expect
+            label="When element text's ancestor is l/li/p, and if the starting content of PCDATA matches &#x25cf; or ([a-zA-Z0-9]+) then move this content to lilabel and retain the remaining content in text">
+            <l>
+                <li>
+                    <lilabel>(a)</lilabel>
+                    <p>
+                        <text>it is incurred in gaining or producing your assessable income; or</text>
+                    </p>
+                </li>
+            </l>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing a function">
+        <x:context><nl/></x:context>
+
+        <x:expect label="nl is suppressed"/>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing refpt">
+        <x:context>
+            <refpt id="0KMN_2_A_ABANDON:HTDICT-TERM" type="ext"/>
+        </x:context>
+
+        <x:expect
+            label="refpt @id in output is formed as follows, pick the value between ':HTDICT-TERM' and 'bundlename_[0-9]_[A-Z]' then append string 'acronym:WPLD::term:' before it. ">
+            <refpt type="ext" id="acronym:WPLD::term:ABANDON"/>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing remotelink">
+        <x:context>
+            <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0KMN_2_I_INEVITABLE_ACCIDENT:HTDICT-TERM" dpsi="0KMN">inevitable accident</remotelink>
+        </x:context>
+
+        <x:expect label="remotelink is retained as it is except for the @refpt which is converted.">
+            <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="acronym:WPLD::term:INEVITABLE_ACCIDENT" docidref="TBD" dpsi="0KMN" status="valid">inevitable accident</remotelink>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing remotelink where parent is url">
+        <x:context>
+            <url>
+                <remotelink service="DOC-ID" remotekey1="REFPTID" refpt="0KMN_2_I_INEVITABLE_ACCIDENT:HTDICT-TERM" dpsi="0KMN">inevitable accident</remotelink>
+            </url>
+        </x:context>
+
+        <x:expect label="remotelink is retained as it is except for the @refpt which is converted.">inevitable accident</x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing the element sub">
+        <x:context>
+            <sub>1</sub>
+        </x:context>
+
+        <x:expect label="sub is retained as it is">
+            <sub>1</sub>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing the elemen sup">
+        <x:context>
+            <sup>1</sup>
+        </x:context>
+
+        <x:expect label="sup is retained as it is">
+            <sup>1</sup>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing a function">
+        <x:context>
+            <table colsep="0" rowsep="0" frame="none">
+                <tgroup cols="4" colsep="0" rowsep="0">
+                    <colspec colname="C1" colnum="1" colwidth="0.0104167in" colsep="0" rowsep="0"/>
+                    <colspec colname="C2" colnum="2" colwidth="1.8875in" colsep="0" rowsep="0"/>
+                    <colspec colname="C3" colnum="3" colwidth="4.2625in" colsep="0" rowsep="0"/>
+                    <colspec colname="C4" colnum="4" colwidth="0.0104167in" colsep="0" rowsep="0"/>
+                    <tbody>
+                        <row rowsep="0">
+                            <entry namest="C1" nameend="C1" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C2" nameend="C2" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C3" nameend="C3" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C4" nameend="C4" morerows="0" colsep="0" rowsep="0"/>
+                        </row>
+                        <row rowsep="0">
+                            <entry namest="C1" nameend="C1" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C2" nameend="C3" morerows="0" colsep="0" rowsep="0">TABLE</entry>
+                            <entry namest="C4" nameend="C4" morerows="0" colsep="0" rowsep="0"/>
+                        </row>
+                        <row rowsep="0">
+                            <entry namest="C1" nameend="C1" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C2" nameend="C2" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C3" nameend="C3" morerows="0" colsep="0" rowsep="0">
+                                <emph typestyle="it">indicates gold of a</emph>
+                            </entry>
+                            <entry namest="C4" nameend="C4" morerows="0" colsep="0" rowsep="0"/>
+                        </row>
+                        <row rowsep="0">
+                            <entry namest="C1" nameend="C1" morerows="0" colsep="0" rowsep="0"/>
+                            <entry namest="C2" nameend="C2" morerows="0" colsep="0" rowsep="0">
+                                <emph typestyle="it">Number of carats</emph>
+                            </entry>
+                            <entry namest="C3" nameend="C3" morerows="0" colsep="0" rowsep="0">
+                                <emph typestyle="it">standard of fineness of</emph>
+                            </entry>
+                            <entry namest="C4" nameend="C4" morerows="0" colsep="0" rowsep="0"/>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+        </x:context>
+
+        <x:expect
+            label="The empty entries are removed and the active entry count is calculated based on the entry having PCDATA and table is created accordingly">
+            <table>
+                <tgroup cols="2" colsep="1" rowsep="1">
+                    <colspec colname="1" colwidth="2718*"/>
+                    <colspec colname="2" colwidth="6138*"/>
+                    <thead>
+                        <row>
+                            <entry namest="1" nameend="2" colsep="0" rowsep="0">TABLE</entry>
+                        </row>
+                    </thead>
+                    <tbody>
+                        <row>
+                            <entry colsep="0" rowsep="0"/>
+                            <entry colsep="0" rowsep="0">
+                                <emph typestyle="it">indicates gold of a</emph>
+                            </entry>
+                        </row>
+                        <row>
+                            <entry colsep="0" rowsep="0">
+                                <emph typestyle="it">Number of carats</emph>
+                            </entry>
+                            <entry colsep="0" rowsep="0">
+                                <emph typestyle="it">standard of fineness of</emph>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Scenario for testing a function">
+        <x:context>
+            <url>
+                <remotelink href="www.google.co.uk" hrefclass="http">
+                    <emph typestyle="un">www.google.co.uk</emph>
+                </remotelink>
+            </url>
+        </x:context>
+
+        <x:expect label="url is suppressed and contents are retained">www.google.co.uk</x:expect>
+    </x:scenario>
+</x:description>
