@@ -158,8 +158,20 @@
             </xsl:choose>
         </xsl:element>
     </xsl:template>
-
-
+    
+    
+    <!--  Dayanand singh 13 May 2018 added for legdoc -->
+    
+    <xsl:template match="docinfo:versioninfo|docinfo:versionbranch|docinfo:assoc-links|docinfo:startdate">
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+    
+    
+    <xsl:template match="docinfo:versioninfo/@*|docinfo:versionbranch/@*|docinfo:startdate/@*">
+        <xsl:copy/>
+    </xsl:template>
 
     <xsl:template match="docinfo:alt-rendition/link/@*">
         <xsl:copy/>
@@ -303,10 +315,22 @@
         </xsl:choose>
     </xsl:template>
     
+     <!-- Dayanand Singh 13-06-2018, Updated for legdoc-->
+    
+    <xsl:template match="docinfo:normcite[ancestor::LEGDOC]">
+        <xsl:element name="docinfo:normcite">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="docinfo:topiccodes[ancestor::LEGDOC]"/>
+    <xsl:template match="docinfo:topiccode[ancestor::LEGDOC]"/>
+    
     <!--Dayanand Singh 08-05-2018 -->
+    
     <xsl:template match="docinfo:topiccodes">
         <xsl:element name="docinfo:topiccodes">
-            <xsl:apply-templates select="node()|@*"/>
+            <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
     
@@ -314,8 +338,9 @@
         <xsl:element name="docinfo:topiccode">
             <xsl:value-of select="."/>
         </xsl:element>
-    </xsl:template>
+     </xsl:template>
     
+   
     <!--Dayanand Singh 30-05-2018 for digestdoc -->
     
     <xsl:template match="docinfo:custom-metafields|docinfo:custom-metafield">
