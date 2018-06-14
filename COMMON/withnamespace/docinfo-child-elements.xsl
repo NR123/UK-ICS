@@ -158,6 +158,7 @@
             </xsl:choose>
         </xsl:element>
     </xsl:template>
+<<<<<<< HEAD
     
     
     <!--  Dayanand singh 13 May 2018 added for legdoc -->
@@ -172,6 +173,10 @@
     <xsl:template match="docinfo:versioninfo/@*|docinfo:versionbranch/@*|docinfo:startdate/@*">
         <xsl:copy/>
     </xsl:template>
+=======
+
+
+>>>>>>> development
 
     <xsl:template match="docinfo:alt-rendition/link/@*">
         <xsl:copy/>
@@ -315,6 +320,7 @@
         </xsl:choose>
     </xsl:template>
     
+<<<<<<< HEAD
      <!-- Dayanand Singh 13-06-2018, Updated for legdoc-->
     
     <xsl:template match="docinfo:normcite[ancestor::LEGDOC]">
@@ -331,6 +337,12 @@
     <xsl:template match="docinfo:topiccodes">
         <xsl:element name="docinfo:topiccodes">
             <xsl:value-of select="."/>
+=======
+    <!--Dayanand Singh 08-05-2018 -->
+    <xsl:template match="docinfo:topiccodes">
+        <xsl:element name="docinfo:topiccodes">
+            <xsl:apply-templates select="node()|@*"/>
+>>>>>>> development
         </xsl:element>
     </xsl:template>
     
@@ -338,9 +350,14 @@
         <xsl:element name="docinfo:topiccode">
             <xsl:value-of select="."/>
         </xsl:element>
+<<<<<<< HEAD
      </xsl:template>
     
    
+=======
+    </xsl:template>
+    
+>>>>>>> development
     <!--Dayanand Singh 30-05-2018 for digestdoc -->
     
     <xsl:template match="docinfo:custom-metafields|docinfo:custom-metafield">
