@@ -33,7 +33,7 @@
                 version="2.0"
                 exclude-result-prefixes="pkg impl">
    <xsl:import href="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT.xsl"/>
-   <xsl:import href="file:/C:/Users/sharmac2/AppData/Roaming/com.oxygenxml.developer/extensions/v18.1/frameworks/http___raw.githubusercontent.com_AlexJitianu_oXygen_XML_editor_xspec_support_master_build_update_site.xml/xspec/src/compiler/generate-tests-utils.xsl"/>
+   <xsl:import href="file:/C:/Program%20Files%20(x86)/Jenkins/workspace/UK_ICS/src/compiler/generate-tests-utils.xsl"/>
    <xsl:namespace-alias stylesheet-prefix="__x" result-prefix="xsl"/>
    <xsl:variable name="x:stylesheet-uri"
                  as="xs:string"
@@ -47,7 +47,7 @@
          <xsl:value-of select="system-property('xsl:product-version')"/>
       </xsl:message>
       <xsl:result-document format="x:report">
-         <xsl:processing-instruction name="xml-stylesheet">type="text/xsl" href="file:/C:/Users/sharmac2/AppData/Roaming/com.oxygenxml.developer/extensions/v18.1/frameworks/http___raw.githubusercontent.com_AlexJitianu_oXygen_XML_editor_xspec_support_master_build_update_site.xml/xspec/src/compiler/format-xspec-report.xsl"</xsl:processing-instruction>
+         <xsl:processing-instruction name="xml-stylesheet">type="text/xsl" href="file:/C:/Program%20Files%20(x86)/Jenkins/workspace/UK_ICS/src/compiler/format-xspec-report.xsl"</xsl:processing-instruction>
          <x:report stylesheet="{$x:stylesheet-uri}" date="{current-dateTime()}">
             <xsl:call-template name="x:d5e2"/>
             <xsl:call-template name="x:d5e7"/>
@@ -66,7 +66,7 @@
    </xsl:template>
    <xsl:template name="x:d5e2">
       <xsl:message>Creating root element DICTIONARYDOC</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Creating root element DICTIONARYDOC</x:label>
          <x:context>
             <CASEDOC xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl" type="fulltext"/>
@@ -93,6 +93,16 @@
    <xsl:template name="x:d5e5">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>Change namespaces and create DICTIONARYDOC in output</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext"/>
@@ -101,12 +111,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>Change namespaces and create DICTIONARYDOC in output</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -116,7 +131,7 @@
    </xsl:template>
    <xsl:template name="x:d5e7">
       <xsl:message>Scenario for testing docinfo and its child elements</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing docinfo and its child elements</x:label>
          <x:context>
             <docinfo partitionnum="CASE1" browseprev="true" browsenext="true">
@@ -423,6 +438,16 @@
    <xsl:template name="x:d5e86">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>docinfo and its child elements are transformed</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <docinfo>
@@ -499,12 +524,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>docinfo and its child elements are transformed</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -514,7 +544,7 @@
    </xsl:template>
    <xsl:template name="x:d5e129">
       <xsl:message>Scenario for testing case:info child of case:headnote</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:info child of case:headnote</x:label>
          <x:context>
             <CASEDOC>
@@ -673,6 +703,16 @@
    <xsl:template name="x:d5e172">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>The element case:info in LA</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -742,12 +782,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>The element case:info in LA</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -757,7 +802,7 @@
    </xsl:template>
    <xsl:template name="x:d5e211">
       <xsl:message>Scenario for testing catchwordgrp child of case:headnote</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing catchwordgrp child of case:headnote</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -842,6 +887,16 @@
    <xsl:template name="x:d5e231">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>The element catchwordgrp is retained and element catchword is created for each content of PCDATA delimited by &#x2013;</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -887,12 +942,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>The element catchwordgrp is retained and element catchword is created for each content of PCDATA delimited by &#x2013;</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -902,7 +962,7 @@
    </xsl:template>
    <xsl:template name="x:d5e256">
       <xsl:message>Scenario for testing case:factsummary child of case:headnote</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:factsummary child of case:headnote</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -1003,6 +1063,16 @@
    <xsl:template name="x:d5e280">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>Within case:factsummary, the child element pgrp is suppressed and its child are retained and for the element footnote, @fntoken and @fnrtoken are created</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -1038,12 +1108,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>Within case:factsummary, the child element pgrp is suppressed and its child are retained and for the element footnote, @fntoken and @fnrtoken are created</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -1053,7 +1128,7 @@
    </xsl:template>
    <xsl:template name="x:d5e296">
       <xsl:message>Scenario for testing case:decisionsummary child of case:headnote</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:decisionsummary child of case:headnote</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -1334,6 +1409,16 @@
    <xsl:template name="x:d5e379">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary and converted as the element note. The element case:consideredcases is made as the following sibling of case:decisionsummary and converted as case:references</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -1448,12 +1533,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary and converted as the element note. The element case:consideredcases  is made as the following sibling of case:decisionsummary and converted as case:references</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -1463,7 +1553,7 @@
    </xsl:template>
    <xsl:template name="x:d5e448">
       <xsl:message>Scenario for testing case:priorhist child of case:headnote</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:priorhist child of case:headnote</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -1562,6 +1652,16 @@
    <xsl:template name="x:d5e472">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary and converted as the element note. The element case:consideredcases is made as the following sibling of case:decisionsummary and converted as case:references</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -1593,12 +1693,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary and converted as the element note. The element case:consideredcases  is made as the following sibling of case:decisionsummary and converted as case:references</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -1608,7 +1713,7 @@
    </xsl:template>
    <xsl:template name="x:d5e486">
       <xsl:message>Scenario for testing case:judgments/case:constituents child of case:content</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:judgments/case:constituents child of case:content</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -1715,6 +1820,16 @@
    <xsl:template name="x:d5e510">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>All the case:constituents are grouped under a single case:constituents</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -1759,12 +1874,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>All the case:constituents are grouped under a single case:constituents</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -1774,7 +1894,7 @@
    </xsl:template>
    <xsl:template name="x:d5e531">
       <xsl:message>Scenario for testing case:dates and glp:note child of case:content/case:judgments</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:dates and glp:note child of case:content/case:judgments</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -1853,6 +1973,16 @@
    <xsl:template name="x:d5e548">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>All the case:constituents are grouped under a single case:constituents</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -1884,12 +2014,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>All the case:constituents are grouped under a single case:constituents</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -1899,7 +2034,7 @@
    </xsl:template>
    <xsl:template name="x:d5e562">
       <xsl:message>Scenario for testing case:judgment child of case:content/case:judgments</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:judgment child of case:content/case:judgments</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -2094,6 +2229,16 @@
    <xsl:template name="x:d5e614">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>All the case:constituents are grouped under a single case:constituents</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -2174,12 +2319,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>All the case:constituents are grouped under a single case:constituents</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -2189,7 +2339,7 @@
    </xsl:template>
    <xsl:template name="x:d5e659">
       <xsl:message>Scenario for testing table</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing table</x:label>
          <x:context>
             <table colsep="0" rowsep="0" frame="none">
@@ -2966,6 +3116,16 @@
    <xsl:template name="x:d5e839">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>The empty entries are removed and the active entry count is calculated based on the entry having PCDATA and table is created accordingly</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <table frame="all">
@@ -3165,12 +3325,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>The empty entries are removed and the active entry count is calculated based on the entry having PCDATA and table is created accordingly</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
@@ -3180,7 +3345,7 @@
    </xsl:template>
    <xsl:template name="x:d5e962">
       <xsl:message>Scenario for testing case:author child of case:content</xsl:message>
-      <x:scenario source="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT_XSPEC.xspec">
+      <x:scenario>
          <x:label>Scenario for testing case:author child of case:content</x:label>
          <x:context>
             <CASEDOC type="fulltext">
@@ -3245,6 +3410,16 @@
    <xsl:template name="x:d5e975">
       <xsl:param name="x:result" required="yes"/>
       <xsl:message>case:author is retained as it is in LA</xsl:message>
+      <xsl:variable name="impl:with-context"
+                    select="                          exists($x:result) and empty($x:result[2])"/>
+      <xsl:variable name="impl:context" as="item()?">
+         <xsl:choose>
+            <xsl:when test="$impl:with-context">
+               <xsl:sequence select="$x:result"/>
+            </xsl:when>
+            <xsl:otherwise/>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="impl:expected-doc" as="document-node()">
          <xsl:document>
             <CASEDOC type="fulltext">
@@ -3265,12 +3440,17 @@
       <xsl:variable name="impl:expected" select="$impl:expected-doc/node()"/>
       <xsl:variable name="impl:successful"
                     as="xs:boolean"
-                    select="test:deep-equal($impl:expected, $x:result, 2)"/>
+                    select="                    test:deep-equal(                      $impl:expected,                      if ( $impl:with-context ) then $impl:context else $x:result,                      2)"/>
       <xsl:if test="not($impl:successful)">
          <xsl:message>      FAILED</xsl:message>
       </xsl:if>
-      <x:test successful="{$impl:successful}">
+      <x:test successful="{ $impl:successful }">
          <x:label>case:author is retained as it is in LA</x:label>
+         <xsl:call-template name="test:report-value">
+            <xsl:with-param name="value" select="$x:result"/>
+            <xsl:with-param name="wrapper-name" select="'x:result'"/>
+            <xsl:with-param name="wrapper-ns" select="'http://www.jenitennison.com/xslt/xspec'"/>
+         </xsl:call-template>
          <xsl:call-template name="test:report-value">
             <xsl:with-param name="value" select="$impl:expected"/>
             <xsl:with-param name="wrapper-name" select="'x:expect'"/>
