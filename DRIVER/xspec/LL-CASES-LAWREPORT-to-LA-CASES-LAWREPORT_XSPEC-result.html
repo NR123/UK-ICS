@@ -1,0 +1,1784 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:test="http://www.jenitennison.com/xslt/unit-test" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <title>Test Report for C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT.xsl (passed: 6 / pending: 0 / failed: 6 / total: 12)</title><style type="text/css">/****************************************************************************/
+/*  File:       test-report.css                                             */
+/*  Author:     Jeni Tennsion                                               */
+/*  Tags:                                                                   */
+/*    Copyright (c) 2008, 2010 Jeni Tennsion (see end of file.)             */
+/* ------------------------------------------------------------------------ */
+
+
+/* test */
+
+/* box model */
+
+body {
+	margin-right: 5%;
+	margin-left: 5%;
+	}
+
+h1 {
+	padding: 0.3em 0.5em 0.3em 0.5em;
+	position: relative;
+	}
+
+h2 {
+	padding: 0.1em 0.5em 0.2em 0.5em;
+	}
+
+h3 {
+	padding-left: 0.6em;
+	}
+
+h4 {
+	padding-left: 0.8em;
+	}
+
+p, table {
+	margin-left: 5%;
+	}
+
+dd ul, dd ol {
+	margin-left: 0%;
+	}
+
+li ul, li ol {
+	margin-left: 5%;
+	}
+
+dl, ul, ol, blockquote {
+	margin-left: 10%;
+	}
+
+dt {
+  padding-top: 3px;
+  padding-bottom: 3px;
+	clear: both;
+	}
+
+dd p {
+	margin-left: -5px;
+	margin-top: 5px;
+	clear: both;
+	}
+
+p.link {
+	margin-top: 4px;
+	margin-bottom: 0px;
+	clear: both;
+	}
+
+tr td, td p, li, li p {
+	margin-left: 0%;
+	}
+
+td {
+	padding-right: 5%;
+	}
+
+.link img, dt img {
+	vertical-align: middle;
+	position: relative;
+	top: -5px;
+	}
+
+img {
+	position: relative;
+	}
+
+#xml-link {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	width: 10%;
+	margin-left: 0%;
+	}
+
+#link-up {
+	position: absolute;
+	left: 93%;
+	right: 2em;
+	top: 0.3em;
+	}
+
+#link-top {
+	position: absolute;
+	left: 89%;
+	right: 4em;
+	top: 0.3em;
+	}
+	
+.popup {
+	display: block;
+	visibility: hidden;
+	float: right;
+	position: absolute;
+	top: 5px;
+	left: -200px;
+	z-index: 1;
+	padding: 0.3em;
+	width: 220px;
+	}
+
+.note {
+	position: relative;
+	}
+
+.post {
+	margin-left: 5%;
+	padding-top: 1em;
+	}
+	
+.example, .sidebar {
+  margin-left: 5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  }
+
+pre {
+	padding-left: 5%;
+	margin-left: 5%;
+	}
+
+dd pre, li pre {
+	padding-left: 5%;
+	}
+
+/* fonts */
+body {
+	font-family: arial, helvetica, sans-serif;
+	font-size: small;
+	}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'trebuchet MS', arial, sans-serif;
+	}
+
+h1 {
+	font-size: 173%;
+	font-weight: bold;
+	}
+
+h2 {
+	font-size: 144%;
+	font-weight: bold;
+	}
+
+h3 {
+	font-size: 120%;
+	font-weight: normal;
+	}
+
+h4 {
+  font-size: 100%;
+  font-weight: bold;
+}
+
+dt {
+	font-weight: bold;
+	}
+
+a:link, a:visited, a:active, a:hover {
+	font-weight: bold;
+	}
+
+a.offsite:link, a.offsite:visited, a.offsite:active, a.offsite:hover {
+	font-weight: normal;
+	}
+
+/* suppress the normal italics */
+address {
+	font-style: normal;
+	}
+
+div.example, .sidebar {
+  font-family: Verdana, arial, sans-serif;
+  font-size: 100%;
+  }
+
+
+.note, .link {
+	font-family: Verdana, arial, sans-serif;
+	font-size: 83%;
+	}
+
+.example, .string, .rtf, .code, pre, code {
+	font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 83%;
+	}
+
+.boolean {
+	font-style: italic;
+	}
+
+#colophon, #xml-link {
+	font-size: 69%;
+	}
+
+.question, .title {
+	font-weight: bold;
+	}
+
+/* colours */
+body {
+	background-color: white;
+	color: black;
+	border: 0px none black;
+	}
+
+/* this is to make Navigator fill the entire line */
+h1, h2 {
+	border: 1px solid white;
+	width: auto;
+	}
+
+h1 {
+	background: #606;
+	color: #6F6;
+	}
+
+h2 {
+	color: #606;
+	background: #CFC;
+	}
+
+hr {
+	color: #606;
+	background: white;
+	}
+
+img, a:link img, a:visited img, a:hover img, a:active img, #link-up img, #link-top img {
+	border: 0px none white;
+	background: transparent;
+	}
+
+a:link {
+	color: #636;
+	background: transparent;
+	border: 0px none white;
+	}
+
+a:visited {
+	color: #606;
+	background: transparent;
+	border: 0px none white;
+	}
+
+a:active {
+	color: #6F6;
+	background: #606;
+	border: 0px none white;
+	}
+
+a:hover {
+	color: #636;
+	background: #9F9;
+	border: 0px none white;
+	}
+
+a.img:hover, a.img:active {
+	background: transparent;
+	}
+
+#colophon, #xml-link, .note {
+	color: #666;
+	}
+
+#colophon a:link, #colophon a:visited, #colophon a:hover,
+#xml-link a:link, #xml-link a:visited, #xml-link a:hover,
+.note a:link, .note a:visited, .note a:hover {
+	color: #969;
+	background: transparent;
+	}
+
+#colophon a:hover, #xml-link a:hover, .note a:hover {
+	background: #CFC;
+	color: #969;
+	}
+
+.popup {
+	background: white;
+	border: 1px solid #606;
+	}
+
+.post {
+	border-top: 2px solid #606;
+	}
+	
+.example {
+  border-top: 2px solid #606;
+  border-bottom: 2px solid #606;
+  }
+  
+.sidebar {
+  border-top: 2px solid #090;
+  border-bottom: 2px solid #090;
+  }
+  
+.rng {
+  border-left: 2px solid #666;
+  }
+
+.same {
+  background-color: rgb(206, 239, 174);
+}
+
+.diff {
+  background-color: #FCC;
+}
+
+.whitespace {
+	font-style: italic;
+	color: #999;
+	background: white;
+}
+
+.ignored {
+  font-style: italic;
+  color: #999;
+  background: white;
+}
+
+.hit {
+}
+
+.missed {
+  background-color: #A33;
+  color: white;
+}
+
+/* text */
+ol ol li {
+	list-style: lower-alpha;
+	}
+
+td {
+	vertical-align: top;
+	}
+
+h1 {
+	text-transform: uppercase;
+	}
+
+.question {
+	text-indent: -33px;
+	}
+
+.byline {
+	text-align: right;
+	}
+
+#link-top, #link-up {
+	text-align: right;
+	}
+
+a {
+	text-decoration: none;
+	}
+
+body > h2:first-of-type {
+    background: inherit;
+    margin-bottom: 0;
+}
+
+table { width: 95%;
+        /* border: collapse; */ }
+
+th { text-align: left; }
+
+th.totals { text-align: center; font-weight: normal; }
+
+div > table > tbody > tr > th:first-child {
+    font-weight:bold;
+    color: #474747;
+}
+
+.xspec tbody th { font-weight: normal; font-size: 0.8em; border-top: 1px #666 solid; }
+.xspec tbody td { font-size: 0.8em; color: #262626; }
+
+.successful { background-color: #CFC; }
+.pending { background-color: #EEE; color: #666; }
+.failed { background-color: #FCC; }
+
+.successful td:first-child:before, 
+body > table:first-of-type tr.successful th:first-child:before
+{ 
+margin-right: 5px; 
+content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpCQjU0NjU4QjIyQTNFMTExQkI5Rjk5QkQ4RkQ5RUJFQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpEMDVBNThBQUEzRDUxMUUxQjdCQkM2QUNBMTNBMDExNiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpEMDVBNThBOUEzRDUxMUUxQjdCQkM2QUNBMTNBMDExNiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ4MTZDRTNCRDVBM0UxMTFBQTI2QTBCMjZENzg1Qzg5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkJCNTQ2NThCMjJBM0UxMTFCQjlGOTlCRDhGRDlFQkVCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+xJ3YrgAAAYBJREFUeNpsUrtKA1EQPZtdY4gEQiD4QCsLEVGX4CP4AykEq1hYiGghCDZ+gBZWVtrZ+EAjaGOhfoAkNiaKhYWICilMEQNqoYjZ5O4d5+6ucQuLM3funDNzD7OrLe229YBwSKAEnyAP/pyIbL5fcz5rcNiLtuqJSEz3ickn5ruE/vFmJ9/LYjvAldGWqA7bJkgPtoAHQrS5G6NdiwhFWCoxHOCgKUL+iurkCBVawyamE8d4qmSZ51clBZUlh+RG14JzEsJNcaTNLVwWd1B6vXXqkmGoYNeVUPnW3JNr4+YarPoncvebEAKNekAlokaY6N/A1NA+SBgY6Eijtz2Fs5sVWNWawysorWNJsO+q9QWzaxLTYwfojA3isZzDfSnrWvTsNiyp7pOrZURC7ejrTDEpcVpY9ab+NSioLZEiapZA5nwBxZcC8g9HeK7ccYM7TDnwmoU2vx6/NIJaUjc0b0u8YvJNle5HdJvlhbI0Y31ThqsjTGr0/+8hOOQ5nfsRYACtHiy+FDd82wAAAABJRU5ErkJggg==')
+}
+
+.failed td:first-child:before,
+body > table:first-of-type tr.failed th:first-child:before
+{ 
+margin-right: 5px; 
+content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpCQjU0NjU4QjIyQTNFMTExQkI5Rjk5QkQ4RkQ5RUJFQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpEQTUyOTdBQUEzRDUxMUUxQTQwN0YzMUI0Nzg3NDU1RSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpEQTUyOTdBOUEzRDUxMUUxQTQwN0YzMUI0Nzg3NDU1RSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ4MTZDRTNCRDVBM0UxMTFBQTI2QTBCMjZENzg1Qzg5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkJCNTQ2NThCMjJBM0UxMTFCQjlGOTlCRDhGRDlFQkVCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+aHNJrgAAAZ1JREFUeNpsUssrRGEU/907985YMDPNYlh4hbKZPMdgR3aysrGSSFIeKyUKpewoRTYkmcgCf4MsMI2FPDYGKeUZSoru4/uc82VC+W7fOeee+zvn/M45V1uuyCmVwDogq0hDklD6jy1dspNkdxokVrIzPFUh0/MD5OdXoJDwPFtu3d2ns6TTp9oggTlFZlmN0o4AHMmXfJGo0lmGzoE1OgmNHf5YA8rmN5HfM6wADmUuHphA9cIW/JX1yiek9DIlyijxkNjBzXYche19gNcHzfShoLUdVxtLuD/cYzCoMAzCwqYrhMDx9Chs20JRWzf4nMcXcDI3pYAqQHIAtWUJbpKursMMhpA+RiAEGzpc4X5XkDB4GjaHmiZik/PIa2rBEWVlSuW9Q+T3YndskBi46QpQFcLltchtbEZyZhxna4uKhmV9Ito/gtPNOG4P99WItdlIWARNXWOAv6AEr9cplel7/ggUleDlMqUSvNnCobHKxDsNnqs8XaWUZopp/XhxTkOR+HDVOveYUge9rNLyY9SU9v+vwXuUB2R0fQkwABfn/VKSjTLBAAAAAElFTkSuQmCC')
+}
+
+.pending td:first-child:before,
+body > table:first-of-type tr.pending th:first-child:before
+{
+margin-right: 5px; 
+content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpCQjU0NjU4QjIyQTNFMTExQkI5Rjk5QkQ4RkQ5RUJFQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpDODdDM0Y0QUEzRDUxMUUxQjk5N0MzQjVFRDMyQUE1MiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpDODdDM0Y0OUEzRDUxMUUxQjk5N0MzQjVFRDMyQUE1MiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ4MTZDRTNCRDVBM0UxMTFBQTI2QTBCMjZENzg1Qzg5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkJCNTQ2NThCMjJBM0UxMTFCQjlGOTlCRDhGRDlFQkVCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yj6RYgAAAPZJREFUeNp0kM8KgkAQxmc1E0Wfo3vQn5eRSDx4EUHwbTpEhx4lil7DiydBQUFXp5nAMNsGhpnd/X77za4Iw3CFiFcAWFMFDkXtKZ/UHhfUnB3HWdu2/REpAL2u631ZlicGdpZlwTAMSmBM0zS5bhgQLB5FU3AOUS4XvNn3vVKgAACCIMA0TbFpGsyyDJMkefdFUWAcx1hVFeZ5jlEUoed5qPEI7KDrOhiG8e6llNC27Zcz77FW+L6Pruv+WKtGIzfgR39umv/UHOJgAMlO/BPOXCQDD5p3r2ma8lvHNU9BcWPg0HXdhRZbOhRT8aSXVO9U/ZcAAwAsmjsSQcM0lwAAAABJRU5ErkJggg==')
+}
+
+
+
+.xspecResult { width: 95%; table-layout: fixed; }
+
+.xspecResult td,
+.xspecResult th { width: 50%; }
+
+.xspecResult pre { 
+  margin-left: 0; 
+  padding: 0.5em; 
+  overflow: auto; 
+  border: 1px #999 dotted;
+}
+
+span.scenario-totals {float: right; text-align: right}
+
+/* highlight the link target */
+*:target {
+	box-shadow: -0.5rem 0 0 0 #FC511D;
+}
+
+/* ------------------------------------------------------------------------ */
+/*  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS COMMENT.               */
+/*                                                                          */
+/*  Copyright (c) 2008, 2010 Jeni Tennsion                                  */
+/*                                                                          */
+/*  The contents of this file are subject to the MIT License (see the URI   */
+/*  http://www.opensource.org/licenses/mit-license.php for details).        */
+/*                                                                          */
+/*  Permission is hereby granted, free of charge, to any person obtaining   */
+/*  a copy of this software and associated documentation files (the         */
+/*  "Software"), to deal in the Software without restriction, including     */
+/*  without limitation the rights to use, copy, modify, merge, publish,     */
+/*  distribute, sublicense, and/or sell copies of the Software, and to      */
+/*  permit persons to whom the Software is furnished to do so, subject to   */
+/*  the following conditions:                                               */
+/*                                                                          */
+/*  The above copyright notice and this permission notice shall be          */
+/*  included in all copies or substantial portions of the Software.         */
+/*                                                                          */
+/*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,         */
+/*  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF      */
+/*  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  */
+/*  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY    */
+/*  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,    */
+/*  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE       */
+/*  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                  */
+/* ------------------------------------------------------------------------ */
+</style></head>
+   <body>
+      <h1>Test Report</h1>
+      <p>Stylesheet: <a href="file:/C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT.xsl">C:/UK-ICS/DRIVER/LL-CASES-LAWREPORT-to-LA-CASES-LAWREPORT.xsl</a></p>
+      <p>Tested: 14 June 2018 at 13:59</p>
+      <h2>Contents</h2>
+      <table class="xspec">
+         <col width="75%" />
+         <col width="6.25%" />
+         <col width="6.25%" />
+         <col width="6.25%" />
+         <col width="6.25%" />
+         <thead>
+            <tr>
+               <th></th>
+               <th class="totals">passed: 6</th>
+               <th class="totals">pending: 0</th>
+               <th class="totals">failed: 6</th>
+               <th class="totals">total: 12</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr class="successful">
+               <th><a href="#d3e4">Creating root element DICTIONARYDOC</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e36">Scenario for testing docinfo and its child elements</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="successful">
+               <th><a href="#d3e454">Scenario for testing case:info child of case:headnote</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="successful">
+               <th><a href="#d3e828">Scenario for testing catchwordgrp child of case:headnote</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e1029">Scenario for testing case:factsummary child of case:headnote</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e1205">Scenario for testing case:decisionsummary child of case:headnote</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="successful">
+               <th><a href="#d3e1806">Scenario for testing case:priorhist child of case:headnote</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="successful">
+               <th><a href="#d3e1962">Scenario for testing case:judgments/case:constituents child of case:content</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="successful">
+               <th><a href="#d3e2196">Scenario for testing case:dates and glp:note child of case:content/case:judgments</a></th>
+               <th class="totals">1</th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e2355">Scenario for testing case:judgment child of case:content/case:judgments</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e2765">Scenario for testing table</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+            <tr class="failed">
+               <th><a href="#d3e3805">Scenario for testing case:author child of case:content</a></th>
+               <th class="totals">0</th>
+               <th class="totals">0</th>
+               <th class="totals">1</th>
+               <th class="totals">1</th>
+            </tr>
+         </tbody>
+      </table>
+      <div id="d3e4">
+         <h2 class="successful">Creating root element DICTIONARYDOC<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e4">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Creating root element DICTIONARYDOC</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>Change namespaces and create DICTIONARYDOC in output</td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e36">
+         <h2 class="failed">Scenario for testing docinfo and its child elements<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e36">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing docinfo and its child elements</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e273">docinfo and its child elements are transformed</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e36">Scenario for testing docinfo and its child elements</h3>
+         <h4 id="d3e273">docinfo and its child elements are transformed</h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">docinfo</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"&gt;
+   &lt;<span class="diff">docinfo:dpsi</span> <span class="diff">id-string</span>="" /&gt;
+   &lt;<span class="same">docinfo:doc-heading</span>&gt;<span class="same">Financial Conduct Authority v Capital Alternatives Ltd and others - [2014] 3 All ER 780</span>&lt;/docinfo:doc-heading&gt;
+   &lt;<span class="same">docinfo:doc-id</span>&gt;<span class="same">323031345F335F416C6C5F45525F30373830</span>&lt;/docinfo:doc-id&gt;
+   &lt;<span class="same">docinfo:doc-lang</span> <span class="same">lang</span>="en" /&gt;
+   &lt;<span class="same">docinfo:doc-country</span> <span class="same">iso-cc</span>="GB" /&gt;
+   &lt;<span class="same">docinfo:hier</span>&gt;
+      &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="ancestor"&gt;
+         &lt;<span class="same">heading</span>&gt;
+            &lt;<span class="same">title</span>&gt;<span class="same">2014</span>&lt;/title&gt;
+         &lt;/heading&gt;
+         &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="ancestor"&gt;
+            &lt;<span class="same">heading</span>&gt;
+               &lt;<span class="same">title</span>&gt;<span class="same">Volume 3 </span>&lt;/title&gt;
+            &lt;/heading&gt;
+            &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="me"&gt;
+               &lt;<span class="same">heading</span>&gt;
+                  &lt;<span class="same">title</span>&gt;<span class="same">Financial Conduct Authority v Capital Alternatives Ltd and others - [2014] 3 All ER 780</span>&lt;/title&gt;
+               &lt;/heading&gt;
+            &lt;/docinfo:hierlev&gt;
+         &lt;/docinfo:hierlev&gt;
+      &lt;/docinfo:hierlev&gt;
+   &lt;/docinfo:hier&gt;
+   &lt;<span class="same">docinfo:bookseqnum</span>&gt;<span class="same">2182873868</span>&lt;/docinfo:bookseqnum&gt;
+   &lt;<span class="same">docinfo:lbu-meta</span>&gt;
+      &lt;<span class="same">docinfo:metaitem</span> <span class="same">name</span>="lbu-sourcename"
+                       <span class="same">value</span>="All England Law Reports" /&gt;
+   &lt;/docinfo:lbu-meta&gt;
+   &lt;<span class="same">docinfo:selector</span>&gt;<span class="same">LawReport</span>&lt;/docinfo:selector&gt;
+   &lt;<span class="same">docinfo:alt-renditions</span>&gt;
+      &lt;<span class="same">docinfo:alt-rendition</span> <span class="same">key</span>="fulltext"&gt;
+         &lt;<span class="same">link</span> <span class="same">type</span>="pdf"
+                               <span class="same">filename</span>="2014_3_All_ER_0780.pdf"
+                               <span class="same">alttext</span>="Click Here To View PDF"&gt;<span class="same">2014_3_All_ER_0780</span>&lt;/link&gt;
+      &lt;/docinfo:alt-rendition&gt;
+   &lt;/docinfo:alt-renditions&gt;
+   &lt;<span class="same">docinfo:custom-metafields</span>&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="courtcode"&gt;<span class="same">ChD</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="jurisdiction"&gt;<span class="same">England&amp;Wales</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="COURT-CLASSIFY"&gt;<span class="same">Chancery Division</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="JURIS-CLASSIFY"&gt;<span class="same">England &amp; Wales</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="date"&gt;<span class="same">20140214</span>&lt;/docinfo:custom-metafield&gt;
+   &lt;/docinfo:custom-metafields&gt;
+&lt;/docinfo&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">docinfo</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"&gt;
+   &lt;<span class="diff">docinfo:dpsi</span> <span class="diff">id-string</span>="000D" /&gt;
+   &lt;<span class="same">docinfo:doc-heading</span>&gt;<span class="same">Financial Conduct Authority v Capital Alternatives Ltd and others - [2014] 3 All ER 780</span>&lt;/docinfo:doc-heading&gt;
+   &lt;<span class="same">docinfo:doc-id</span>&gt;<span class="same">323031345F335F416C6C5F45525F30373830</span>&lt;/docinfo:doc-id&gt;
+   &lt;<span class="same">docinfo:doc-lang</span> <span class="same">lang</span>="en" /&gt;
+   &lt;<span class="same">docinfo:doc-country</span> <span class="same">iso-cc</span>="GB" /&gt;
+   &lt;<span class="same">docinfo:hier</span>&gt;
+      &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="ancestor"&gt;
+         &lt;<span class="same">heading</span>&gt;
+            &lt;<span class="same">title</span>&gt;<span class="same">2014</span>&lt;/title&gt;
+         &lt;/heading&gt;
+         &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="ancestor"&gt;
+            &lt;<span class="same">heading</span>&gt;
+               &lt;<span class="same">title</span>&gt;<span class="same">Volume 3 </span>&lt;/title&gt;
+            &lt;/heading&gt;
+            &lt;<span class="same">docinfo:hierlev</span> <span class="same">role</span>="me"&gt;
+               &lt;<span class="same">heading</span>&gt;
+                  &lt;<span class="same">title</span>&gt;<span class="same">Financial Conduct Authority v Capital Alternatives Ltd and others - [2014] 3 All ER 780</span>&lt;/title&gt;
+               &lt;/heading&gt;
+            &lt;/docinfo:hierlev&gt;
+         &lt;/docinfo:hierlev&gt;
+      &lt;/docinfo:hierlev&gt;
+   &lt;/docinfo:hier&gt;
+   &lt;<span class="same">docinfo:bookseqnum</span>&gt;<span class="same">2182873868</span>&lt;/docinfo:bookseqnum&gt;
+   &lt;<span class="same">docinfo:lbu-meta</span>&gt;
+      &lt;<span class="same">docinfo:metaitem</span> <span class="same">name</span>="lbu-sourcename"
+                       <span class="same">value</span>="All England Law Reports" /&gt;
+   &lt;/docinfo:lbu-meta&gt;
+   &lt;<span class="same">docinfo:selector</span>&gt;<span class="same">LawReport</span>&lt;/docinfo:selector&gt;
+   &lt;<span class="same">docinfo:alt-renditions</span>&gt;
+      &lt;<span class="same">docinfo:alt-rendition</span> <span class="same">key</span>="fulltext"&gt;
+         &lt;<span class="same">link</span> <span class="same">type</span>="pdf"
+                               <span class="same">filename</span>="2014_3_All_ER_0780.pdf"
+                               <span class="same">alttext</span>="Click Here To View PDF"&gt;<span class="same">2014_3_All_ER_0780</span>&lt;/link&gt;
+      &lt;/docinfo:alt-rendition&gt;
+   &lt;/docinfo:alt-renditions&gt;
+   &lt;<span class="same">docinfo:custom-metafields</span>&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="courtcode"&gt;<span class="same">ChD</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="jurisdiction"&gt;<span class="same">England&amp;Wales</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="COURT-CLASSIFY"&gt;<span class="same">Chancery Division</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="JURIS-CLASSIFY"&gt;<span class="same">England &amp; Wales</span>&lt;/docinfo:custom-metafield&gt;
+      &lt;<span class="same">docinfo:custom-metafield</span> <span class="same">name</span>="date"&gt;<span class="same">20140214</span>&lt;/docinfo:custom-metafield&gt;
+   &lt;/docinfo:custom-metafields&gt;
+&lt;/docinfo&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e454">
+         <h2 class="successful">Scenario for testing case:info child of case:headnote<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e454">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Scenario for testing case:info child of case:headnote</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>The element case:info in LA</td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e828">
+         <h2 class="successful">Scenario for testing catchwordgrp child of case:headnote<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e828">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Scenario for testing catchwordgrp child of case:headnote</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>The element catchwordgrp is retained and element catchword is created for each content
+                     of PCDATA delimited by –
+                  </td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e1029">
+         <h2 class="failed">Scenario for testing case:factsummary child of case:headnote<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e1029">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing case:factsummary child of case:headnote</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e1125">Within case:factsummary, the child element pgrp is suppressed and its child are retained
+                        and for the element footnote, @fntoken and @fnrtoken are created</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e1029">Scenario for testing case:factsummary child of case:headnote</h3>
+         <h4 id="d3e1125">Within case:factsummary, the child element pgrp is suppressed and its child are retained
+            and for the element footnote, @fntoken and @fnrtoken are created
+         </h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:headnote</span>&gt;
+         &lt;<span class="diff">case:info</span>&gt;
+            &lt;<span class="diff">case:factsummary</span>&gt;
+               &lt;<span class="diff">p</span>&gt;
+                  &lt;<span class="diff">text</span>&gt;<span class="same">The Financial Conduct Authority (the FCA) was a regulatory body established under the </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="LEG-REF"
+                          <span class="same">status</span>="valid"
+                          <span class="same">normcite</span>="UK_ACTS 2000 8 Title "&gt;
+                        &lt;<span class="same">ci:content</span>&gt;<span class="same">Financial Services and Markets Act 2000</span>&lt;/ci:content&gt;
+                     &lt;/ci:cite&gt;<span class="diff"> (the FSMA). Certain investments of specified kinds, including 'collective investment schemes' carried on by way of business were 'regulated activities' under the FSMA and could not be carried on lawfully by unauthorised persons.</span>&lt;/text&gt;
+               &lt;/p&gt;
+               &lt;<span class="diff">p</span>&gt;
+                  &lt;<span class="diff">text</span>&gt;<span class="diff">relation to the carbon credits schemes in the forest areas, the FCA submitted that the award of the total number of carbon credit units by the relevant body to the scheme operator meant that the profits were pooled; the defendants' case was that there was no pooling if the carbon credit units were divided in accordance with the amount of carbon benefit generated by each plot individually. In relation to both kinds of scheme, the defendants contended that a scheme consisting of individual plots managed to give individual returns for each investor based on the individual yield had neither of the characteristics required by s 235(3), namely pooling of profits nor management of the property as a whole and was therefore not a collective investment scheme.</span>&lt;/text&gt;
+               &lt;/p&gt;
+            &lt;/case:factsummary&gt;
+         &lt;/case:info&gt;
+      &lt;/case:headnote&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:headnote</span>&gt;
+         &lt;<span class="diff">case:info</span>&gt;
+            &lt;<span class="diff">case:factsummary</span>&gt;
+               &lt;<span class="diff">p</span>&gt;
+                  &lt;<span class="diff">text</span>&gt;<span class="same">The Financial Conduct Authority (the FCA) was a regulatory body established under the </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="LEG-REF"
+                          <span class="same">status</span>="valid"
+                          <span class="same">normcite</span>="UK_ACTS 2000 8 Title "&gt;
+                        &lt;<span class="same">ci:content</span>&gt;<span class="same">Financial Services and Markets Act 2000</span>&lt;/ci:content&gt;
+                     &lt;/ci:cite&gt;<span class="diff"> (the FSMA). Certain investments of specified kinds, including ‘collective investment schemes’ carried on by way of business were ‘regulated activities’ under the FSMA and could not be carried on lawfully by unauthorised persons.</span>&lt;/text&gt;
+               &lt;/p&gt;
+               &lt;<span class="diff">p</span>&gt;
+                  &lt;<span class="diff">text</span>&gt;<span class="diff">relation to the carbon credits schemes in the forest areas, the FCA submitted that the award of the total number of carbon credit units by the relevant body to the scheme operator meant that the profits were pooled; the defendants’ case was that there was no pooling if the carbon credit units were divided in accordance with the amount of carbon benefit generated by each plot individually. In relation to both kinds of scheme, the defendants contended that a scheme consisting of individual plots managed to give individual returns for each investor based on the individual yield had neither of the characteristics required by s 235(3), namely pooling of profits nor management of the property as a whole and was therefore not a collective investment scheme.</span>&lt;/text&gt;
+               &lt;/p&gt;
+            &lt;/case:factsummary&gt;
+         &lt;/case:info&gt;
+      &lt;/case:headnote&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e1205">
+         <h2 class="failed">Scenario for testing case:decisionsummary child of case:headnote<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e1205">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing case:decisionsummary child of case:headnote</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e1523">The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary
+                        and converted as the element note. The element case:consideredcases  is made as the
+                        following sibling of case:decisionsummary and converted as case:references</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e1205">Scenario for testing case:decisionsummary child of case:headnote</h3>
+         <h4 id="d3e1523">The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary
+            and converted as the element note. The element case:consideredcases  is made as the
+            following sibling of case:decisionsummary and converted as case:references
+         </h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:headnote</span>&gt;
+         &lt;<span class="diff">case:decisionsummary</span> <span class="same">summarytype</span>="held"&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;
+                  &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">Held</span>&lt;/emph&gt;<span class="diff"> – An investment scheme whose terms provided that the property within the scheme was to consist of individual plots managed in such a way as to give individual returns for each investor based on the yield from his plot would not involve pooling of profit or income within s 235(3)(a) of the FSMA but the property might nonetheless be 'managed as a whole' within s 235(3)(b), and if so managed, the scheme would be a collective investment scheme. Where, as in the schemes in the instant case, all the investment property was managed by or on behalf of the operator as one entity for the collective benefit of all investors, without any substantial regard for the individual interests of any of the investors, and without the investors themselves having any involvement in management, and the object of the division of the property into separate plots so as to generate individual returns of income neither benefited investors nor involved any substantial individual as opposed to collective management, the property was 'managed as a whole'. The word 'property' in s 235(3)(b) referred back to s 235(1), and the property was whatever enabled participants to benefit from its acquisition, holding, management, or disposal. In the instant case, the property was not limited to the investors' individual plots, but included the whole of the rice farm and the whole of the forest areas, because the investors' income depended on their development and management. Pooling of profits or income within s 235(3)(a) required the creation of a fund for the combined or common benefit of investors and, if each investor obtained an individual return based on the yield from his plot, there was no pooling of profits or income even if the value of all investors' yield was subject to standard deductions for processing and expenses, or the value of all investors' yield was received first by the operator of the scheme and then distributed to the investors in accordance with their respective, individually calculated, entitlements. In the instant case, in the rice farm scheme and one of the carbon credits schemes, there had been no pooling of profits or income, but as all four schemes had been 'managed as a whole', they were all collective investment schemes within s 235 (see [8]–[10], [56], [58]–[60], [94], [111], [154]–[162], [168], [169], [174]–[182], [195]–[198], [200]–[203], [207], [208], [229], [252]–[260], [265]–[272], below).</span>&lt;/text&gt;
+            &lt;/p&gt;
+         &lt;/case:decisionsummary&gt;
+         &lt;<span class="diff">note</span> <span class="same">notetype</span>="commentary"&gt;
+            &lt;<span class="same">h</span>&gt;<span class="same">Notes</span>&lt;/h&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;<span class="same">For collective investment schemes: definitions, and for arrangements not amounting to a collective investment scheme, see 49 </span>&lt;<span class="diff">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="diff">Halsbury's Laws</span>&lt;/emph&gt;<span class="same"> (5th edn) (2008) paras 603, 604.</span>&lt;/text&gt;
+            &lt;/p&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;<span class="same">For the </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="LEG-REF"
+                       <span class="same">status</span>="valid"
+                       <span class="same">normcite</span>="UK_ACTS 2000 8 SECT 235"&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">Financial Services and Markets Act 2000, s 235</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, see 19(2) </span>&lt;<span class="diff">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="diff">Halsbury's Statutes</span>&lt;/emph&gt;<span class="same"> (4th edn) (2013 reissue) 484.</span>&lt;/text&gt;
+            &lt;/p&gt;
+            &lt;<span class="same">page</span> <span class="same">text</span>="[2014] 3 All ER 780 at"
+                 <span class="same">reporter</span>="ALLER"
+                 <span class="same">count</span>="782" /&gt;
+         &lt;/note&gt;
+         &lt;<span class="same">case:references</span> xmlns:jrnl="http://www.lexis-nexis.com/glp/jrnl"
+                       <span class="same">referencetype</span>="cases"&gt;
+            &lt;<span class="same">h</span>&gt;<span class="same">Cases referred to</span>&lt;/h&gt;
+            &lt;<span class="same">p</span>&gt;
+               &lt;<span class="same">text</span>&gt;
+                  &lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">Bloomsbury International Ltd v Sea Fish Industry Authority </span>&lt;/emph&gt;
+                  &lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="UKSC" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="25" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] UKSC 25</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="ALLER" /&gt;
+                           &lt;<span class="same">ci:volume</span> <span class="same">num</span>="4" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="721" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] 4 All ER 721</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="WLR" /&gt;
+                           &lt;<span class="same">ci:volume</span> <span class="same">num</span>="1" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="1546" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] 1 WLR 1546</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">.</span>&lt;/text&gt;
+            &lt;/p&gt;
+         &lt;/case:references&gt;
+      &lt;/case:headnote&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:headnote</span>&gt;
+         &lt;<span class="diff">case:decisionsummary</span> <span class="same">summarytype</span>="held"&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;
+                  &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">Held</span>&lt;/emph&gt;<span class="diff"> – An investment scheme whose terms provided that the property within the scheme was to consist of individual plots managed in such a way as to give individual returns for each investor based on the yield from his plot would not involve pooling of profit or income within s 235(3)(a) of the FSMA but the property might nonetheless be ‘managed as a whole’ within s 235(3)(b), and if so managed, the scheme would be a collective investment scheme. Where, as in the schemes in the instant case, all the investment property was managed by or on behalf of the operator as one entity for the collective benefit of all investors, without any substantial regard for the individual interests of any of the investors, and without the investors themselves having any involvement in management, and the object of the division of the property into separate plots so as to generate individual returns of income neither benefited investors nor involved any substantial individual as opposed to collective management, the property was ‘managed as a whole’. The word ‘property’ in s 235(3)(b) referred back to s 235(1), and the property was whatever enabled participants to benefit from its acquisition, holding, management, or disposal. In the instant case, the property was not limited to the investors’ individual plots, but included the whole of the rice farm and the whole of the forest areas, because the investors’ income depended on their development and management. Pooling of profits or income within s 235(3)(a) required the creation of a fund for the combined or common benefit of investors and, if each investor obtained an individual return based on the yield from his plot, there was no pooling of profits or income even if the value of all investors’ yield was subject to standard deductions for processing and expenses, or the value of all investors’ yield was received first by the operator of the scheme and then distributed to the investors in accordance with their respective, individually calculated, entitlements. In the instant case, in the rice farm scheme and one of the carbon credits schemes, there had been no pooling of profits or income, but as all four schemes had been ‘managed as a whole’, they were all collective investment schemes within s 235 (see [8]–[10], [56], [58]–[60], [94], [111], [154]–[162], [168], [169], [174]–[182], [195]–[198], [200]–[203], [207], [208], [229], [252]–[260], [265]–[272], below).</span>&lt;/text&gt;
+            &lt;/p&gt;
+         &lt;/case:decisionsummary&gt;
+         &lt;<span class="diff">note</span> <span class="same">notetype</span>="commentary"&gt;
+            &lt;<span class="same">h</span>&gt;<span class="same">Notes</span>&lt;/h&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;<span class="same">For collective investment schemes: definitions, and for arrangements not amounting to a collective investment scheme, see 49 </span>&lt;<span class="diff">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="diff">Halsbury’s Laws</span>&lt;/emph&gt;<span class="same"> (5th edn) (2008) paras 603, 604.</span>&lt;/text&gt;
+            &lt;/p&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span>&gt;<span class="same">For the </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="LEG-REF"
+                       <span class="same">status</span>="valid"
+                       <span class="same">normcite</span>="UK_ACTS 2000 8 SECT 235"&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">Financial Services and Markets Act 2000, s 235</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, see 19(2) </span>&lt;<span class="diff">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="diff">Halsbury’s Statutes</span>&lt;/emph&gt;<span class="same"> (4th edn) (2013 reissue) 484.</span>&lt;/text&gt;
+            &lt;/p&gt;
+            &lt;<span class="same">page</span> <span class="same">text</span>="[2014] 3 All ER 780 at"
+                 <span class="same">reporter</span>="ALLER"
+                 <span class="same">count</span>="782" /&gt;
+         &lt;/note&gt;
+         &lt;<span class="same">case:references</span> <span class="same">referencetype</span>="cases"&gt;
+            &lt;<span class="same">h</span>&gt;<span class="same">Cases referred to</span>&lt;/h&gt;
+            &lt;<span class="same">p</span>&gt;
+               &lt;<span class="same">text</span>&gt;
+                  &lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">Bloomsbury International Ltd v Sea Fish Industry Authority </span>&lt;/emph&gt;
+                  &lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="UKSC" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="25" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] UKSC 25</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="ALLER" /&gt;
+                           &lt;<span class="same">ci:volume</span> <span class="same">num</span>="4" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="721" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] 4 All ER 721</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">, </span>&lt;<span class="same">ci:cite</span> <span class="same">searchtype</span>="CASE-REF"&gt;
+                     &lt;<span class="same">ci:case</span>&gt;
+                        &lt;<span class="same">ci:caseref</span>&gt;
+                           &lt;<span class="same">ci:reporter</span> <span class="same">value</span>="WLR" /&gt;
+                           &lt;<span class="same">ci:volume</span> <span class="same">num</span>="1" /&gt;
+                           &lt;<span class="same">ci:edition</span>&gt;
+                              &lt;<span class="same">ci:date</span> <span class="same">year</span>="2011" /&gt;
+                           &lt;/ci:edition&gt;
+                           &lt;<span class="same">ci:page</span> <span class="same">num</span>="1546" /&gt;
+                        &lt;/ci:caseref&gt;
+                     &lt;/ci:case&gt;
+                     &lt;<span class="same">ci:content</span>&gt;<span class="same">[2011] 1 WLR 1546</span>&lt;/ci:content&gt;
+                  &lt;/ci:cite&gt;<span class="same">.</span>&lt;/text&gt;
+            &lt;/p&gt;
+         &lt;/case:references&gt;
+      &lt;/case:headnote&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e1806">
+         <h2 class="successful">Scenario for testing case:priorhist child of case:headnote<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e1806">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Scenario for testing case:priorhist child of case:headnote</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>The glp:note within case:decisionsummary is made as the following sibling of case:decisionsummary
+                     and converted as the element note. The element case:consideredcases  is made as the
+                     following sibling of case:decisionsummary and converted as case:references
+                  </td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e1962">
+         <h2 class="successful">Scenario for testing case:judgments/case:constituents child of case:content<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e1962">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Scenario for testing case:judgments/case:constituents child of case:content</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>All the case:constituents are grouped under a single case:constituents</td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e2196">
+         <h2 class="successful">Scenario for testing case:dates and glp:note child of case:content/case:judgments<span class="scenario-totals">passed: 1 / pending: 0 / failed: 0 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e2196">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="successful">
+                  <th>Scenario for testing case:dates and glp:note child of case:content/case:judgments</th>
+                  <th>passed: 1 / pending: 0 / failed: 0 / total: 1</th>
+               </tr>
+               <tr class="successful">
+                  <td>All the case:constituents are grouped under a single case:constituents</td>
+                  <td>Success</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e2355">
+         <h2 class="failed">Scenario for testing case:judgment child of case:content/case:judgments<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e2355">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing case:judgment child of case:content/case:judgments</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e2568">All the case:constituents are grouped under a single case:constituents</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e2355">Scenario for testing case:judgment child of case:content/case:judgments</h3>
+         <h4 id="d3e2568">All the case:constituents are grouped under a single case:constituents</h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:content</span>&gt;
+         &lt;<span class="diff">case:judgments</span>&gt;
+            &lt;<span class="diff">case:judgment</span>&gt;
+               &lt;<span class="same">case:courtinfo</span>&gt;
+                  &lt;<span class="same">case:judges</span>&gt;
+                     &lt;<span class="same">case:judge</span>&gt;<span class="same">Talbot J</span>&lt;/case:judge&gt;
+                  &lt;/case:judges&gt;
+               &lt;/case:courtinfo&gt;
+               &lt;<span class="diff">case:judgmentbody</span>&gt;
+                  &lt;<span class="diff">p</span>&gt;
+                     &lt;<span class="diff">text</span>&gt;<span class="diff">(delivering the judgment of the Court). In this case there were two men who, whether properly or not, I do not express an opinion, but at any rate probably within the law, were charged on one indictment. The appellant Roberts was charged with fraudulently converting certain property entrusted to him by a lady named Beatrice Anne Steel, in order that he might apply the same for the payment of a quarter's rent of a house which, I presume, was taken by her. That is an offence against the Larceny Act 1916, s 20(1)(iv)</span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">(a)</span>&lt;/emph&gt;<span class="same">. The other man, John Moore, was indicted under another section of the same Act, s 32 (1), for causing by false pretences money to be paid by Beatrice Anne Steel to Frederick Roberts; and also with another offence against the same subsection</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">page</span> <span class="same">text</span>="[1936] 1 All ER 23 at"
+                                    <span class="same">reporter</span>="ALLER"
+                                    <span class="same">count</span>="24" /&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">and concerning the same parties, but in respect of a different sum of money. The false pretence was the same in both cases.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="diff">p</span>&gt;
+                     &lt;<span class="diff">text</span>&gt;<span class="diff">This point arises because, during the course of the trial, Roberts was cross-examined by the counsel appearing for Moore as to a previous conviction of Roberts. Roberts had provoked that question (if I may use the expression) by stating, whether truly or not it is unnecessary to say, that Moore had signed certain documents in Roberts's presence, which Moore denied. In fact, Moore implied, if he did not actually state, that Roberts had forged the signature. That question was asked after due preparation of Roberts for something coming. It was in fact mentioned by the learned Deputy Chairman in his summing-up to the jury, and it never seems to have struck anybody at the time that there was any difficulty about it.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">blockquote</span>&gt;
+                     &lt;<span class="same">p</span>&gt;
+                        &lt;<span class="same">text</span>&gt;<span class="same">“</span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">(f)</span>&lt;/emph&gt;<span class="same"> A person charged and called as a witness in pursuance of this Act shall not be asked, and if asked shall not be required to answer, any question tending to show that he has committed or been convicted of or been charged with any offence other than that wherewith he is then charged, or is of bad character, unless—”</span>&lt;/text&gt;
+                     &lt;/p&gt;
+                  &lt;/blockquote&gt;
+                  &lt;<span class="same">page</span> <span class="same">text</span>="[1936] 1 All ER 23 at"
+                                    <span class="same">reporter</span>="ALLER"
+                                    <span class="same">count</span>="25" /&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">Then there are three exceptions, and the third of them is the one on which this question arises:</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">blockquote</span>&gt;
+                     &lt;<span class="same">p</span>&gt;
+                        &lt;<span class="same">text</span>&gt;<span class="same">“(iii) he has given evidence against any other person charged with the same offence.”</span>&lt;/text&gt;
+                     &lt;/p&gt;
+                  &lt;/blockquote&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">That must be strictly construed. One could easily conceive arguments for making that provision more extensive; that is to say, for allowing a further exception to the exemption of persons from this particular line of cross-examination. One must, however, obviously take the statute as it is, and that at once brings us face to face with the question whether it can be said that the offence or offences with which Moore was charged in this case are the same offence as that with which Roberts was charged.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">I have already read, so far as is necessary, the description of the offences with which these two men were respectively charged in the same indictment, and it is quite clear that it would be impossible to say that they are the same offence. Learned counsel for the Crown has very properly recognised that as a fatal bar to the correctness of this conviction. The conviction must therefore be quashed and the appellant discharged.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+               &lt;/case:judgmentbody&gt;
+            &lt;/case:judgment&gt;
+         &lt;/case:judgments&gt;
+      &lt;/case:content&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:content</span>&gt;
+         &lt;<span class="diff">case:judgments</span>&gt;
+            &lt;<span class="diff">case:judgment</span>&gt;
+               &lt;<span class="same">case:courtinfo</span>&gt;
+                  &lt;<span class="same">case:judges</span>&gt;
+                     &lt;<span class="same">case:judge</span>&gt;<span class="same">Talbot J</span>&lt;/case:judge&gt;
+                  &lt;/case:judges&gt;
+               &lt;/case:courtinfo&gt;
+               &lt;<span class="diff">case:judgmentbody</span>&gt;
+                  &lt;<span class="diff">p</span>&gt;
+                     &lt;<span class="diff">text</span>&gt;<span class="diff">(delivering the judgment of the Court). In this case there were two men who, whether properly or not, I do not express an opinion, but at any rate probably within the law, were charged on one indictment. The appellant Roberts was charged with fraudulently converting certain property entrusted to him by a lady named Beatrice Anne Steel, in order that he might apply the same for the payment of a quarter’s rent of a house which, I presume, was taken by her. That is an offence against the Larceny Act 1916, s 20(1)(iv)</span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">(a)</span>&lt;/emph&gt;<span class="same">. The other man, John Moore, was indicted under another section of the same Act, s 32 (1), for causing by false pretences money to be paid by Beatrice Anne Steel to Frederick Roberts; and also with another offence against the same subsection</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">page</span> <span class="same">text</span>="[1936] 1 All ER 23 at"
+                                    <span class="same">reporter</span>="ALLER"
+                                    <span class="same">count</span>="24" /&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">and concerning the same parties, but in respect of a different sum of money. The false pretence was the same in both cases.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="diff">p</span>&gt;
+                     &lt;<span class="diff">text</span>&gt;<span class="diff">This point arises because, during the course of the trial, Roberts was cross-examined by the counsel appearing for Moore as to a previous conviction of Roberts. Roberts had provoked that question (if I may use the expression) by stating, whether truly or not it is unnecessary to say, that Moore had signed certain documents in Roberts’s presence, which Moore denied. In fact, Moore implied, if he did not actually state, that Roberts had forged the signature. That question was asked after due preparation of Roberts for something coming. It was in fact mentioned by the learned Deputy Chairman in his summing-up to the jury, and it never seems to have struck anybody at the time that there was any difficulty about it.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">blockquote</span>&gt;
+                     &lt;<span class="same">p</span>&gt;
+                        &lt;<span class="same">text</span>&gt;<span class="same">“</span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="it"&gt;<span class="same">(f)</span>&lt;/emph&gt;<span class="same"> A person charged and called as a witness in pursuance of this Act shall not be asked, and if asked shall not be required to answer, any question tending to show that he has committed or been convicted of or been charged with any offence other than that wherewith he is then charged, or is of bad character, unless—”</span>&lt;/text&gt;
+                     &lt;/p&gt;
+                  &lt;/blockquote&gt;
+                  &lt;<span class="same">page</span> <span class="same">text</span>="[1936] 1 All ER 23 at"
+                                    <span class="same">reporter</span>="ALLER"
+                                    <span class="same">count</span>="25" /&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">Then there are three exceptions, and the third of them is the one on which this question arises:</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">blockquote</span>&gt;
+                     &lt;<span class="same">p</span>&gt;
+                        &lt;<span class="same">text</span>&gt;<span class="same">“(iii) he has given evidence against any other person charged with the same offence.”</span>&lt;/text&gt;
+                     &lt;/p&gt;
+                  &lt;/blockquote&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">That must be strictly construed. One could easily conceive arguments for making that provision more extensive; that is to say, for allowing a further exception to the exemption of persons from this particular line of cross-examination. One must, however, obviously take the statute as it is, and that at once brings us face to face with the question whether it can be said that the offence or offences with which Moore was charged in this case are the same offence as that with which Roberts was charged.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+                  &lt;<span class="same">p</span>&gt;
+                     &lt;<span class="same">text</span>&gt;<span class="same">I have already read, so far as is necessary, the description of the offences with which these two men were respectively charged in the same indictment, and it is quite clear that it would be impossible to say that they are the same offence. Learned counsel for the Crown has very properly recognised that as a fatal bar to the correctness of this conviction. The conviction must therefore be quashed and the appellant discharged.</span>&lt;/text&gt;
+                  &lt;/p&gt;
+               &lt;/case:judgmentbody&gt;
+            &lt;/case:judgment&gt;
+         &lt;/case:judgments&gt;
+      &lt;/case:content&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e2765">
+         <h2 class="failed">Scenario for testing table<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e2765">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing table</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e3341">The empty entries are removed and the active entry count is calculated based on the
+                        entry having PCDATA and table is created accordingly</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e2765">Scenario for testing table</h3>
+         <h4 id="d3e3341">The empty entries are removed and the active entry count is calculated based on the
+            entry having PCDATA and table is created accordingly
+         </h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">table</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">frame</span>="all"&gt;
+   &lt;<span class="diff">tgroup</span> <span class="same">cols</span>="2"
+         <span class="same">colsep</span>="1"
+         <span class="same">rowsep</span>="1"&gt;
+      &lt;<span class="diff">colspec</span> <span class="same">colname</span>="1"
+             <span class="diff">colwidth</span>="4320*" /&gt;
+      &lt;<span class="diff">colspec</span> <span class="same">colname</span>="2"
+             <span class="diff">colwidth</span>="1440*" /&gt;
+      &lt;<span class="same">tbody</span>&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;
+               &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">Costs</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;
+               &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">1 Acre</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Tonnes per year </span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">paddy rice</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">3.105</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Milled rice </span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">69% of paddy rice</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">2.1</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span> /&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">£</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Retail price per MT in Sierra Leone*</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">415</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Gross profit</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">871</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Farm management</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">20</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Drying charge</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">36</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Nitrates per Acre 130 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">42</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Pasthates per Acre 40 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">21</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Potassium per Acre 60 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">27</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Fungicide</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">13</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Herbicides</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">26</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Insecticides</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">7</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Irrigation Supplies/Gates</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">2</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Seed</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">23</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Fertilizer Application Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">12</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Planting Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">4</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Hauling Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">11</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Labour Costs</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">10</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Tillage/Harvest Fuel Cost 16 gal/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">21</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Irrigation Fuel Cost 54 gal/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">72</span>&lt;/entry&gt;
+         &lt;/row&gt;
+      &lt;/tbody&gt;
+   &lt;/tgroup&gt;
+&lt;/table&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">table</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">frame</span>="all"&gt;
+   &lt;<span class="diff">tgroup</span> <span class="same">cols</span>="2"
+         <span class="same">colsep</span>="1"
+         <span class="same">rowsep</span>="1"&gt;
+      &lt;<span class="diff">colspec</span> <span class="same">colname</span>="1"
+             <span class="diff">colwidth</span>="4305*" /&gt;
+      &lt;<span class="diff">colspec</span> <span class="same">colname</span>="2"
+             <span class="diff">colwidth</span>="830*" /&gt;
+      &lt;<span class="same">tbody</span>&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;
+               &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">Costs</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;
+               &lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">1 Acre</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Tonnes per year </span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">paddy rice</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">3.105</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Milled rice </span>&lt;<span class="same">emph</span> <span class="same">typestyle</span>="bf"&gt;<span class="same">69% of paddy rice</span>&lt;/emph&gt;
+            &lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">2.1</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span> /&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">£</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Retail price per MT in Sierra Leone*</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">415</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Gross profit</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">871</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Farm management</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">20</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Drying charge</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">36</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Nitrates per Acre 130 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">42</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Pasthates per Acre 40 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">21</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Pounds of Potassium per Acre 60 lbs/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">27</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Fungicide</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">13</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Herbicides</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">26</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Insecticides</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">7</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Irrigation Supplies/Gates</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">2</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Seed</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">23</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Fertilizer Application Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">12</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Planting Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">4</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Hauling Cost</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">11</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Labour Costs</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">10</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Tillage/Harvest Fuel Cost 16 gal/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">21</span>&lt;/entry&gt;
+         &lt;/row&gt;
+         &lt;<span class="same">row</span>&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">Irrigation Fuel Cost 54 gal/Acre</span>&lt;/entry&gt;
+            &lt;<span class="same">entry</span>&gt;<span class="same">72</span>&lt;/entry&gt;
+         &lt;/row&gt;
+      &lt;/tbody&gt;
+   &lt;/tgroup&gt;
+&lt;/table&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div id="d3e3805">
+         <h2 class="failed">Scenario for testing case:author child of case:content<span class="scenario-totals">passed: 0 / pending: 0 / failed: 1 / total: 1</span></h2>
+         <table class="xspec" id="t-d3e3805">
+            <col width="75%" />
+            <col width="25%" />
+            <tbody>
+               <tr class="failed">
+                  <th>Scenario for testing case:author child of case:content</th>
+                  <th>passed: 0 / pending: 0 / failed: 1 / total: 1</th>
+               </tr>
+               <tr class="failed">
+                  <td><a href="#d3e3871">case:author is retained as it is in LA</a></td>
+                  <td>Failure</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 id="d3e3805">Scenario for testing case:author child of case:content</h3>
+         <h4 id="d3e3871">case:author is retained as it is in LA</h4>
+         <table class="xspecResult">
+            <thead>
+               <tr>
+                  <th>Result</th>
+                  <th>Expecting</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:content</span>&gt;
+         &lt;<span class="same">case:author</span>&gt;
+            &lt;<span class="same">person</span>&gt;
+               &lt;<span class="same">name.text</span>&gt;<span class="same">Carla Dougan-Bacchus Barrister.</span>&lt;/name.text&gt;
+            &lt;/person&gt;
+         &lt;/case:author&gt;
+         &lt;<span class="diff">glp:note</span>&gt;
+            &lt;<span class="diff">p</span>&gt;
+               &lt;<span class="diff">text</span> /&gt;
+            &lt;/p&gt;
+         &lt;/glp:note&gt;
+      &lt;/case:content&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+                  <td><pre>&lt;<span class="diff">CASEDOC</span> xmlns:lnvxe="http://www.lexis-nexis.com/lnvxe"
+         xmlns:lnv="http://www.lexis-nexis.com/lnv"
+         xmlns:lnvni="http://www.lexis-nexis.com/lnvni"
+         xmlns:lnclx="http://www.lexis-nexis.com/lnclx"
+         xmlns:lncle="http://www.lexis-nexis.com/lncle"
+         xmlns:lndel="http://www.lexis-nexis.com/lndel"
+         xmlns:lngntxt="http://www.lexis-nexis.com/lngntxt"
+         xmlns:lndocmeta="http://www.lexis-nexis.com/lndocmeta"
+         xmlns:lnlit="http://www.lexis-nexis.com/lnlit"
+         xmlns:lnci="http://www.lexis-nexis.com/lnci"
+         xmlns:nitf="urn:nitf:iptc.org.20010418.NITF"
+         xmlns:lnvx="http://www.lexis-nexis.com/lnvx"
+         xmlns:ci="http://www.lexis-nexis.com/ci"
+         xmlns:glp="http://www.lexis-nexis.com/glp"
+         xmlns:case="http://www.lexis-nexis.com/glp/case"
+         xmlns:comm="http://www.lexis-nexis.com/glp/comm"
+         xmlns:cttr="http://www.lexis-nexis.com/glp/cttr"
+         xmlns:dict="http://www.lexis-nexis.com/glp/dict"
+         xmlns:dig="http://www.lexis-nexis.com/glp/dig"
+         xmlns:docinfo="http://www.lexis-nexis.com/glp/docinfo"
+         xmlns:frm="http://www.lexis-nexis.com/glp/frm"
+         xmlns:in="http://www.lexis-nexis.com/glp/in"
+         xmlns:leg="http://www.lexis-nexis.com/glp/leg"
+         xmlns:xhtml="http://www.w3c.org/1999/xhtml"
+         <span class="same">type</span>="fulltext"&gt;
+   &lt;<span class="diff">case:body</span>&gt;
+      &lt;<span class="diff">case:content</span>&gt;
+         &lt;<span class="same">case:author</span>&gt;
+            &lt;<span class="same">person</span>&gt;
+               &lt;<span class="same">name.text</span>&gt;<span class="same">Carla Dougan-Bacchus Barrister.</span>&lt;/name.text&gt;
+            &lt;/person&gt;
+         &lt;/case:author&gt;
+      &lt;/case:content&gt;
+   &lt;/case:body&gt;
+&lt;/CASEDOC&gt;</pre></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </body>
+</html>
